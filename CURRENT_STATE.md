@@ -100,3 +100,7 @@ Schema `0006_devices`, backend 0.6.0, refresh rotativo/revogação, WSS autentic
 ## Resultado da Fase 7
 
 Android 0.7.0 compilado na VPS: chat/histórico, fila persistente, rotina (tarefas/lembretes/chamadas agendadas), timezone da conta e confirmação de memórias propostas. 3 testes unitários/2 instrumentados e lint passaram. Banco do Core permanece em 0006_devices; integração real temporizada será verificada na fase final. Relatório em [docs/PHASE_7.md](docs/PHASE_7.md).
+
+## Resultado da Fase 8
+
+Backend 0.8.0/migration 0007_calls, sessões internas, propriedade/dispositivo, expiração e transcrição idempotente implantados. 143 testes e Alembic check passaram. Android 0.8.0 desenvolvido/compilado na VPS, com atender/recusar, tela de chamada e SpeechRecognizer/TTS/alternativa por texto. Lint/3 unitários/3 instrumentados passaram. Validação física e E2E temporizado serão distinguidos no relatório final. [docs/PHASE_8.md](docs/PHASE_8.md).

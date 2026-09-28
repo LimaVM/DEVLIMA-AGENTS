@@ -144,6 +144,9 @@ def pending(session, owner, device_id, now=None):
     if device is None or device.user_id != owner or device.revoked:
         raise AgentError("device_unavailable", 403)
     device.last_seen_at = now
+    from app.calls.service import CallService
+
+    CallService(session, owner).expire(now)
     query = (
         select(OutboxEvent)
         .outerjoin(

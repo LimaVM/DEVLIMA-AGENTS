@@ -15,6 +15,7 @@ from starlette.concurrency import run_in_threadpool
 from app.agent.action_parser import reject_duplicate_keys
 from app.agent.core import AgentCore
 from app.agent.errors import AgentError
+from app.calls.service import CallService
 from app.config import get_settings
 from app.db.session import get_engine
 from app.devices.service import acknowledge, authorize_claims, pending, register
@@ -88,6 +89,42 @@ def ack_event(owner, device_id, event_id):
         acknowledge(session, owner, device_id, event_id)
 
 
+class CallAction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    incoming_event_id: UUID
+
+
+class CallEnd(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    call_session_id: UUID
+
+
+class VoiceTranscript(CallEnd):
+    client_message_id: UUID
+    content: str = Field(min_length=1, max_length=4000)
+
+
+def call_command(owner, device_id, operation, identifier):
+    with Session(get_engine(), expire_on_commit=False) as session:
+        result = getattr(CallService(session, owner, device_id), operation)(identifier)
+        session.commit()
+        return result
+
+
+def voice(owner, device_id, identifier, data):
+    with Session(get_engine(), expire_on_commit=False) as session:
+        conversation = CallService(session, owner, device_id).touch(identifier)
+        session.commit()
+        return AgentCore(session, get_settings()).send(
+            owner,
+            ChatSend(
+                conversation_id=conversation,
+                client_message_id=data.client_message_id,
+                content=data.content,
+            ),
+        )
+
+
 def chat(owner, data):
     with Session(get_engine(), expire_on_commit=False) as session:
         return AgentCore(session, get_settings()).send(owner, data)
@@ -120,10 +157,14 @@ async def websocket(socket: WebSocket):
             if not stopped.is_set():
                 await socket.send_json(raw)
 
-    async def process_chat(data, request_id):
+    async def process_chat(data, request_id, call_id=None):
         try:
             # The Core writes agent.message to its durable outbox in the same transaction.
-            reply = await run_in_threadpool(chat, owner, data)
+            reply = (
+                await run_in_threadpool(chat, owner, data)
+                if call_id is None
+                else await run_in_threadpool(voice, owner, device_id, call_id, data)
+            )
             await send(
                 "chat.processed",
                 {
@@ -218,6 +259,45 @@ async def websocket(socket: WebSocket):
                         {"event_id": envelope.payload["event_id"]},
                         envelope.event_id,
                     )
+                elif envelope.type in {"call.answer", "call.reject", "call.end"}:
+                    operation = envelope.type.split(".")[1]
+                    identifier = (
+                        CallEnd.model_validate(envelope.payload).call_session_id
+                        if operation == "end"
+                        else CallAction.model_validate(envelope.payload).incoming_event_id
+                    )
+                    result = await run_in_threadpool(
+                        call_command, owner, device_id, operation, identifier
+                    )
+                    await send(
+                        "call.command_result",
+                        {"operation": operation, "result": result},
+                        envelope.event_id,
+                    )
+                elif envelope.type == "voice.transcript":
+                    data = VoiceTranscript.model_validate(envelope.payload)
+                    if envelope.event_id != data.client_message_id:
+                        raise ValueError("message_id_mismatch")
+                    if len(jobs) >= 1:
+                        await send(
+                            "error",
+                            {
+                                "code": "device_busy",
+                                "client_message_id": str(data.client_message_id),
+                            },
+                            envelope.event_id,
+                        )
+                    else:
+                        task = asyncio.create_task(
+                            process_chat(data, envelope.event_id, data.call_session_id)
+                        )
+                        jobs.add(task)
+                        task.add_done_callback(jobs.discard)
+                        await send(
+                            "chat.accepted",
+                            {"client_message_id": str(data.client_message_id)},
+                            envelope.event_id,
+                        )
                 elif envelope.type == "chat.message":
                     data = ChatSend.model_validate(envelope.payload)
                     if envelope.event_id != data.client_message_id:

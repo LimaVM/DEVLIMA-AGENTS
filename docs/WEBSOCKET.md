@@ -29,3 +29,11 @@ Eventos duráveis: agent.message, reminder.triggered, call.incoming, call.cancel
 Entrega é **pelo menos uma vez**. O Android salva o evento em SQLite antes do ACK, deduplica pelo UUID e usa identificador estável da notificação. Payloads locais e tokens são criptografados com AES-GCM/Android Keystore, sem secrets embutidos no APK. ACK confirma persistência no dispositivo, não que o usuário leu o aviso.
 
 Erros usam envelope `error` com código estável, sem eco do payload/tokens. Frames inválidos são recusados; expiração/revogação fecha 4401. Tipos de chamadas/voz serão estendidos na Fase 8.
+
+## Fase 8 — chamadas internas
+
+Cliente envia call.answer/call.reject com payload incoming_event_id UUID; call.end com call_session_id UUID. A identidade do dispositivo vem da conexão autenticada. Resposta efêmera call.command_result confirma a operação; eventos duráveis call.state (payload session/event_id) e call.dismissed (event_id/status) sincronizam os dispositivos.
+
+voice.transcript recebe call_session_id/client_message_id/content (até 4000 caracteres), com event_id igual a client_message_id. O Core verifica sessão ativa/proprietário/dispositivo, usa conversation_id da chamada e conserva idempotência. Resultado agent.message é persistido na outbox. Há um turno em processamento por socket; device_busy é transitório.
+
+Toque expira em 120 segundos desde emissão; ao reconectar, chamada vencida produz MISSED. Sessão sem turno por 10 minutos ou com duração superior a 30 minutos expira; resolução é idempotente. Eventos de lembrete vencidos continuam seguindo a política do scheduler.

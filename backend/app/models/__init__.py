@@ -2,6 +2,7 @@ from app.models.identity import AuditLog, LoginThrottle, User
 from app.models.llm_request import LLMRequest
 
 __all__ = [
+    "CallSession",
     "AgentAction",
     "AuditLog",
     "Conversation",
@@ -25,6 +26,7 @@ __all__ = [
     "RefreshFamily",
     "RefreshToken",
 ]
+from app.models.calls import CallSession
 from app.models.context import (
     AgentAction,
     Conversation,

@@ -47,8 +47,8 @@
 
 ## Fases 7–8 — interface e voz
 - [x] Chat, tarefas e lembretes Android.
-- [ ] Notificação de chamada, atender/recusar, call_sessions.
-- [ ] SpeechRecognizer, TextToSpeech, mute/speaker/encerrar.
+- [x] Notificação de chamada, atender/recusar, call_sessions.
+- [x] SpeechRecognizer, TextToSpeech, mute/speaker/encerrar.
 
 ## Fase 9 — conclusão V1
 - [x] Domínio/HTTPS público: acesso 80/443 validado externamente; sem alteração de regras OCI.

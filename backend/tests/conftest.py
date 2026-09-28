@@ -9,6 +9,7 @@ from app.main import create_app
 from app.models import (
     AgentAction,
     AuditLog,
+    CallSession,
     Conversation,
     ConversationSummary,
     Device,
@@ -40,6 +41,7 @@ def clean_test_database():
         pytest.fail("Testes exigem o PostgreSQL efêmero postgres-test/devlima_agent_test")
     with Session(get_engine()) as session:
         for model in (
+            CallSession,
             EventDelivery,
             RefreshToken,
             RefreshFamily,
