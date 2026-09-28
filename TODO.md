@@ -52,9 +52,12 @@
 
 ## Fase 9 — conclusão V1
 - [x] Domínio/HTTPS público: acesso 80/443 validado externamente; sem alteração de regras OCI.
-- [ ] Roles PostgreSQL separadas para migrations/runtime, sem superuser no Core.
-- [ ] Backup externo, restore e recovery documentados/testados.
-- [ ] Testes ponta a ponta: café 5 min, chamada 2 min, criar/apagar/recriar/restaurar worker.
-- [ ] APK compilado e teste em dispositivo real.
+- [x] Roles PostgreSQL separadas para migrations/runtime, sem superuser no Core; DDL/TRUNCATE negados.
+- [x] Backup cifrado, cópia externa no Mac, template/identidades preservados e restore isolado verificado.
+- [x] Café 5 min e chamada 2 min no emulador, transcrição por texto/resposta, contexto e ACKs reais.
+- [x] Criar/apagar/criar novo worker pelo Core; READY/job/snapshot/restore/reset/destroy reais no manager.
+- [x] Recuperação após reinício do app/backend e sessão persistida.
+- [x] APK 1.0.0 release assinado, instalado no emulador; documentação e CI na main.
+- [ ] Homologação em dispositivo físico: áudio de microfone/auricular/alto-falante, Wi-Fi/rede móvel, bateria/Doze e permissões reais.
 
 Fora do escopo inicial: Firebase, Kubernetes, Redis, RabbitMQ, WebRTC, Whisper server, TTS server, pgvector, automação de browser, email/calendar e multi-agent.

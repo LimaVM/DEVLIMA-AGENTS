@@ -2,7 +2,9 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fases 1–8 implementadas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. Workers Linux estão disponíveis pelo Core na Fase 5; Android possui login, sessão criptografada, WSS/ACK e serviço de conexão; chat, histórico e rotina estão disponíveis; chamadas internas e voz estão implementadas. Validação final e teste físico permanecem na Fase 9.
+**V1 1.0.0 — fases 0–9 implementadas:** FastAPI/PostgreSQL, JWT/Argon2id, contexto/memória, tarefas/lembretes/chamadas agendadas, scheduler/outbox, workers Linux e Android com chat, rotina, WSS, chamadas internas e SpeechRecognizer/TTS. Roles de banco separadas, backup cifrado externo e restore verificado. Backend: 143 testes. E2E de café/chamada aprovado no emulador; áudio, rede móvel e bateria em celular físico aguardam homologação.
+
+Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/ready). [APK assinado e checksum](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.0), acesso restrito ao repositório privado. Android 8.0 ou superior. Credenciais são entregues separadamente, sem senha padrão.
 
 ## Documentação
 
@@ -20,6 +22,10 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Conexão Android e sessões](docs/PHASE_6.md)
 - [Chat e rotina Android](docs/PHASE_7.md)
 - [Chamadas e voz](docs/PHASE_8.md)
+- [Validação final V1](docs/PHASE_9.md)
+- [Operação e atualização](docs/OPERATIONS.md)
+- [Backup e recuperação](docs/RECOVERY.md)
+- [Changelog](CHANGELOG.md)
 - [Protocolo WebSocket](docs/WEBSOCKET.md)
 - [Build Android na VPS](android/README.md)
 - [Operação do VM Manager](vm-manager/README.md)
@@ -41,7 +47,12 @@ Requer Docker Engine/Compose e Python 3 para gerar configuração. Na VM o proje
 
 ```sh
 python3 scripts/init_env.py
-docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait postgres migrate backend scheduler caddy
+sudo docker compose --env-file .env -f infra/docker-compose.yml build backend db-admin
+sudo docker compose --env-file .env -f infra/docker-compose.yml up -d --wait postgres
+python3 scripts/provision_database_roles.py
+sudo docker compose --env-file .env -f infra/docker-compose.yml run --rm migrate
+python3 scripts/provision_database_roles.py
+sudo docker compose --env-file .env -f infra/docker-compose.yml up -d --wait backend scheduler caddy
 ```
 
 Para habilitar workers no host KVM inspecionado, instale o [VM Manager](vm-manager/README.md) e depois execute `docker compose --env-file .env -f infra/docker-compose.yml up -d --wait worker-runner`.
@@ -50,7 +61,7 @@ Isso gera secrets sem imprimi-los e sobe acesso privado `https://localhost:8443`
 
 ```sh
 python3 scripts/init_env.py --domain agent.vegasolucoes.com.br
-docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait postgres migrate backend scheduler caddy
+# Em seguida execute a sequência build → PostgreSQL → roles → migration → grants → serviços acima.
 ```
 
 O modo domínio publica 80/443 para ACME/HTTPS. Verificar ingresso OCI e DNS; nenhuma credencial OCI é necessária para executar o Compose. `.env`, chaves e dados nunca entram no Git.
@@ -79,9 +90,9 @@ curl https://agent.vegasolucoes.com.br/health/ready
 Não há usuário ou senha padrão. Crie seu usuário na VM; a CLI pede a senha sem eco:
 
 ```sh
-sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.cli create-user devlima
-sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.cli list-users
-sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.cli reset-password devlima
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile ops run --rm db-admin python -m app.cli create-user devlima
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile ops run --rm db-admin python -m app.cli list-users
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile ops run --rm db-admin python -m app.cli reset-password devlima
 ```
 
 `POST /auth/login` recebe JSON `username` e `password`, retorna JWT com duração de 30 minutos. `GET /auth/me` exige `Authorization: Bearer <token>`. Reset de senha invalida tokens antigos. Cinco tentativas por IP/janela de 15 minutos, inclusive logins bem-sucedidos, limitam tentativas e custo de hashing. Não colocar senhas/tokens em argumentos do shell ou arquivos versionados.
@@ -125,13 +136,13 @@ Omitir `conversation_id` inicia uma conversa. Nas mensagens seguintes, envie o U
 
 `GET /memories` lista memórias ativas; `POST /memories` recebe `content` e `category` (`fact` ou `preference`) para salvar explicitamente; `DELETE /memories/{id}` desativa. `GET /memories/candidates` lista propostas pendentes. `POST /memories/candidates/{id}/accept` confirma; `/reject` recusa.
 
-Somente pedidos explícitos com proposta literal e confiança suficiente são aceitos automaticamente. Outras propostas esperam confirmação. O sistema executa tarefas e agendamentos validados; entrega ao Android e operações de VMs chegam nas próximas fases. Limites, recuperação e política completa em [CONTEXT.md](CONTEXT.md).
+Somente pedidos explícitos com proposta literal e confiança suficiente são aceitos automaticamente. Outras propostas esperam confirmação. O sistema executa tarefas/agendamentos e operações validadas de workers; entrega ao Android usa WSS e ACK durável. Limites, recuperação e política completa em [CONTEXT.md](CONTEXT.md).
 
 ## Tarefas e agendamento
 
 Com JWT: `POST/GET /tasks`, `PATCH /tasks/{id}`, `POST /tasks/{id}/complete`; `POST/GET /reminders`, `PATCH/DELETE /reminders/{id}`; `POST/GET /scheduled-calls` e `DELETE /scheduled-calls/{id}`. Filtros `date`, `status`, `limit` e `offset` nas listagens. Consulte [Fase 4](docs/PHASE_4.md) para política de recorrência e recuperação.
 
-O serviço Compose `scheduler` consulta eventos duráveis e gera avisos na outbox. A entrega por dispositivo é habilitada na Fase 6. Pedidos em linguagem natural podem criar/alterar/concluir tarefas e criar/cancelar agendamentos, respeitando propriedade e schemas.
+O serviço Compose `scheduler` consulta eventos duráveis e gera avisos na outbox, entregues por dispositivo via WSS. Pedidos em linguagem natural podem criar/alterar/concluir tarefas e criar/cancelar agendamentos, respeitando propriedade e schemas.
 
 ## Testar
 
@@ -154,4 +165,4 @@ docker compose --env-file .env -f infra/docker-compose.yml run --rm migrate alem
 
 `context-smoke` usa o banco de teste e a LLM local real com cloud desligado, gerando somente conversas sintéticas. Requer URL/modelo local configurados e pode demorar conforme o hardware do llm-server.
 
-Volume `postgres_data` mantém dados após restart/recreate. Nunca usar `down -v` no servidor. Backup/restore completo, scheduler e recuperação de eventos serão implementados nas fases indicadas.
+Volume `postgres_data` mantém dados após restart/recreate. Nunca usar `down -v` no servidor. Consulte [RECOVERY.md](docs/RECOVERY.md) para cobertura do backup, restore isolado e recuperação do host.

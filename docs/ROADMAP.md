@@ -1,6 +1,6 @@
 # Roteiro de desenvolvimento
 
-Estado em 2026-09-28: fases 0–8 implementadas; validação final em andamento. As funcionalidades abaixo são planejadas; os relatórios PHASE_1.md, PHASE_2.md e PHASE_3.md, PHASE_4.md e PHASE_5.md registram o que já foi implementado e validado. A lista de execução está em [TODO.md](../TODO.md).
+Estado em 2026-09-28: fases 0–9 de desenvolvimento implementadas. Este roteiro preserva o plano detalhado original; os relatórios PHASE_1.md a PHASE_9.md registram implementação e evidências reais. [Fase 9](PHASE_9.md) distingue validação automatizada/emulador da homologação física ainda pendente. A lista de execução está em [TODO.md](../TODO.md).
 
 ## Fase 4 — tarefas, lembretes e tempo
 

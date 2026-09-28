@@ -1,5 +1,7 @@
 # Estado real do host — Fase 0
 
+**Estado atual:** V1 1.0.0 implementada até a fase 9, backend/schema saudáveis e APK assinado. O histórico abaixo preserva as inspeções de cada fase; [docs/PHASE_9.md](docs/PHASE_9.md) registra a validação final e o que ainda depende de celular físico.
+
 Inspeção por SSH em **2026-09-28, 05:42 UTC** (02:42 America/Sao_Paulo), antes de instalar serviços do projeto.
 
 ## Acesso e sistema
@@ -104,3 +106,13 @@ Android 0.7.0 compilado na VPS: chat/histórico, fila persistente, rotina (taref
 ## Resultado da Fase 8
 
 Backend 0.8.0/migration 0007_calls, sessões internas, propriedade/dispositivo, expiração e transcrição idempotente implantados. 143 testes e Alembic check passaram. Android 0.8.0 desenvolvido/compilado na VPS, com atender/recusar, tela de chamada e SpeechRecognizer/TTS/alternativa por texto. Lint/3 unitários/3 instrumentados passaram. Validação física e E2E temporizado serão distinguidos no relatório final. [docs/PHASE_8.md](docs/PHASE_8.md).
+
+## Resultado da Fase 9
+
+Backend/Android 1.0.0, schema 0007_calls. Core, scheduler e runner usam `agent_runtime` sem privilégios administrativos; migrations usam `agent_migrate`. 143 testes, Ruff e Alembic check aprovados; testes de permissão provaram bloqueio de CREATE/ALTER/TRUNCATE. Manager conserva suas proteções e template original; smokes finais terminaram sem workers ativos.
+
+Android release assinado foi compilado e instalado na VPS. E2E real de 310,668 segundos confirmou lembrete café 5 min, chamada 2 min, atendimento/transcrição por texto/resposta/encerramento e rotina. Três respostas Groq, dez eventos com ACK e seis mensagens persistidas; recuperação de login/conexão após restart passou. A conta sintética foi desativada, sem misturar seu histórico com o usuário operacional `devlima`.
+
+Backups AES-256-GCM e timer diário instalados; cópia externa cifrada no Mac e restore PostgreSQL isolado aprovados. Backup com template preserva também chaves/configuração/assinatura. Discos/snapshots de guests descartáveis não são cobertos; continuidade da cópia externa depende do Mac ligado. [Operação](docs/OPERATIONS.md), [recuperação](docs/RECOVERY.md) e [relatório final](docs/PHASE_9.md).
+
+Microfone/saída de áudio, rede móvel e bateria em aparelho físico continuam pendentes. Nenhuma conclusão de hardware foi inferida dos testes do emulador.
