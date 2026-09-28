@@ -58,6 +58,7 @@
 - [x] Criar/apagar/criar novo worker pelo Core; READY/job/snapshot/restore/reset/destroy reais no manager.
 - [x] Recuperação após reinício do app/backend e sessão persistida.
 - [x] APK 1.0.0 release assinado, instalado no emulador; documentação e CI na main.
+- [ ] Execução hospedada da CI: GitHub retorna startup_failure sem jobs/logs, embora actionlint e testes na VPS passem.
 - [ ] Homologação em dispositivo físico: áudio de microfone/auricular/alto-falante, Wi-Fi/rede móvel, bateria/Doze e permissões reais.
 
 Fora do escopo inicial: Firebase, Kubernetes, Redis, RabbitMQ, WebRTC, Whisper server, TTS server, pgvector, automação de browser, email/calendar e multi-agent.

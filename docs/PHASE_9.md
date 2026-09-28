@@ -35,7 +35,9 @@ APK release assinado com RSA 4096, assinatura v2 válida para min SDK 26, packag
 
 O E2E usa conta sintética separada, credencial externa privada e histórico próprio. Ao terminar, essa conta foi desativada, dispositivos/famílias revogados e senha temporária removida. O usuário operacional `devlima` está ativo; login/identidade/logout foram verificados por HTTPS, sem imprimir a senha. O arquivo privado de acesso não entra no Git.
 
-Logs detalhados permanecem privados em `/srv/devlima-build-tools/phase9-e2e.log`, `phase9-worker-smoke.log` e `final-android-build.log`. A CI executa os testes de backend/manager/backup a cada push/PR; builds Android permanecem na VPS.
+Logs detalhados permanecem privados em `/srv/devlima-build-tools/phase9-e2e.log`, `phase9-worker-smoke.log` e `final-android-build.log`. O workflow versionado configura testes de backend/manager/backup em push/PR e execução manual; builds Android permanecem na VPS.
+
+**CI GitHub pendente:** o workflow passou na validação `actionlint` 1.7.12, mas o GitHub retornou `startup_failure` antes de criar qualquer job, tanto em push quanto no dispatch manual. A API não disponibilizou logs/check-runs com o motivo. [Execução manual](https://github.com/LimaVM/DEVLIMA-AGENTS/actions/runs/36426645682). Nenhum sucesso de CI hospedada é declarado; os resultados da tabela foram executados na VPS. A mensagem detalhada da interface autenticada do GitHub precisa ser examinada para resolver esse bloqueio.
 
 Capturas reais do emulador: [login da release](images/android-release-login.png) e [aviso de café com conversa sintética](images/android-e2e-coffee.png).
 

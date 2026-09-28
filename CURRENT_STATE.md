@@ -116,3 +116,5 @@ Android release assinado foi compilado e instalado na VPS. E2E real de 310,668 s
 Backups AES-256-GCM e timer diário instalados; cópia externa cifrada no Mac e restore PostgreSQL isolado aprovados. Backup com template preserva também chaves/configuração/assinatura. Discos/snapshots de guests descartáveis não são cobertos; continuidade da cópia externa depende do Mac ligado. [Operação](docs/OPERATIONS.md), [recuperação](docs/RECOVERY.md) e [relatório final](docs/PHASE_9.md).
 
 Microfone/saída de áudio, rede móvel e bateria em aparelho físico continuam pendentes. Nenhuma conclusão de hardware foi inferida dos testes do emulador.
+
+Workflow GitHub Actions versionado e validado por actionlint; execução hospedada retorna startup_failure antes dos jobs, sem logs disponíveis na API. Os testes reportados passaram diretamente na VPS; sucesso da CI GitHub permanece pendente e não é inferido desses resultados.
