@@ -78,7 +78,13 @@ class ConnectionService : Service() {
             stopSelf()
             return START_NOT_STICKY
         }
-        prefs.edit().putBoolean("wanted", true).apply()
+        prefs
+            .edit()
+            .putBoolean("wanted", true)
+            .apply {
+                if (intent != null) putLong("enabled_at", System.currentTimeMillis())
+            }
+            .apply()
         if (Build.VERSION.SDK_INT >= 34)
             startForeground(
                 1,
@@ -213,6 +219,7 @@ class ConnectionService : Service() {
                             }
                             if (event.getString("type") == "agent.message")
                                 AgentRuntime.voice.value?.reply(event.getJSONObject("payload"))
+                            AgentRuntime.refreshEvents()
                             if (AgentRuntime.events.shouldNotify(id)) {
                                 notifications.event(event)
                                 AgentRuntime.events.notified(id)

@@ -60,6 +60,9 @@
 - [x] APK Android 1.0.2 release assinado; desenvolvimento/build na VPS e validação USB em Xiaomi Android 16.
 - [x] E2E físico de café/chamada, rede móvel, lembrete com tela bloqueada e correção da escuta por foco de áudio.
 - [ ] Execução hospedada da CI: GitHub retorna startup_failure sem jobs/logs, embora actionlint e testes na VPS passem.
+- [x] Proprietário confirmou resposta de voz audível no celular.
+- [x] Android 1.0.3: CallStyle/toque contínuo, tela bloqueada com desbloqueio, configurações de entrega e restauração após boot; build/lint/quatro unitários na VPS.
+- [ ] Validar 1.0.3 no Xiaomi: app fora dos recentes, chamada bloqueada/Doze, permissões, reinício e parada explícita; testes adiados pelo proprietário.
 - [ ] Completar avaliação auditiva de auricular/alto-falante, bateria/Doze e cenários de permissão negada em aparelho físico; ver ANDROID_PHYSICAL.md.
 
 Fora do escopo inicial: Firebase, Kubernetes, Redis, RabbitMQ, WebRTC, Whisper server, TTS server, pgvector, automação de browser, email/calendar e multi-agent.

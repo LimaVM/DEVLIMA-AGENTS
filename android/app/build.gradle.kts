@@ -14,8 +14,8 @@ android {
         applicationId = "br.com.vegasolucoes.agent"
         minSdk = 26
         targetSdk = 36
-        versionCode = 102
-        versionName = "1.0.2"
+        versionCode = 103
+        versionName = "1.0.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "DEFAULT_SERVER", "\"https://agent.vegasolucoes.com.br\"")
     }

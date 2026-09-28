@@ -132,9 +132,7 @@ fun AgentScreen(activity: MainActivity) {
                         )
                         Text(session!!.server)
                         Text("Horários: ${session!!.timezone}")
-                        Text(
-                            "Mantenha a conexão ativa para lembretes e chamadas. Force stop e restrições de bateria podem interromper a entrega."
-                        )
+                        CallDeliverySettings(activity)
                         Button(onClick = { startConnection() }) { Text("Conectar") }
                         OutlinedButton(onClick = { activity.disconnect() }) { Text("Desconectar") }
                         TextButton(

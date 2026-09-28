@@ -18,6 +18,7 @@ object AgentRuntime {
     lateinit var events: EventStore
     val connection = MutableStateFlow("Desconectado")
     val received = MutableStateFlow<List<JSONObject>>(emptyList())
+    val requestedAnswer = MutableStateFlow<String?>(null)
     val call = MutableStateFlow<JSONObject?>(null)
     val voiceStatus = MutableStateFlow("Pronto para conversar")
     val mute = MutableStateFlow(false)

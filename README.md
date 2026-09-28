@@ -2,9 +2,11 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**V1 — backend 1.0.1 / Android 1.0.2, fases 0–9 implementadas:** FastAPI/PostgreSQL, JWT/Argon2id, contexto/memória, tarefas/lembretes/chamadas agendadas, scheduler/outbox, workers Linux e Android com chat, rotina, WSS, chamadas internas e SpeechRecognizer/TTS. Roles de banco separadas, backup cifrado externo e restore verificado. Backend: 143 testes. E2E de café/chamada aprovado no emulador e em Xiaomi Android 16; rede móvel e lembrete com tela bloqueada verificados. Qualidade auditiva e bateria/Doze ainda exigem avaliação complementar.
+**V1 — backend 1.0.1 / Android estável 1.0.2, pré-release 1.0.3, fases 0–9 implementadas:** FastAPI/PostgreSQL, JWT/Argon2id, contexto/memória, tarefas/lembretes/chamadas agendadas, scheduler/outbox, workers Linux e Android com chat, rotina, WSS, chamadas internas e SpeechRecognizer/TTS. Roles de banco separadas, backup cifrado externo e restore verificado. Backend: 143 testes. E2E de café/chamada aprovado no emulador e em Xiaomi Android 16; rede móvel e lembrete com tela bloqueada verificados. Áudio audível confirmado pelo proprietário; comparação de saídas e bateria/Doze ainda exigem avaliação complementar.
 
 Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/ready). [APK assinado e checksum](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.2), acesso restrito ao repositório privado. Android 8.0 ou superior. Credenciais são entregues separadamente, sem senha padrão.
+
+Android 1.0.3 prepara toque contínuo, tela de chamada bloqueada e reconexão após reinício. [Pré-release para testes](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.3); validação física adiada pelo proprietário. Veja [condições e limites](docs/ANDROID_BACKGROUND_CALLS.md).
 
 ## Documentação
 
@@ -30,6 +32,7 @@ Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/r
 - [Protocolo WebSocket](docs/WEBSOCKET.md)
 - [Build Android na VPS](android/README.md)
 - [Validação em celular físico](docs/ANDROID_PHYSICAL.md)
+- [Chamadas com tela bloqueada e limites de background](docs/ANDROID_BACKGROUND_CALLS.md)
 - [Operação do VM Manager](vm-manager/README.md)
 
 ## Repositório e instalação

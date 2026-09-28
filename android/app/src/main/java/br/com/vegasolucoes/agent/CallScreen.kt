@@ -39,17 +39,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
             delay(1000)
         }
     }
-    val resolved =
-        received
-            .filter { it.optString("type") in setOf("call.dismissed", "call.state") }
-            .map { it.getJSONObject("payload").optString("event_id") }
-            .toSet()
-    val incoming = received.firstOrNull {
-        it.optString("type") == "call.incoming" &&
-            it.getString("event_id") !in resolved &&
-            runCatching { Instant.parse(it.getString("timestamp")).isAfter(now.minusSeconds(120)) }
-                .getOrDefault(false)
-    }
+    val incoming = remember(received, now) { incomingCall(received) }
     fun startVoice() {
         try {
             if (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
@@ -96,6 +86,26 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
         rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (selected != null) accept(selected!!) else startVoice()
         }
+    val requestedAnswer by AgentRuntime.requestedAnswer.collectAsStateWithLifecycle()
+    val lifecycleState by activity.lifecycle.currentStateFlow.collectAsStateWithLifecycle()
+    LaunchedEffect(requestedAnswer, incoming, lifecycleState) {
+        val requested = requestedAnswer
+        if (requested != null && lifecycleState == Lifecycle.State.RESUMED) {
+            AgentRuntime.requestedAnswer.value = null
+            if (
+                incoming?.optString("event_id") == requested &&
+                    call?.optString("status") != "ACTIVE"
+            ) {
+                selected = requested
+                if (
+                    ContextCompat.checkSelfPermission(activity, Manifest.permission.RECORD_AUDIO) !=
+                        PackageManager.PERMISSION_GRANTED
+                )
+                    microphone.launch(Manifest.permission.RECORD_AUDIO)
+                else accept(requested)
+            }
+        }
+    }
     LaunchedEffect(session.deviceId) {
         try {
             val rows = arrayRows(AgentRuntime.auth.api("/calls"))

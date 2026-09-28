@@ -19,7 +19,7 @@ Os testes usam `br.com.vegasolucoes.agent.debug` e uma conta sintética isolada.
 | Regressão final 1.0.2 no aparelho | Quatro instrumentados passaram em 2,643 s e E2E completo passou em 314,167 s, após instalar code 102 |
 | Instalação de produção e limpeza | Release assinada 1.0.2/code 102 instalada e aberta no celular; APKs debug/test removidos; conta sintética desativada, senha substituída e duas famílias/dispositivos revogados |
 
-A confirmação auditiva do proprietário sobre volume/qualidade e continuidade semântica do contexto foi solicitada e permanece pendente. As frases usadas na conversa interativa não corresponderam integralmente ao roteiro sugerido; os três turnos na mesma conversation_id e referências a café não constituem uma aprovação automática desse roteiro. Não se declara homologação completa de bateria/Doze, permissões negadas ou desempenho em outros fabricantes.
+O proprietário confirmou que ouviu a resposta de voz e avaliou o áudio positivamente ("ouvi sim, ta top"). A comparação sistemática entre auricular/alto-falante e a continuidade semântica do roteiro permanecem pendentes. As frases usadas na conversa interativa não corresponderam integralmente ao roteiro sugerido; os três turnos na mesma conversation_id e referências a café não constituem uma aprovação automática desse roteiro. Não se declara homologação completa de bateria/Doze, permissões negadas ou desempenho em outros fabricantes.
 
 ## Problemas encontrados e correções
 
@@ -36,3 +36,7 @@ Android 1.0.2/code 102, backend permanece 1.0.1/schema 0007_calls. APK 8.545.724
 ## Limites
 
 O teste de tela bloqueada foi breve e não representa horas em Doze ou restrições agressivas de bateria Xiaomi. Reconhecimento pode utilizar o serviço de voz instalado no Android; a política Groq controla o Core, não esse serviço do sistema. Force stop exige reabertura/conexão explícita. A conta de teste foi encerrada; use sua credencial operacional separada para entrar na instalação de produção.
+
+## Continuação: chamadas em background
+
+Android 1.0.3 acrescenta chamada na tela bloqueada, toque contínuo e restauração da conexão após boot. Build/testes unitários/lint aprovados na VPS; instalação USB bloqueada e testes físicos adiados pelo proprietário. Consulte [condições e validação pendente](ANDROID_BACKGROUND_CALLS.md). O resultado de lembrete bloqueado da 1.0.2 não comprova recebimento de chamada em Doze.

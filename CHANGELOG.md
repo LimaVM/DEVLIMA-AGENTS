@@ -1,5 +1,11 @@
 # Changelog
 
+## Android 1.0.3 — pré-release, 2026-09-28
+
+Acrescenta CallStyle com toque contínuo limitado ao prazo real de atendimento, tela de chamada sobre bloqueio quando autorizada, desbloqueio antes do atendimento/microfone, atalhos de permissões/bateria e restauração da conexão desejada após boot/atualização. Preserva Desconectar e encerramento explícito pelo usuário; eventos expirados não voltam a tocar.
+
+Compilado/assinado na VPS, quatro unitários e lint sem erros. Instalação USB recusada pelo Xiaomi e testes físicos adiados pelo proprietário; 1.0.2 permanece instalado. Condições de entrega e pendências em [chamadas em background](docs/ANDROID_BACKGROUND_CALLS.md). Backend permanece 1.0.1.
+
 ## Android 1.0.2 — 2026-09-28
 
 Corrige a captura física de voz: o foco solicitado pelo serviço de reconhecimento cancelava a própria escuta do aplicativo. O app libera seu foco antes de escutar e trata interrupções durante o TTS. O controlador de voz é observado pela interface, atualizando corretamente Ativar áudio/Falar; erros de reconhecimento possuem orientação específica e diagnóstico sem transcrições nos logs.

@@ -2,7 +2,7 @@
 
 Aplicativo Kotlin/Compose/Material 3: login HTTPS, sessão Android Keystore, chat/histórico/fila offline, rotina e memórias propostas, conexão WSS com ACK/heartbeat/backoff, chamadas internas e SpeechRecognizer/TextToSpeech com alternativa por texto. Sem Firebase/WebRTC nesta V1.
 
-Package release `br.com.vegasolucoes.agent`, debug `.debug`; versão 1.0.2/code 102, Android 8.0/API 26 ou superior, target/compile 36. Backend permanece 1.0.1. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
+Package release `br.com.vegasolucoes.agent`, debug `.debug`; fonte 1.0.3/code 103 (pré-release; estável instalado 1.0.2), Android 8.0/API 26 ou superior, target/compile 36. Backend permanece 1.0.1. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
 
 ## Build na VPS
 
@@ -21,7 +21,7 @@ Keystore `/srv/devlima-build-tools/agent-release.jks` e `signing.properties`, mo
 
 ## Testes
 
-Três testes unitários e lint sem erros passaram na build final. Três instrumentados básicos, um relatório de capacidades de voz e um E2E temporizado passaram no emulador API 36 da VPS. E2E confirmou café 5 min, chamada 2 min, WSS/contexto/ACK, rotina e transcrição enviada por texto; não capturou voz de microfone físico. Evidências em [PHASE_9.md](../docs/PHASE_9.md).
+Quatro testes unitários e lint sem erros passaram na build 1.0.3 da VPS. Três instrumentados básicos, um relatório de capacidades de voz e um E2E temporizado passaram no emulador API 36 da VPS. E2E confirmou café 5 min, chamada 2 min, WSS/contexto/ACK, rotina e transcrição enviada por texto; não capturou voz de microfone físico. Evidências em [PHASE_9.md](../docs/PHASE_9.md).
 
 A validação USB em Xiaomi Android 16 revelou um cancelamento da escuta por disputa de foco com o serviço de reconhecimento e um botão sem atualização reativa. Android 1.0.2 corrige ambos. Testes no aparelho, rede móvel, tela bloqueada e limites de confirmação acústica estão em [ANDROID_PHYSICAL.md](../docs/ANDROID_PHYSICAL.md).
 
@@ -31,7 +31,7 @@ Com emulador iniciado pelo usuário do build e ADB/console restritos ao loopback
 
 ## Usar o APK
 
-Instale a release, permita instalação dessa origem conforme o Android, entre com a credencial entregue separadamente e toque Conectar em Conta. Permita notificações para lembretes/chamadas. Microfone é solicitado ao atender/ativar áudio com o aplicativo visível. Negando a permissão, a chamada ainda permite texto. Atender pela notificação abre a interface; ela confirma o atendimento. Chamadas são internas ao app.
+Instale a release, permita instalação dessa origem conforme o Android, entre com a credencial entregue separadamente e toque Conectar em Conta. Permita notificações para lembretes/chamadas. Microfone é solicitado ao atender/ativar áudio com o aplicativo visível. Negando a permissão, a chamada ainda permite texto. Na 1.0.3, Atender pela notificação/tela de chamada solicita desbloqueio e encaminha o atendimento à interface visível. Chamadas são internas ao app.
 
 Mute interrompe escuta/TTS; saída alterna speaker/auricular conforme recursos do aparelho. Encerrar confirma no Core e fecha áudio/serviço. Com conexão interrompida, mensagens mantêm UUID para replay; confira seu estado antes de tentar envio novo.
 
@@ -46,4 +46,4 @@ Itens já exercitados e pendências estão detalhados no relatório físico; a l
 - Wi-Fi → rede móvel → offline → reconexão; ausência de mensagens/avisos duplicados.
 - Bateria/Doze/restrições do fabricante; force stop, reabertura/conexão explícita, renovação/expiração de sessão.
 
-Foreground Service usa notificação persistente e início pelo usuário. Android pode suspender serviços/rede em Doze, restringir bateria e impedir entrega após force stop. Sem Firebase e sem receiver de boot, não há promessa de chamada/aviso após o usuário forçar parada ou bloquear o app. Não há contorno dessas políticas nem solicitação automática de isenção de bateria. A VPS realiza o desenvolvimento/build; não substitui essa homologação no telefone.
+Foreground Service usa notificação persistente e início pelo usuário. Android 1.0.3 inclui receiver de boot/atualização, CallStyle, toque contínuo e tela de chamada com permissão específica. A interface pode ser fechada mantendo o serviço, mas Android/OEM podem suspender processo e rede. Sem Firebase, não há promessa de chamada imediata em Doze sem configuração apropriada, ou depois de Forçar parada. Veja [configuração, limites e testes pendentes](../docs/ANDROID_BACKGROUND_CALLS.md). O proprietário adiou os testes físicos da 1.0.3; o APK estável 1.0.2 permanece instalado. Não há contorno das políticas nem solicitação automática de isenção de bateria.

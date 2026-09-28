@@ -8,12 +8,19 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.Person
 import androidx.core.content.ContextCompat
 import org.json.JSONObject
 
 class AgentNotifications(private val context: Context) {
+    companion object {
+        const val CALL_CHANNEL = "incoming_calls_v2"
+    }
+
     private val manager = context.getSystemService(NotificationManager::class.java)
 
     init {
@@ -28,7 +35,23 @@ class AgentNotifications(private val context: Context) {
             NotificationChannel("reminders", "Lembretes", NotificationManager.IMPORTANCE_HIGH)
         )
         manager.createNotificationChannel(
-            NotificationChannel("calls", "Chamadas internas", NotificationManager.IMPORTANCE_HIGH)
+            NotificationChannel(
+                    CALL_CHANNEL,
+                    "Chamadas internas",
+                    NotificationManager.IMPORTANCE_HIGH,
+                )
+                .apply {
+                    description = "Toque de chamadas recebidas do agente"
+                    enableVibration(true)
+                    setSound(
+                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .build(),
+                    )
+                    lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+                }
         )
     }
 
@@ -77,21 +100,31 @@ class AgentNotifications(private val context: Context) {
                 ) != PackageManager.PERMISSION_GRANTED
         )
             return
+        val call = type == "call.incoming"
+        val remaining = if (call) callRemainingMillis(event.optString("timestamp")) else 0L
+        if (
+            call &&
+                (remaining == 0L ||
+                    incomingCall(AgentRuntime.received.value, event.getString("event_id")) == null)
+        )
+            return
         val id = event.getString("event_id")
         val payload = event.getJSONObject("payload")
         val open =
             PendingIntent.getActivity(
                 context,
                 id.hashCode(),
-                Intent(context, MainActivity::class.java)
+                Intent(
+                        context,
+                        if (call) IncomingCallActivity::class.java else MainActivity::class.java,
+                    )
                     .setAction("event.$id")
                     .putExtra("event_id", id),
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
             )
-        val call = type == "call.incoming"
         val title = if (call) "AGENTE ESTÁ LIGANDO" else "Lembrete do agente"
         val builder =
-            NotificationCompat.Builder(context, if (call) "calls" else "reminders")
+            NotificationCompat.Builder(context, if (call) CALL_CHANNEL else "reminders")
                 .setSmallIcon(R.drawable.ic_agent)
                 .setContentTitle(title)
                 .setContentText(payload.optString("text", "Abra o agente"))
@@ -109,7 +142,7 @@ class AgentNotifications(private val context: Context) {
                 PendingIntent.getActivity(
                     context,
                     id.hashCode() + 1,
-                    Intent(context, MainActivity::class.java)
+                    Intent(context, IncomingCallActivity::class.java)
                         .setAction("answer.$id")
                         .putExtra("event_id", id),
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
@@ -124,11 +157,21 @@ class AgentNotifications(private val context: Context) {
                     PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
                 )
             builder
-                .addAction(0, "Atender", answer)
-                .addAction(0, "Recusar", reject)
-                .setTimeoutAfter(120000)
+                .setStyle(
+                    NotificationCompat.CallStyle.forIncomingCall(
+                        Person.Builder().setName("DevLima Agent").setImportant(true).build(),
+                        reject,
+                        answer,
+                    )
+                )
+                .setOngoing(true)
+                .setTimeoutAfter(remaining)
+            if (Build.VERSION.SDK_INT < 34 || manager.canUseFullScreenIntent())
+                builder.setFullScreenIntent(open, true)
         }
-        manager.notify(id, 2, builder.build())
+        val notification = builder.build()
+        if (call) notification.flags = notification.flags or Notification.FLAG_INSISTENT
+        manager.notify(id, 2, notification)
     }
 
     fun cancel(id: String) {
