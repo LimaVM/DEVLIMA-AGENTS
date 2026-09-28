@@ -1,0 +1,32 @@
+name: Validate backend, manager and recovery
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Isolated test configuration
+        run: python3 scripts/init_env.py
+      - name: Build and test isolated PostgreSQL backend
+        run: |
+          docker compose --env-file .env -f infra/docker-compose.yml --profile test build backend tests
+          docker compose --env-file .env -f infra/docker-compose.yml --profile test run --rm tests
+          docker compose --env-file .env -f infra/docker-compose.yml --profile test run --rm --no-deps tests ruff check --no-cache .
+      - name: Manager unit tests and authenticated backup tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-libvirt python3-cryptography python3-venv
+          python3 -m venv --system-site-packages /tmp/devlima-test-tools
+          /tmp/devlima-test-tools/bin/pip install -r backend/requirements-dev.txt
+          PYTHONPATH=vm-manager /tmp/devlima-test-tools/bin/python -m pytest -q -p no:cacheprovider vm-manager/tests
+          /tmp/devlima-test-tools/bin/python -m unittest discover -s tests -v
+          /tmp/devlima-test-tools/bin/ruff check --no-cache --config backend/pyproject.toml scripts tests vm-manager
+      - name: Stop isolated test database
+        if: always()
+        run: docker compose --env-file .env -f infra/docker-compose.yml --profile test stop postgres-test

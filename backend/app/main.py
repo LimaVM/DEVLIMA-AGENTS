@@ -33,7 +33,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
         title=settings.app_name,
-        version="0.8.0",
+        version="1.0.0",
         lifespan=lifespan,
         docs_url="/docs" if settings.enable_api_docs else None,
         redoc_url=None,
@@ -64,7 +64,7 @@ def create_app() -> FastAPI:
 
     @app.get("/health/live", tags=["health"])
     def live():
-        return {"status": "ok", "phase": 8}
+        return {"status": "ok", "phase": 9}
 
     @app.get("/health/ready", tags=["health"])
     def ready():

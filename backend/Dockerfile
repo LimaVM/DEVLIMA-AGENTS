@@ -9,7 +9,7 @@ COPY alembic.ini .
 COPY migrations ./migrations
 USER 10001:10001
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--ws", "websockets-sansio", "--ws-max-size", "65536", "--limit-concurrency", "128", "--proxy-headers", "--forwarded-allow-ips", "*"]
 
 FROM base AS test
 USER root

@@ -14,7 +14,8 @@ def main() -> None:
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     values = (root / ".env.example").read_text()
-    values = values.replace("POSTGRES_PASSWORD=\n", f"POSTGRES_PASSWORD={secrets.token_hex(32)}\n")
+    for key in ("POSTGRES_PASSWORD", "RUNTIME_POSTGRES_PASSWORD", "MIGRATION_POSTGRES_PASSWORD"):
+        values = values.replace("\n" + key + "=\n", "\n" + key + "=" + secrets.token_hex(32) + "\n")
     values = values.replace("JWT_SECRET=\n", f"JWT_SECRET={secrets.token_hex(48)}\n")
     values = values.replace("VM_MANAGER_TOKEN=\n", f"VM_MANAGER_TOKEN={secrets.token_hex(32)}\n")
     if args.domain:

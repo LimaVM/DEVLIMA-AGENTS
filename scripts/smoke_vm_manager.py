@@ -95,10 +95,17 @@ def main():
         result, _ = operation(
             "EXECUTE",
             script=(
-                "if curl --noproxy '*' --max-time 3 -fsS "
-                "http://169.254.169.254/ >/dev/null 2>&1; then exit 90; fi\n"
-                "if curl --noproxy '*' --max-time 3 -fsS "
-                "http://147.15.33.140/ >/dev/null 2>&1; then exit 91; fi\n"
+                "metadata=$(curl --noproxy '*' --max-time 3 -s "
+                "-o /dev/null -w '%{http_code}' "
+                "-H 'Authorization: Bearer Oracle' "
+                "http://169.254.169.254/opc/v2/instance/ 2>/dev/null || true)\n"
+                'test "$metadata" = 000 || exit 90\n'
+                "core=$(curl --noproxy '*' --max-time 3 -s -o /dev/null -w '%{http_code}' "
+                "http://147.15.33.140/ 2>/dev/null || true)\n"
+                'test "$core" = 000 || exit 91\n'
+                "private=$(curl --noproxy '*' --max-time 3 -s -o /dev/null -w '%{http_code}' "
+                "http://100.108.84.64/ 2>/dev/null || true)\n"
+                'test "$private" = 000 || exit 92\n'
                 "printf isolation-ok\n"
             ),
             timeout=15,

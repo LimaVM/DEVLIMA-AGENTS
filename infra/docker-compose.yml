@@ -1,15 +1,15 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase8
+  image: devlima-agent-backend:v1.0.0
   build:
     context: ../backend
     target: production
   environment: &backend-env
     POSTGRES_HOST: postgres
     POSTGRES_DB: ${POSTGRES_DB:-devlima_agent}
-    POSTGRES_USER: ${POSTGRES_USER:-agent}
-    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env com scripts/init_env.py}
+    POSTGRES_USER: ${RUNTIME_POSTGRES_USER:-agent_runtime}
+    POSTGRES_PASSWORD: ${RUNTIME_POSTGRES_PASSWORD:?Execute scripts/provision_database_roles.py}
     JWT_SECRET: ${JWT_SECRET:?Gere .env com scripts/init_env.py}
     JWT_ISSUER: ${JWT_ISSUER:-devlima-agent}
     JWT_AUDIENCE: ${JWT_AUDIENCE:-devlima-android}
@@ -62,8 +62,25 @@ services:
     pids_limit: 100
     security_opt: [no-new-privileges:true]
 
+  db-admin:
+    <<: *backend
+    profiles: [ops]
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-devlima_agent}
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
+      JWT_SECRET: administration-tool-not-an-auth-secret-32chars
+    command: [python, -m, app.cli, list-users]
+
   migrate:
     <<: *backend
+    environment:
+      <<: *backend-env
+      POSTGRES_USER: ${MIGRATION_POSTGRES_USER:-agent_migrate}
+      POSTGRES_PASSWORD: ${MIGRATION_POSTGRES_PASSWORD:?Execute scripts/provision_database_roles.py}
+      GROQ_API_KEY: ""
+      JWT_SECRET: migration-tool-not-an-auth-secret-32chars
     command: [alembic, upgrade, head]
     restart: "no"
     depends_on:
@@ -85,6 +102,10 @@ services:
   scheduler:
     <<: *backend
     restart: unless-stopped
+    environment:
+      <<: *backend-env
+      GROQ_API_KEY: ""
+      JWT_SECRET: scheduler-not-an-auth-secret-at-least-32chars
     command: [python, -m, app.planning.scheduler, run]
     depends_on:
       migrate: {condition: service_completed_successfully}
@@ -101,6 +122,8 @@ services:
     <<: *backend
     environment:
       <<: *backend-env
+      GROQ_API_KEY: ""
+      JWT_SECRET: runner-not-an-auth-secret-at-least-32chars
       VM_MANAGER_TOKEN: ${VM_MANAGER_TOKEN:-}
     restart: unless-stopped
     command: [python, -m, app.workers.runner, run]
@@ -162,6 +185,8 @@ services:
     environment:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
       LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
       LOCAL_LLM_MODEL: test-local
@@ -174,13 +199,15 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase8
+    image: devlima-agent-tests:v1.0.0
     build:
       context: ../backend
       target: test
     environment:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
       LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
       LOCAL_LLM_MODEL: test-local
@@ -195,6 +222,8 @@ services:
     environment:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
       JWT_SECRET: test-websocket-secret-at-least-32-characters
     networks: [test, edge]
@@ -209,6 +238,8 @@ services:
       <<: *backend-env
       VM_MANAGER_TOKEN: ${VM_MANAGER_TOKEN:-}
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
     networks: [test]
     volumes: [/run/devlima-vm-manager:/run/vm-manager:ro]
@@ -222,6 +253,8 @@ services:
     environment:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
       LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
     networks: [test, edge]
@@ -235,6 +268,8 @@ services:
     environment:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
+      POSTGRES_USER: ${POSTGRES_USER:-agent}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Gere .env}
       POSTGRES_DB: devlima_agent_test
       ALLOW_CLOUD_FALLBACK: "false"
       GROQ_API_KEY: ""
