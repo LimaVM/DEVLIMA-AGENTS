@@ -46,7 +46,7 @@
 - [x] Documentar limites de bateria/force stop sem contornar Android.
 
 ## Fases 7–8 — interface e voz
-- [ ] Chat, tarefas e lembretes Android.
+- [x] Chat, tarefas e lembretes Android.
 - [ ] Notificação de chamada, atender/recusar, call_sessions.
 - [ ] SpeechRecognizer, TextToSpeech, mute/speaker/encerrar.
 

@@ -96,3 +96,7 @@ Na VPS, JDK 17/Gradle 8.13/SDK 36/build-tools 36.0.0/emulador e imagem Google AP
 ## Resultado da Fase 6
 
 Schema `0006_devices`, backend 0.6.0, refresh rotativo/revogação, WSS autenticado e ACK durável implantados. 136 testes Python passaram; smoke real de socket e WSS público aprovado. Android desenvolvido/compilado na VPS: assembleDebug/lint, 2 testes unitários e 1 instrumentado em emulador API 36 passaram. Sessão e eventos locais criptografados; tela de login e controles de conexão disponíveis. Hardware físico permanece pendente. Relatório em [docs/PHASE_6.md](docs/PHASE_6.md).
+
+## Resultado da Fase 7
+
+Android 0.7.0 compilado na VPS: chat/histórico, fila persistente, rotina (tarefas/lembretes/chamadas agendadas), timezone da conta e confirmação de memórias propostas. 3 testes unitários/2 instrumentados e lint passaram. Banco do Core permanece em 0006_devices; integração real temporizada será verificada na fase final. Relatório em [docs/PHASE_7.md](docs/PHASE_7.md).

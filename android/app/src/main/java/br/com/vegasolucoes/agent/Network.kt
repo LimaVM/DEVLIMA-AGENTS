@@ -29,7 +29,7 @@ class Backoff {
     fun nextDelay(): Long { val base=(1000L shl attempt.coerceAtMost(6)).coerceAtMost(60000);attempt=(attempt+1).coerceAtMost(6);return (base*Random.nextDouble(0.8,1.2)).toLong().coerceIn(1000,60000) }
 }
 
-class AuthRepository(private val secure: SecureStore) {
+class AuthRepository(private val secure: SecureStore, private val events: EventStore) {
     val session=MutableStateFlow(secure.load())
     private val refreshLock=Mutex()
     val http=OkHttpClient.Builder().connectTimeout(10,TimeUnit.SECONDS).readTimeout(130,TimeUnit.SECONDS).writeTimeout(20,TimeUnit.SECONDS).pingInterval(20,TimeUnit.SECONDS).build()
@@ -48,7 +48,9 @@ class AuthRepository(private val secure: SecureStore) {
             val server=normalizedServer(serverInput)
             val id=secure.deviceId()
             val answer=JSONObject(request(server,"/auth/login",JSONObject().put("username",username.trim()).put("password",password).put("device_id",id)))
-            val data=SessionData(server,answer.getString("access_token"),answer.getString("refresh_token"),System.currentTimeMillis()+answer.getLong("expires_in")*1000,id,username.trim())
+            val me=JSONObject(request(server,"/auth/me",token=answer.getString("access_token")))
+            events.ensureOwner(server+"|"+me.getString("id"))
+            val data=SessionData(server,answer.getString("access_token"),answer.getString("refresh_token"),System.currentTimeMillis()+answer.getLong("expires_in")*1000,id,me.getString("username"),me.getString("id"),me.getString("timezone"))
             secure.save(data);session.value=data
         }
     }

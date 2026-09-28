@@ -14,7 +14,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-data class SessionData(val server: String, val access: String, val refresh: String, val expiresAt: Long, val deviceId: String, val username: String)
+data class SessionData(val server: String, val access: String, val refresh: String, val expiresAt: Long, val deviceId: String, val username: String, val userId: String="", val timezone: String="America/Sao_Paulo")
 
 class SecureStore(private val context: Context) {
     private val sessionFile = AtomicFile(File(context.noBackupFilesDir, "session.bin"))
@@ -43,14 +43,14 @@ class SecureStore(private val context: Context) {
         return UUID.randomUUID().toString().also { deviceFile.writeText(it) }
     }
     @Synchronized fun save(data: SessionData) {
-        val json = JSONObject().put("server",data.server).put("access",data.access).put("refresh",data.refresh).put("expiresAt",data.expiresAt).put("deviceId",data.deviceId).put("username",data.username)
+        val json = JSONObject().put("server",data.server).put("access",data.access).put("refresh",data.refresh).put("expiresAt",data.expiresAt).put("deviceId",data.deviceId).put("username",data.username).put("userId",data.userId).put("timezone",data.timezone)
         val stream = sessionFile.startWrite()
         try { stream.write(encrypt(json.toString()).toByteArray()); sessionFile.finishWrite(stream) }
         catch (issue: Exception) { sessionFile.failWrite(stream); throw issue }
     }
     @Synchronized fun load(): SessionData? = try {
         val data = JSONObject(decrypt(sessionFile.openRead().use { it.readBytes().toString(Charsets.UTF_8) }))
-        SessionData(data.getString("server"),data.getString("access"),data.getString("refresh"),data.getLong("expiresAt"),data.getString("deviceId"),data.getString("username"))
+        SessionData(data.getString("server"),data.getString("access"),data.getString("refresh"),data.getLong("expiresAt"),data.getString("deviceId"),data.getString("username"),data.optString("userId"),data.optString("timezone","America/Sao_Paulo"))
     } catch (_: Exception) { null }
     @Synchronized fun clear() { sessionFile.delete(); deviceFile.delete() }
 }

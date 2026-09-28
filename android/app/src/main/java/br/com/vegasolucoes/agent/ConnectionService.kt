@@ -93,10 +93,10 @@ class ConnectionService: Service() {
                     val event=JSONObject(raw)
                     val id=UUID.fromString(event.getString("event_id")).toString()
                     when(event.getString("type")) {
-                        "connection.ready" -> { ready=true;backoff.reset();AgentRuntime.sender={ ws.send(it.toString()) };status("Conectado") }
+                        "connection.ready" -> { AgentRuntime.events.reconnect();ready=true;backoff.reset();AgentRuntime.sender={ ws.send(it.toString()) };status("Conectado") }
                         "connection.ping" -> ws.send(outgoing("connection.pong").toString())
                         "connection.pong_ack","event.acknowledged" -> Unit
-                        "chat.accepted","chat.processed","error" -> { AgentRuntime.responses.value=event }
+                        "chat.accepted","chat.processed","error" -> { AgentRuntime.events.response(event);AgentRuntime.refreshEvents();AgentRuntime.responses.value=event }
                         else -> {
                             AgentRuntime.events.save(event)
                             if(AgentRuntime.events.shouldNotify(id)) { notifications.event(event);AgentRuntime.events.notified(id) }
@@ -107,6 +107,9 @@ class ConnectionService: Service() {
                 }
             } catch (_:Exception) { ws.close(1003,"Invalid event");closed.complete(Unit) }
         }
+        val queue=scope.launch {
+            while(isActive) { if(ready) AgentRuntime.events.nextFrame()?.let { frame -> if(ws.send(frame.toString())) { AgentRuntime.events.sent(frame.getString("event_id"));AgentRuntime.refreshEvents() } };delay(1000) }
+        }
         try {
             // Renew authentication through HTTPS before the access JWT expires.
             val untilRefresh=(auth.expiresAt-System.currentTimeMillis()-30000).coerceAtLeast(1000)
@@ -114,7 +117,7 @@ class ConnectionService: Service() {
             if(!ended || invalid) AgentRuntime.auth.invalidateAccess()
             if(!ready) status("Conexão não autenticada; tentando novamente")
         } finally {
-            AgentRuntime.sender=null;activeSocket=null;frames.close();processor.cancel();ws.close(1000,"Reconnect");ws.cancel()
+            AgentRuntime.sender=null;activeSocket=null;frames.close();processor.cancel();queue.cancel();ws.close(1000,"Reconnect");ws.cancel()
         }
     }
     override fun onDestroy() {

@@ -13,12 +13,13 @@ object AgentRuntime {
     lateinit var events: EventStore
     val connection=MutableStateFlow("Desconectado")
     val received=MutableStateFlow<List<JSONObject>>(emptyList())
+    val revision=MutableStateFlow(0L)
     val responses=MutableStateFlow<JSONObject?>(null)
     @Volatile var sender: ((JSONObject)->Boolean)?=null
     @Synchronized fun initialize(context: Context) {
         if(::auth.isInitialized) return
-        secure=SecureStore(context);auth=AuthRepository(secure);events=EventStore(context,secure)
+        secure=SecureStore(context);events=EventStore(context,secure);auth=AuthRepository(secure,events)
         received.value=events.recent()
     }
-    fun refreshEvents() { received.value=events.recent() }
+    fun refreshEvents() { received.value=events.recent();revision.value++ }
 }
