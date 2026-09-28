@@ -7,6 +7,7 @@ from app.llm.base import LLMCompletion, LLMError, LLMMessage, LLMProvider, Provi
 
 
 @dataclass(frozen=True)
+# Documentação: Define o tipo LLMAttempt e reúne o estado/contrato descrito para este módulo.
 class LLMAttempt:
     request_id: UUID
     user_id: UUID | None
@@ -21,6 +22,8 @@ class LLMAttempt:
 
 
 @dataclass(frozen=True)
+# Documentação: Define o tipo RoutedCompletion e reúne o estado/contrato descrito para este
+# módulo.
 class RoutedCompletion:
     request_id: UUID
     completion: LLMCompletion
@@ -28,7 +31,9 @@ class RoutedCompletion:
     latency_ms: int
 
 
+# Documentação: Define o tipo LLMRouter e reúne o estado/contrato descrito para este módulo.
 class LLMRouter:
+    # Documentação: Inicializa LLMRouter com as dependências e estado declarados.
     def __init__(
         self,
         local: LLMProvider,
@@ -42,6 +47,7 @@ class LLMRouter:
         self.allow_cloud_fallback = allow_cloud_fallback
         self.record_attempt = record_attempt
 
+    # Documentação: Implementa LLMRouter._chat como parte do fluxo descrito para este arquivo.
     def _chat(
         self,
         provider: LLMProvider,
@@ -85,6 +91,8 @@ class LLMRouter:
         )
         return completion
 
+    # Documentação: Tenta provider primário, avalia elegibilidade de fallback e retorna resultado
+    # com auditoria de tentativas.
     def chat(
         self,
         messages: list[LLMMessage],
@@ -127,6 +135,8 @@ class LLMRouter:
             latency_ms=max(0, round((perf_counter() - started) * 1000)),
         )
 
+    # Documentação: Implementa LLMRouter.health_check como parte do fluxo descrito para este
+    # arquivo.
     def health_check(self) -> dict:
         local = self.local.health_check().model_dump()
         if self.allow_cloud_fallback:
@@ -135,6 +145,7 @@ class LLMRouter:
             cloud = {"provider": self.cloud.name, "healthy": False, "error_code": "disabled"}
         return {"local": local, "cloud": cloud, "allow_cloud_fallback": self.allow_cloud_fallback}
 
+    # Documentação: Libera LLMRouter.close, segundo o contrato e as verificações deste módulo.
     def close(self) -> None:
         self.local.close()
         self.cloud.close()

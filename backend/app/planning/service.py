@@ -11,12 +11,14 @@ from app.models.planning import OutboxEvent, Schedule, Task
 from app.planning.recurrence import first_occurrence
 
 
+# Documentação: Implementa aware como parte do fluxo descrito para este arquivo.
 def aware(value):
     if value is None or isinstance(value, datetime):
         return value.astimezone(UTC) if value else None
     return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(UTC)
 
 
+# Documentação: Implementa task_data como parte do fluxo descrito para este arquivo.
 def task_data(row: Task):
     return {
         "id": str(row.id),
@@ -27,6 +29,7 @@ def task_data(row: Task):
     }
 
 
+# Documentação: Implementa schedule_data como parte do fluxo descrito para este arquivo.
 def schedule_data(row: Schedule):
     return {
         "id": str(row.id),
@@ -41,7 +44,9 @@ def schedule_data(row: Schedule):
     }
 
 
+# Documentação: Define o tipo PlanningService e reúne o estado/contrato descrito para este módulo.
 class PlanningService:
+    # Documentação: Inicializa PlanningService com as dependências e estado declarados.
     def __init__(self, session: Session, user_id: UUID):
         self.session = session
         self.user_id = user_id
@@ -49,11 +54,15 @@ class PlanningService:
         if self.user is None:
             raise AgentError("not_found", 404)
 
+    # Documentação: Implementa PlanningService.audit como parte do fluxo descrito para este
+    # arquivo.
     def audit(self, event, identifier):
         self.session.add(
             AuditLog(user_id=self.user_id, event=event, details={"id": str(identifier)})
         )
 
+    # Documentação: Implementa PlanningService.event como parte do fluxo descrito para este
+    # arquivo.
     def event(self, type, payload, schedule_id=None, dedupe=None):
         identifier = uuid4()
         row = OutboxEvent(
@@ -68,6 +77,8 @@ class PlanningService:
         self.session.add(row)
         return row
 
+    # Documentação: Implementa PlanningService.task como parte do fluxo descrito para este
+    # arquivo.
     def task(self, identifier):
         row = self.session.scalar(
             select(Task)
@@ -78,6 +89,8 @@ class PlanningService:
             raise AgentError("not_found", 404)
         return row
 
+    # Documentação: Cria PlanningService.create_task, segundo o contrato e as verificações deste
+    # módulo.
     def create_task(self, data):
         title = data["title"].strip()
         if not title:
@@ -95,6 +108,8 @@ class PlanningService:
         self.event("task.updated", task_data(row))
         return row
 
+    # Documentação: Atualiza PlanningService.update_task, segundo o contrato e as verificações
+    # deste módulo.
     def update_task(self, identifier, data):
         row = self.task(identifier)
         if not data:
@@ -112,6 +127,8 @@ class PlanningService:
         self.event("task.updated", task_data(row))
         return row
 
+    # Documentação: Implementa PlanningService.complete_task como parte do fluxo descrito para
+    # este arquivo.
     def complete_task(self, identifier):
         row = self.task(identifier)
         if row.status != "COMPLETED":
@@ -121,6 +138,8 @@ class PlanningService:
             self.event("task.updated", task_data(row))
         return row
 
+    # Documentação: Implementa PlanningService.date_query como parte do fluxo descrito para este
+    # arquivo.
     def date_query(self, query, column, day):
         if day:
             try:
@@ -134,6 +153,8 @@ class PlanningService:
             )
         return query
 
+    # Documentação: Lista PlanningService.list_tasks, segundo o contrato e as verificações deste
+    # módulo.
     def list_tasks(self, day=None, status=None, limit=100, offset=0):
         query = select(Task).where(Task.user_id == self.user_id)
         if status:
@@ -143,6 +164,8 @@ class PlanningService:
             query.order_by(Task.created_at.desc(), Task.id).offset(offset).limit(limit)
         ).all()
 
+    # Documentação: Implementa PlanningService.schedule como parte do fluxo descrito para este
+    # arquivo.
     def schedule(self, identifier, kind):
         row = self.session.scalar(
             select(Schedule)
@@ -155,6 +178,8 @@ class PlanningService:
             raise AgentError("not_found", 404)
         return row
 
+    # Documentação: Cria PlanningService.create_schedule, segundo o contrato e as verificações
+    # deste módulo.
     def create_schedule(self, kind, data):
         now = datetime.now(UTC)
         start = aware(data["datetime"])
@@ -184,6 +209,8 @@ class PlanningService:
         self.audit("schedule.created", row.id)
         return row
 
+    # Documentação: Atualiza PlanningService.update_schedule, segundo o contrato e as verificações
+    # deste módulo.
     def update_schedule(self, identifier, data):
         row = self.schedule(identifier, "REMINDER")
         if row.status != "SCHEDULED":
@@ -219,6 +246,8 @@ class PlanningService:
         self.audit("schedule.updated", row.id)
         return row
 
+    # Documentação: Cancela PlanningService.cancel_schedule, segundo o contrato e as verificações
+    # deste módulo.
     def cancel_schedule(self, identifier, kind):
         row = self.schedule(identifier, kind)
         if row.status != "CANCELLED":
@@ -240,6 +269,8 @@ class PlanningService:
                 )
         return row
 
+    # Documentação: Lista PlanningService.list_schedules, segundo o contrato e as verificações
+    # deste módulo.
     def list_schedules(self, kind, day=None, status=None, limit=100, offset=0):
         query = select(Schedule).where(Schedule.user_id == self.user_id, Schedule.kind == kind)
         if status:

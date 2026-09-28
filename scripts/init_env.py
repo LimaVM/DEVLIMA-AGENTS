@@ -8,6 +8,9 @@ import secrets
 from pathlib import Path
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Gera .env novo com segredos
+# aleatórios e permissões privadas, sem sobrescrever configuração existente nem imprimir valores
+# secretos.
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--domain", help="Public hostname already pointing to this host")

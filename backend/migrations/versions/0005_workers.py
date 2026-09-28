@@ -9,18 +9,22 @@ branch_labels = None
 depends_on = None
 
 
+# Documentação: Implementa identifier como parte do fluxo descrito para este arquivo.
 def identifier():
     return sa.Column("id", sa.Uuid(), primary_key=True)
 
 
+# Documentação: Implementa owner como parte do fluxo descrito para este arquivo.
 def owner():
     return sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id"), nullable=False)
 
 
+# Documentação: Implementa timestamp como parte do fluxo descrito para este arquivo.
 def timestamp(name="created_at"):
     return sa.Column(name, sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False)
 
 
+# Documentação: Aplica tabelas, campos, índices e constraints desta revisão Alembic.
 def upgrade():
     op.create_table(
         "workers",
@@ -73,6 +77,7 @@ def upgrade():
             op.create_index(f"ix_{table}_{column}", table, [column])
 
 
+# Documentação: Reverte os elementos de schema criados por esta revisão, respeitando dependências.
 def downgrade():
     for table in ["worker_snapshots", "worker_commands", "workers"]:
         op.drop_table(table)

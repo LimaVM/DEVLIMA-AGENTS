@@ -15,7 +15,10 @@ MODEL_UNAVAILABLE_CODES = {
 }
 
 
+# Documentação: Define o tipo OpenAICompatibleProvider e reúne o estado/contrato descrito para
+# este módulo.
 class OpenAICompatibleProvider(LLMProvider):
+    # Documentação: Inicializa OpenAICompatibleProvider com as dependências e estado declarados.
     def __init__(
         self,
         base_url: str,
@@ -39,6 +42,8 @@ class OpenAICompatibleProvider(LLMProvider):
         )
         self.headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
 
+    # Documentação: Implementa OpenAICompatibleProvider._request como parte do fluxo descrito para
+    # este arquivo.
     def _request(self, method: str, path: str, **kwargs) -> httpx.Response:
         if not self.configured:
             raise LLMError("not_configured")
@@ -70,6 +75,8 @@ class OpenAICompatibleProvider(LLMProvider):
             raise LLMError(code, status_code=response.status_code)
         return response
 
+    # Documentação: Implementa OpenAICompatibleProvider.chat como parte do fluxo descrito para
+    # este arquivo.
     def chat(
         self, messages: list[LLMMessage], *, max_tokens: int = 512, json_mode: bool = False
     ) -> LLMCompletion:
@@ -104,9 +111,13 @@ class OpenAICompatibleProvider(LLMProvider):
         except (ValueError, KeyError, IndexError, TypeError, AttributeError, ValidationError):
             raise LLMError("invalid_response") from None
 
+    # Documentação: Implementa OpenAICompatibleProvider.structured_options como parte do fluxo
+    # descrito para este arquivo.
     def structured_options(self) -> dict:
         return {}
 
+    # Documentação: Implementa OpenAICompatibleProvider.health_check como parte do fluxo descrito
+    # para este arquivo.
     def health_check(self) -> ProviderHealth:
         started = perf_counter()
         code = None
@@ -133,5 +144,7 @@ class OpenAICompatibleProvider(LLMProvider):
             error_code=code,
         )
 
+    # Documentação: Libera OpenAICompatibleProvider.close, segundo o contrato e as verificações
+    # deste módulo.
     def close(self) -> None:
         self.client.close()

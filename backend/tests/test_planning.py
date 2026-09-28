@@ -19,14 +19,18 @@ from app.planning.service import PlanningService
 from app.security import create_token
 
 
+# Documentação: Implementa headers como parte do fluxo descrito para este arquivo.
 def headers(user):
     return {"Authorization": f"Bearer {create_token(user, get_settings())}"}
 
 
+# Documentação: Implementa future como parte do fluxo descrito para este arquivo.
 def future(seconds=60):
     return datetime.now(UTC) + timedelta(seconds=seconds)
 
 
+# Documentação: Verifica o cenário test_task_api_lifecycle_timezone_and_tenant; as condições e
+# resultados esperados aparecem nos asserts.
 def test_task_api_lifecycle_timezone_and_tenant(client, session, user):
     auth = headers(user)
     response = client.post(
@@ -70,10 +74,14 @@ def test_task_api_lifecycle_timezone_and_tenant(client, session, user):
         {"title": "x", "command": "ls"},
     ],
 )
+# Documentação: Verifica o cenário test_task_invalid_input; as condições e resultados esperados
+# aparecem nos asserts.
 def test_task_invalid_input(client, user, payload):
     assert client.post("/tasks", headers=headers(user), json=payload).status_code == 422
 
 
+# Documentação: Verifica o cenário test_reminder_api_create_update_cancel_and_call; as condições e
+# resultados esperados aparecem nos asserts.
 def test_reminder_api_create_update_cancel_and_call(client, session, user):
     auth = headers(user)
     created = client.post(
@@ -105,6 +113,8 @@ def test_reminder_api_create_update_cancel_and_call(client, session, user):
 
 
 @pytest.mark.parametrize("delta", [-10, 367 * 86400])
+# Documentação: Verifica o cenário test_past_or_distant_schedule_rejected; as condições e
+# resultados esperados aparecem nos asserts.
 def test_past_or_distant_schedule_rejected(client, user, delta):
     response = client.post(
         "/reminders",
@@ -126,11 +136,15 @@ def test_past_or_distant_schedule_rejected(client, user, delta):
         "FREQ=DAILY;INTERVAL=0",
     ],
 )
+# Documentação: Verifica o cenário test_recurrence_rejected; as condições e resultados esperados
+# aparecem nos asserts.
 def test_recurrence_rejected(rrule):
     with pytest.raises(AgentError):
         first_occurrence(rrule, future(), "America/Sao_Paulo")
 
 
+# Documentação: Verifica o cenário test_weekly_recurrence_timezone_and_count; as condições e
+# resultados esperados aparecem nos asserts.
 def test_weekly_recurrence_timezone_and_count():
     start = datetime(2026, 9, 28, 23, tzinfo=UTC)
     first = first_occurrence("FREQ=WEEKLY;BYDAY=SU;COUNT=2", start, "America/Sao_Paulo")
@@ -142,12 +156,16 @@ def test_weekly_recurrence_timezone_and_count():
     )
 
 
+# Documentação: Verifica o cenário test_recurrence_preserves_wall_clock_across_dst; as condições e
+# resultados esperados aparecem nos asserts.
 def test_recurrence_preserves_wall_clock_across_dst():
     start = datetime(2026, 10, 31, 13, tzinfo=UTC)
     next_run = next_occurrence("FREQ=DAILY", start, "America/New_York", start)
     assert next_run == datetime(2026, 11, 1, 14, tzinfo=UTC)
 
 
+# Documentação: Verifica o cenário test_scheduler_emits_once_across_sessions; as condições e
+# resultados esperados aparecem nos asserts.
 def test_scheduler_emits_once_across_sessions(session, user):
     service = PlanningService(session, user.id)
     row = service.create_schedule("REMINDER", {"text": "Café", "datetime": future()})
@@ -163,6 +181,8 @@ def test_scheduler_emits_once_across_sessions(session, user):
         assert fresh.get(SchedulerHeartbeat, "scheduler")
 
 
+# Documentação: Verifica o cenário test_scheduler_coalesces_missed_recurrences; as condições e
+# resultados esperados aparecem nos asserts.
 def test_scheduler_coalesces_missed_recurrences(session, user):
     row = PlanningService(session, user.id).create_schedule(
         "REMINDER", {"text": "Revisão", "datetime": future(), "rrule": "FREQ=DAILY;COUNT=10"}
@@ -176,6 +196,8 @@ def test_scheduler_coalesces_missed_recurrences(session, user):
     assert tick(session, now) == 0
 
 
+# Documentação: Verifica o cenário test_scheduler_concurrent_claims; as condições e resultados
+# esperados aparecem nos asserts.
 def test_scheduler_concurrent_claims(session, user):
     service = PlanningService(session, user.id)
     now = future(120)
@@ -183,6 +205,8 @@ def test_scheduler_concurrent_claims(session, user):
         service.create_schedule("CALL", {"reason": str(i), "datetime": now})
     session.commit()
 
+    # Documentação: Implementa test_scheduler_concurrent_claims.execute como parte do fluxo
+    # descrito para este arquivo.
     def execute(_):
         with Session(get_engine(), expire_on_commit=False) as fresh:
             return tick(fresh, now + timedelta(seconds=1))
@@ -194,11 +218,15 @@ def test_scheduler_concurrent_claims(session, user):
     assert session.scalar(select(func.count()).select_from(OutboxEvent)) == 20
 
 
+# Documentação: Verifica o cenário test_crash_before_commit_leaves_event_due; as condições e
+# resultados esperados aparecem nos asserts.
 def test_crash_before_commit_leaves_event_due(session, user, monkeypatch):
     row = PlanningService(session, user.id).create_schedule("CALL", {"datetime": future()})
     identifier, due = row.id, row.next_run_at
     session.commit()
 
+    # Documentação: Implementa test_crash_before_commit_leaves_event_due.fail_commit como parte do
+    # fluxo descrito para este arquivo.
     def fail_commit():
         raise RuntimeError("simulated crash")
 
@@ -212,6 +240,8 @@ def test_crash_before_commit_leaves_event_due(session, user, monkeypatch):
     assert tick(session, due) == 1
 
 
+# Documentação: Verifica o cenário test_cancel_and_inactive_user_do_not_trigger; as condições e
+# resultados esperados aparecem nos asserts.
 def test_cancel_and_inactive_user_do_not_trigger(session, user):
     service = PlanningService(session, user.id)
     cancelled = service.create_schedule("REMINDER", {"datetime": future(), "text": "x"})
@@ -226,6 +256,9 @@ def test_cancel_and_inactive_user_do_not_trigger(session, user):
     assert tick(session, due + timedelta(seconds=1)) == 1
 
 
+# Documentação: Verifica o cenário
+# test_cancel_invalidates_pending_outbox_and_deduplicates_call_cancel; as condições e resultados
+# esperados aparecem nos asserts.
 def test_cancel_invalidates_pending_outbox_and_deduplicates_call_cancel(session, user):
     service = PlanningService(session, user.id)
     row = service.create_schedule("CALL", {"datetime": future()})
@@ -248,6 +281,8 @@ def test_cancel_invalidates_pending_outbox_and_deduplicates_call_cancel(session,
     )
 
 
+# Documentação: Verifica o cenário test_action_savepoint_isolates_failure_and_success; as
+# condições e resultados esperados aparecem nos asserts.
 def test_action_savepoint_isolates_failure_and_success(session, user):
     _, messages = history(session, user, ["Criar tarefa e cancelar lembrete"])
     actions = [

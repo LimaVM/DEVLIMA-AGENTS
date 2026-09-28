@@ -14,6 +14,8 @@ from app.workers.runner import execute_one
 from app.workers.service import WorkerService
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Executa smoke
+# Core/runner/manager com usuário isolado e operações de worker restritas ao contrato do sistema.
 def main():
     settings = get_settings()
     if settings.postgres_host != "postgres-test" or settings.postgres_db != "devlima_agent_test":

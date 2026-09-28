@@ -12,10 +12,12 @@ from app.models import AuditLog, OutboxEvent, User
 from app.models.devices import Device, EventDelivery, RefreshFamily, RefreshToken
 
 
+# Documentação: Implementa token_hash como parte do fluxo descrito para este arquivo.
 def token_hash(value):
     return hashlib.sha256(value.encode()).hexdigest()
 
 
+# Documentação: Registra register, segundo o contrato e as verificações deste módulo.
 def register(session, identifier, owner, name="Android"):
     identifier = UUID(str(identifier))
     session.execute(
@@ -34,6 +36,7 @@ def register(session, identifier, owner, name="Android"):
     return device
 
 
+# Documentação: Implementa issue_session como parte do fluxo descrito para este arquivo.
 def issue_session(session, user, device_id, settings):
     from app.security import create_token
 
@@ -63,6 +66,8 @@ def issue_session(session, user, device_id, settings):
     }
 
 
+# Documentação: Consome refresh anterior e emite o próximo; replay/revogação invalida a família
+# conforme o contrato.
 def rotate_session(session, opaque, settings):
     from app.security import create_token
 
@@ -111,6 +116,7 @@ def rotate_session(session, opaque, settings):
     }
 
 
+# Documentação: Implementa authorize_claims como parte do fluxo descrito para este arquivo.
 def authorize_claims(session, claims):
     user = session.get(User, UUID(claims["sub"]))
     if user is None or not user.is_active or user.token_version != claims["ver"]:
@@ -130,6 +136,7 @@ def authorize_claims(session, claims):
     return user
 
 
+# Documentação: Implementa logout como parte do fluxo descrito para este arquivo.
 def logout(session, claims):
     if "sid" in claims:
         family = session.get(RefreshFamily, UUID(claims["sid"]))
@@ -138,6 +145,7 @@ def logout(session, claims):
     session.commit()
 
 
+# Documentação: Implementa pending como parte do fluxo descrito para este arquivo.
 def pending(session, owner, device_id, now=None):
     now = now or datetime.now(UTC)
     device = session.get(Device, device_id)
@@ -187,6 +195,8 @@ def pending(session, owner, device_id, now=None):
     ]
 
 
+# Documentação: Confirma entrega do evento para o dispositivo autenticado sem marcar entrega de
+# outro proprietário.
 def acknowledge(session, owner, device_id, event_id):
     device = session.get(Device, device_id)
     row = session.get(EventDelivery, (device_id, event_id))

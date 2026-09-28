@@ -8,6 +8,7 @@ from app.config import get_settings
 
 
 @lru_cache
+# Documentação: Cria e reutiliza engine PostgreSQL com pool/timeouts e parâmetros SQL ocultos.
 def get_engine() -> Engine:
     return create_engine(
         get_settings().database_url,
@@ -20,6 +21,7 @@ def get_engine() -> Engine:
     )
 
 
+# Documentação: Entrega sessão à rota e a fecha ao terminar o contexto da requisição.
 def get_session() -> Generator[Session, None, None]:
     with sessionmaker(bind=get_engine(), expire_on_commit=False)() as session:
         yield session

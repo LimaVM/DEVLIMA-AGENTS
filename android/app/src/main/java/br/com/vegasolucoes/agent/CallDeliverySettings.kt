@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 
 @Composable
+// Documentação: Implementa CallDeliverySettings como parte do fluxo descrito para este arquivo.
 fun CallDeliverySettings(activity: MainActivity) {
     var revision by remember { mutableIntStateOf(0) }
     val settings =

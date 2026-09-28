@@ -4,6 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 
+# Documentação: Define o tipo LoginRequest e reúne o estado/contrato descrito para este módulo.
 class LoginRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
     username: str = Field(min_length=1, max_length=80, pattern=r"^[a-zA-Z0-9_.-]+$")
@@ -11,6 +12,7 @@ class LoginRequest(BaseModel):
     device_id: UUID | None = None
 
 
+# Documentação: Define o tipo TokenResponse e reúne o estado/contrato descrito para este módulo.
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -18,6 +20,7 @@ class TokenResponse(BaseModel):
     refresh_token: str | None = None
 
 
+# Documentação: Define o tipo UserResponse e reúne o estado/contrato descrito para este módulo.
 class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID

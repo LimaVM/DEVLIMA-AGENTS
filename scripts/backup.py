@@ -18,6 +18,9 @@ TEMPLATE = Path("/var/lib/libvirt/images/templates/ubuntu-24.04-base.qcow2")
 TEMPLATE_SHA256 = "6a81c37564db9b1ee84e141922625e1d7c5b389b99bb3c572e0243607d5bb4d2"
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Produz dump PostgreSQL e
+# arquivo de recuperação com configurações/identidades necessárias; cifra o pacote com AES-GCM e
+# confere template/manifesto.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--key", default="/etc/devlima-backup.key")

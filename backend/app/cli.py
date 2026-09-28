@@ -12,6 +12,7 @@ from app.models import AuditLog, User
 from app.security import hash_password
 
 
+# Documentação: Implementa read_password como parte do fluxo descrito para este arquivo.
 def read_password() -> str:
     first = getpass.getpass("Senha (mínimo 12 caracteres): ")
     second = getpass.getpass("Confirmar senha: ")
@@ -20,6 +21,9 @@ def read_password() -> str:
     return first
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Administra usuários pela
+# linha de comando do ambiente operacional. Solicita senha sem eco, valida identidade/fuso e
+# audita criação ou redefinição.
 def main() -> None:
     parser = argparse.ArgumentParser(description="Administração DEVLIMA AGENT")
     commands = parser.add_subparsers(dest="command", required=True)

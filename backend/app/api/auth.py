@@ -27,6 +27,7 @@ from app.security import (
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
+# Documentação: Implementa consume_login_attempt como parte do fluxo descrito para este arquivo.
 def consume_login_attempt(session: Session, bucket: str, settings: Settings) -> None:
     now = datetime.now(UTC)
     expired = LoginThrottle.window_started_at <= now - timedelta(
@@ -52,6 +53,7 @@ def consume_login_attempt(session: Session, bucket: str, settings: Settings) -> 
 
 
 @router.post("/login", response_model=TokenResponse)
+# Documentação: Implementa login como parte do fluxo descrito para este arquivo.
 def login(
     data: LoginRequest,
     request: Request,
@@ -100,16 +102,19 @@ def login(
 
 
 @router.get("/me", response_model=UserResponse)
+# Documentação: Implementa me como parte do fluxo descrito para este arquivo.
 def me(user: User = Depends(get_current_user)) -> User:
     return user
 
 
+# Documentação: Define o tipo RefreshRequest e reúne o estado/contrato descrito para este módulo.
 class RefreshRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
     refresh_token: SecretStr = Field(min_length=32, max_length=128)
 
 
 @router.post("/refresh", response_model=TokenResponse)
+# Documentação: Atualiza refresh, segundo o contrato e as verificações deste módulo.
 def refresh(
     data: RefreshRequest,
     request: Request,
@@ -130,6 +135,7 @@ def refresh(
 
 
 @router.post("/logout", status_code=204)
+# Documentação: Implementa sign_out como parte do fluxo descrito para este arquivo.
 def sign_out(
     credentials: HTTPAuthorizationCredentials = Depends(bearer),
     user: User = Depends(get_current_user),

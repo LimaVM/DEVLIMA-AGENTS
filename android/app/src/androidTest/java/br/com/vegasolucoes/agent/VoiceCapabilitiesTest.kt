@@ -14,8 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+// Documentação: Define o tipo VoiceCapabilitiesTest e reúne o estado/contrato descrito para este
+// módulo.
 class VoiceCapabilitiesTest {
     @Test
+    // Documentação: Implementa
+    // VoiceCapabilitiesTest.reportsAvailableEnginesWithoutAssumingPhysicalAudio como parte do
+    // fluxo descrito para este arquivo.
     fun reportsAvailableEnginesWithoutAssumingPhysicalAudio() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext

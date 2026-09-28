@@ -9,12 +9,17 @@ from app.llm.router import LLMAttempt, LLMRouter
 from app.models import AuditLog, LLMRequest
 
 
+# Documentação: Define o tipo DatabaseAuditRecorder e reúne o estado/contrato descrito para este
+# módulo.
 class DatabaseAuditRecorder:
     """Commits each attempt. Call before opening any action transaction."""
 
+    # Documentação: Inicializa DatabaseAuditRecorder com as dependências e estado declarados.
     def __init__(self, session: Session):
         self.session = session
 
+    # Documentação: Implementa DatabaseAuditRecorder.__call__ como parte do fluxo descrito para
+    # este arquivo.
     def __call__(self, attempt: LLMAttempt) -> None:
         completion = attempt.completion
         self.session.add(
@@ -51,6 +56,7 @@ class DatabaseAuditRecorder:
 
 
 @contextmanager
+# Documentação: Monta build_router, segundo o contrato e as verificações deste módulo.
 def build_router(settings: Settings, session: Session):
     router = LLMRouter(
         LlamaCppProvider(

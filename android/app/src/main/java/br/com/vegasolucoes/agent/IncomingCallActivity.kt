@@ -15,9 +15,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.delay
 
 /** Minimal lock-screen surface. Chat, reason and microphone remain behind unlock. */
+// Documentação: Define o tipo IncomingCallActivity e reúne o estado/contrato descrito para este
+// módulo.
 class IncomingCallActivity : ComponentActivity() {
     private var answerRequested = false
 
+    // Documentação: Trata o callback de IncomingCallActivity.onCreate, segundo o contrato e as
+    // verificações deste módulo.
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
         if (android.os.Build.VERSION.SDK_INT >= 27) {
@@ -93,6 +97,8 @@ class IncomingCallActivity : ComponentActivity() {
         }
     }
 
+    // Documentação: Trata o callback de IncomingCallActivity.onPostResume, segundo o contrato e
+    // as verificações deste módulo.
     override fun onPostResume() {
         super.onPostResume()
         if (answerRequested) {
@@ -101,8 +107,12 @@ class IncomingCallActivity : ComponentActivity() {
         }
     }
 
+    // Documentação: Solicita desbloqueio e encaminha internamente o event_id validado à interface
+    // principal.
     private fun answer(id: String) {
         val keyguard = getSystemService(KeyguardManager::class.java)
+        // Documentação: Implementa IncomingCallActivity.open como parte do fluxo descrito para
+        // este arquivo.
         fun open() {
             if (incomingCall(AgentRuntime.received.value, id) == null) {
                 finish()
@@ -121,6 +131,8 @@ class IncomingCallActivity : ComponentActivity() {
             keyguard.requestDismissKeyguard(
                 this,
                 object : KeyguardManager.KeyguardDismissCallback() {
+                    // Documentação: Trata o callback de IncomingCallActivity.onDismissSucceeded,
+                    // segundo o contrato e as verificações deste módulo.
                     override fun onDismissSucceeded() {
                         open()
                     }

@@ -15,10 +15,12 @@ from app.models import EventDelivery, OutboxEvent, RefreshFamily, RefreshToken, 
 from app.security import decode_token
 
 
+# Documentação: Implementa envelope como parte do fluxo descrito para este arquivo.
 def envelope(kind, payload=None, identifier=None):
     return {"event_id": str(identifier or uuid4()), "type": kind, "payload": payload or {}}
 
 
+# Documentação: Implementa authenticate como parte do fluxo descrito para este arquivo.
 def authenticate(ws, user, device_id=None):
     from app.security import create_token
 
@@ -33,6 +35,7 @@ def authenticate(ws, user, device_id=None):
     return identifier
 
 
+# Documentação: Implementa receive como parte do fluxo descrito para este arquivo.
 def receive(ws, kind):
     for _ in range(30):
         data = ws.receive_json()
@@ -45,6 +48,8 @@ def receive(ws, kind):
     pytest.fail("Expected frame not received")
 
 
+# Documentação: Verifica o cenário test_refresh_rotation_reuse_invalidates_access; as condições e
+# resultados esperados aparecem nos asserts.
 def test_refresh_rotation_reuse_invalidates_access(client, session, user):
     device = str(uuid4())
     response = client.post(
@@ -78,6 +83,8 @@ def test_refresh_rotation_reuse_invalidates_access(client, session, user):
     assert session.scalar(select(RefreshFamily)).revoked
 
 
+# Documentação: Verifica o cenário test_device_revocation_and_other_owner_are_enforced; as
+# condições e resultados esperados aparecem nos asserts.
 def test_device_revocation_and_other_owner_are_enforced(client, session, user):
     device = uuid4()
     result = issue_session(session, user, device, get_settings())
@@ -102,6 +109,8 @@ def test_device_revocation_and_other_owner_are_enforced(client, session, user):
         register(session, device, user.id)
 
 
+# Documentação: Verifica o cenário test_refresh_expiry_and_password_reset; as condições e
+# resultados esperados aparecem nos asserts.
 def test_refresh_expiry_and_password_reset(session, user):
     issued = issue_session(session, user, uuid4(), get_settings())
     session.commit()
@@ -120,6 +129,8 @@ def test_refresh_expiry_and_password_reset(session, user):
         rotate_session(session, issued["refresh_token"], get_settings())
 
 
+# Documentação: Verifica o cenário test_logout_revokes_device_session; as condições e resultados
+# esperados aparecem nos asserts.
 def test_logout_revokes_device_session(client, session, user):
     result = issue_session(session, user, uuid4(), get_settings())
     session.commit()
@@ -128,6 +139,8 @@ def test_logout_revokes_device_session(client, session, user):
     assert client.get("/auth/me", headers=auth).status_code == 401
 
 
+# Documentação: Verifica o cenário test_delivery_retries_and_ack_are_per_device; as condições e
+# resultados esperados aparecem nos asserts.
 def test_delivery_retries_and_ack_are_per_device(session, user):
     first, second = uuid4(), uuid4()
     register(session, first, user.id)
@@ -155,6 +168,8 @@ def test_delivery_retries_and_ack_are_per_device(session, user):
     assert event.status == "PENDING"
 
 
+# Documentação: Verifica o cenário test_cancelled_and_foreign_events_cannot_be_acknowledged; as
+# condições e resultados esperados aparecem nos asserts.
 def test_cancelled_and_foreign_events_cannot_be_acknowledged(session, user):
     identifier = uuid4()
     register(session, identifier, user.id)
@@ -175,6 +190,8 @@ def test_cancelled_and_foreign_events_cannot_be_acknowledged(session, user):
         register(session, identifier, uuid4())
 
 
+# Documentação: Verifica o cenário test_websocket_auth_heartbeat_and_validation; as condições e
+# resultados esperados aparecem nos asserts.
 def test_websocket_auth_heartbeat_and_validation(client, user):
     with client.websocket_connect("/ws") as ws:
         identifier = authenticate(ws, user)
@@ -188,6 +205,8 @@ def test_websocket_auth_heartbeat_and_validation(client, user):
     assert str(identifier) == client.get("/devices", headers=headers(user)).json()[0]["id"]
 
 
+# Documentação: Verifica o cenário test_websocket_invalid_auth_is_closed; as condições e
+# resultados esperados aparecem nos asserts.
 def test_websocket_invalid_auth_is_closed(client):
     with client.websocket_connect("/ws") as ws:
         ws.send_json(
@@ -201,6 +220,8 @@ def test_websocket_invalid_auth_is_closed(client):
         assert issue.value.code == 4401
 
 
+# Documentação: Verifica o cenário test_websocket_chat_outbox_replay_no_second_inference; as
+# condições e resultados esperados aparecem nos asserts.
 def test_websocket_chat_outbox_replay_no_second_inference(client, session, user, monkeypatch):
     from contextlib import contextmanager
 
@@ -210,6 +231,8 @@ def test_websocket_chat_outbox_replay_no_second_inference(client, session, user,
     stub = StubRouter({"reply": "Olá pelo WebSocket", "actions": [], "memory_candidates": []})
 
     @contextmanager
+    # Documentação: Implementa test_websocket_chat_outbox_replay_no_second_inference.factory como
+    # parte do fluxo descrito para este arquivo.
     def factory(*_):
         yield stub
 
@@ -243,6 +266,9 @@ def test_websocket_chat_outbox_replay_no_second_inference(client, session, user,
     )
 
 
+# Documentação: Verifica o cenário
+# test_websocket_device_bound_session_cannot_use_different_device; as condições e resultados
+# esperados aparecem nos asserts.
 def test_websocket_device_bound_session_cannot_use_different_device(client, session, user):
     result = issue_session(session, user, uuid4(), get_settings())
     session.commit()

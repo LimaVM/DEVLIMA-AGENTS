@@ -14,17 +14,22 @@ from app.workers.runner import claim, execute_one
 from app.workers.service import WorkerService
 
 
+# Documentação: Define o tipo FakeManager e reúne o estado/contrato descrito para este módulo.
 class FakeManager:
+    # Documentação: Inicializa FakeManager com as dependências e estado declarados.
     def __init__(self):
         self.calls = 0
         self.previous = None
         self.error = None
 
+    # Documentação: Implementa FakeManager.operation como parte do fluxo descrito para este
+    # arquivo.
     def operation(self, *_):
         if self.previous:
             return self.previous
         raise ManagerError("not_found")
 
+    # Documentação: Implementa FakeManager.perform como parte do fluxo descrito para este arquivo.
     def perform(self, command):
         self.calls += 1
         if self.error:
@@ -35,6 +40,8 @@ class FakeManager:
         }
 
 
+# Documentação: Verifica o cenário test_worker_api_queue_idempotency_and_tenant; as condições e
+# resultados esperados aparecem nos asserts.
 def test_worker_api_queue_idempotency_and_tenant(client, session, user):
     data = {"request_id": str(uuid4()), "name": "test-worker"}
     response = client.post("/workers", headers=headers(user), json=data)
@@ -74,6 +81,8 @@ def test_worker_api_queue_idempotency_and_tenant(client, session, user):
     )
 
 
+# Documentação: Verifica o cenário test_runner_commits_queue_before_host_call_and_finishes_once;
+# as condições e resultados esperados aparecem nos asserts.
 def test_runner_commits_queue_before_host_call_and_finishes_once(session, user):
     command = WorkerService(session, user.id).queue("CREATE", {})
     session.commit()
@@ -86,6 +95,9 @@ def test_runner_commits_queue_before_host_call_and_finishes_once(session, user):
     assert session.scalar(select(func.count()).select_from(OutboxEvent)) == 1
 
 
+# Documentação: Verifica o cenário
+# test_runner_recovers_cached_operation_without_repeating_side_effect; as condições e resultados
+# esperados aparecem nos asserts.
 def test_runner_recovers_cached_operation_without_repeating_side_effect(session, user):
     command = WorkerService(session, user.id).queue("CREATE", {})
     session.commit()
@@ -101,6 +113,8 @@ def test_runner_recovers_cached_operation_without_repeating_side_effect(session,
     assert manager.calls == 0
 
 
+# Documentação: Verifica o cenário test_uncertain_connection_retries_query_not_job; as condições e
+# resultados esperados aparecem nos asserts.
 def test_uncertain_connection_retries_query_not_job(session, user):
     command = WorkerService(session, user.id).queue("CREATE", {})
     session.commit()
@@ -123,6 +137,8 @@ def test_uncertain_connection_retries_query_not_job(session, user):
     assert manager.calls == 1
 
 
+# Documentação: Verifica o cenário test_snapshot_and_execution_guards; as condições e resultados
+# esperados aparecem nos asserts.
 def test_snapshot_and_execution_guards(session, user):
     service = WorkerService(session, user.id)
     create = service.queue("CREATE", {})
@@ -145,6 +161,8 @@ def test_snapshot_and_execution_guards(session, user):
         service.queue("RESTORE", {"snapshot_id": str(uuid4())}, worker_id=worker.id)
 
 
+# Documentação: Verifica o cenário test_action_queue_is_truthful_and_json_serializable; as
+# condições e resultados esperados aparecem nos asserts.
 def test_action_queue_is_truthful_and_json_serializable(session, user):
     from test_context import history
 

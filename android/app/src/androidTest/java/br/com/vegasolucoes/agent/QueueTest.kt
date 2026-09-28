@@ -9,8 +9,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+// Documentação: Define o tipo QueueTest e reúne o estado/contrato descrito para este módulo.
 class QueueTest {
     @Test
+    // Documentação: Implementa QueueTest.voiceQueueUsesCallIdentityAndStopsAfterEnd como parte do
+    // fluxo descrito para este arquivo.
     fun voiceQueueUsesCallIdentityAndStopsAfterEnd() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val db = EventStore(context, SecureStore(context))
@@ -35,6 +38,8 @@ class QueueTest {
     }
 
     @Test
+    // Documentação: Implementa QueueTest.reconnectRetainsIdentityAndReplyMapsNextTurnAtomically
+    // como parte do fluxo descrito para este arquivo.
     fun reconnectRetainsIdentityAndReplyMapsNextTurnAtomically() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val vault = SecureStore(context)

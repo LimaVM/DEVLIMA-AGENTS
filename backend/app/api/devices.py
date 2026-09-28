@@ -13,6 +13,7 @@ router = APIRouter(prefix="/devices", tags=["devices"])
 
 
 @router.get("")
+# Documentação: Implementa devices como parte do fluxo descrito para este arquivo.
 def devices(session: Session = Depends(get_session), user: User = Depends(get_current_user)):
     return [
         {"id": row.id, "name": row.name, "revoked": row.revoked, "last_seen_at": row.last_seen_at}
@@ -26,6 +27,7 @@ def devices(session: Session = Depends(get_session), user: User = Depends(get_cu
 
 
 @router.post("/{identifier}/revoke", status_code=204)
+# Documentação: Revoga revoke, segundo o contrato e as verificações deste módulo.
 def revoke(
     identifier: UUID,
     session: Session = Depends(get_session),

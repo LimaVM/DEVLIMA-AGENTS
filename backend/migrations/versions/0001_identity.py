@@ -9,6 +9,7 @@ branch_labels = None
 depends_on = None
 
 
+# Documentação: Aplica tabelas, campos, índices e constraints desta revisão Alembic.
 def upgrade() -> None:
     op.create_table(
         "users",
@@ -43,6 +44,7 @@ def upgrade() -> None:
     )
 
 
+# Documentação: Reverte os elementos de schema criados por esta revisão, respeitando dependências.
 def downgrade() -> None:
     op.drop_table("login_throttles")
     op.drop_table("audit_log")

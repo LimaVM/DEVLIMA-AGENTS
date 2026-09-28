@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo LLMRequest e reúne o estado/contrato descrito para este módulo.
 class LLMRequest(Base):
     __tablename__ = "llm_requests"
 

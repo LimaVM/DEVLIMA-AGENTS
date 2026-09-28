@@ -9,6 +9,7 @@ branch_labels = None
 depends_on = None
 
 
+# Documentação: Aplica tabelas, campos, índices e constraints desta revisão Alembic.
 def upgrade():
     op.create_table(
         "call_sessions",
@@ -40,5 +41,6 @@ def upgrade():
         op.create_index(f"ix_call_sessions_{column}", "call_sessions", [column])
 
 
+# Documentação: Reverte os elementos de schema criados por esta revisão, respeitando dependências.
 def downgrade():
     op.drop_table("call_sessions")

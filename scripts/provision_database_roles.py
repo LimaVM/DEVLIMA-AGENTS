@@ -19,6 +19,9 @@ COMPOSE = [
 ]
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Cria/atualiza credenciais
+# externas de papéis PostgreSQL e aplica separação de permissões; preserva .env anterior em caso
+# de falha.
 def main():
     env = ROOT / ".env"
     assert env.exists() and env.stat().st_mode & 0o077 == 0, ".env must be private"

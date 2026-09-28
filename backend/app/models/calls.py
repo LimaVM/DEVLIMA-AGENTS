@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo CallSession e reúne o estado/contrato descrito para este módulo.
 class CallSession(Base):
     __tablename__ = "call_sessions"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

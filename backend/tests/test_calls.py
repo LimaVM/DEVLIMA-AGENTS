@@ -14,6 +14,7 @@ from app.devices.service import pending, register
 from app.models import CallSession, Conversation, OutboxEvent, User
 
 
+# Documentação: Implementa ringing como parte do fluxo descrito para este arquivo.
 def ringing(session, user, age=0):
     event = OutboxEvent(
         user_id=user.id,
@@ -27,6 +28,8 @@ def ringing(session, user, age=0):
     return event
 
 
+# Documentação: Verifica o cenário test_answer_creates_once_and_end_is_idempotent; as condições e
+# resultados esperados aparecem nos asserts.
 def test_answer_creates_once_and_end_is_idempotent(session, user):
     device = uuid4()
     register(session, device, user.id)
@@ -49,6 +52,8 @@ def test_answer_creates_once_and_end_is_idempotent(session, user):
         service.touch(UUID(first["id"]))
 
 
+# Documentação: Verifica o cenário test_concurrent_devices_cannot_both_answer; as condições e
+# resultados esperados aparecem nos asserts.
 def test_concurrent_devices_cannot_both_answer(session, user):
     devices = [uuid4(), uuid4()]
     for device in devices:
@@ -56,6 +61,8 @@ def test_concurrent_devices_cannot_both_answer(session, user):
     session.commit()
     event = ringing(session, user)
 
+    # Documentação: Implementa test_concurrent_devices_cannot_both_answer.answer como parte do
+    # fluxo descrito para este arquivo.
     def answer(device):
         with Session(get_engine(), expire_on_commit=False) as db:
             try:
@@ -72,6 +79,8 @@ def test_concurrent_devices_cannot_both_answer(session, user):
     assert session.scalar(select(func.count()).select_from(CallSession)) == 1
 
 
+# Documentação: Verifica o cenário test_reject_expiry_and_other_owner; as condições e resultados
+# esperados aparecem nos asserts.
 def test_reject_expiry_and_other_owner(session, user):
     device = uuid4()
     register(session, device, user.id)
@@ -100,6 +109,8 @@ def test_reject_expiry_and_other_owner(session, user):
         CallService(session, other.id).incoming(event.id)
 
 
+# Documentação: Verifica o cenário test_idle_call_expires_and_foreign_device_cannot_end; as
+# condições e resultados esperados aparecem nos asserts.
 def test_idle_call_expires_and_foreign_device_cannot_end(session, user):
     device, other = uuid4(), uuid4()
     register(session, device, user.id)
@@ -117,6 +128,8 @@ def test_idle_call_expires_and_foreign_device_cannot_end(session, user):
     assert session.get(CallSession, UUID(answered["id"])).status == "EXPIRED"
 
 
+# Documentação: Verifica o cenário test_http_device_session_bound_and_owner_guards; as condições e
+# resultados esperados aparecem nos asserts.
 def test_http_device_session_bound_and_owner_guards(client, session, user):
     device = uuid4()
     event = ringing(session, user)
@@ -154,6 +167,8 @@ def test_http_device_session_bound_and_owner_guards(client, session, user):
     )
 
 
+# Documentação: Verifica o cenário test_websocket_call_answer_reject_end_are_durable; as condições
+# e resultados esperados aparecem nos asserts.
 def test_websocket_call_answer_reject_end_are_durable(client, session, user):
     event = ringing(session, user)
     with client.websocket_connect("/ws") as ws:
@@ -169,6 +184,8 @@ def test_websocket_call_answer_reject_end_are_durable(client, session, user):
     assert session.scalar(select(CallSession)).status == "ENDED"
 
 
+# Documentação: Verifica o cenário test_voice_turn_replay_and_next_turn_keep_call_context; as
+# condições e resultados esperados aparecem nos asserts.
 def test_voice_turn_replay_and_next_turn_keep_call_context(client, session, user, monkeypatch):
     from contextlib import contextmanager
 
@@ -180,6 +197,8 @@ def test_voice_turn_replay_and_next_turn_keep_call_context(client, session, user
     stub = StubRouter(*[{"reply": "Resposta de voz", "actions": [], "memory_candidates": []}] * 2)
 
     @contextmanager
+    # Documentação: Implementa test_voice_turn_replay_and_next_turn_keep_call_context.factory como
+    # parte do fluxo descrito para este arquivo.
     def factory(*_):
         yield stub
 

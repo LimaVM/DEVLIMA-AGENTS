@@ -24,11 +24,13 @@ logger = logging.getLogger("devlima")
 
 
 @asynccontextmanager
+# Documentação: Implementa lifespan como parte do fluxo descrito para este arquivo.
 async def lifespan(app: FastAPI):
     yield
     get_engine().dispose()
 
 
+# Documentação: Cria create_app, segundo o contrato e as verificações deste módulo.
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
@@ -41,6 +43,8 @@ def create_app() -> FastAPI:
     )
 
     @app.middleware("http")
+    # Documentação: Executa a requisição de create_app.request_id, segundo o contrato e as
+    # verificações deste módulo.
     async def request_id(request: Request, call_next):
         request.state.request_id = str(uuid4())
         response = await call_next(request)
@@ -49,6 +53,8 @@ def create_app() -> FastAPI:
         return response
 
     @app.exception_handler(RequestValidationError)
+    # Documentação: Implementa create_app.validation_error como parte do fluxo descrito para este
+    # arquivo.
     async def validation_error(request: Request, error: RequestValidationError):
         # FastAPI's default includes rejected input, which can contain passwords.
         errors = [
@@ -58,15 +64,19 @@ def create_app() -> FastAPI:
         return JSONResponse(status_code=422, content={"detail": errors})
 
     @app.exception_handler(SQLAlchemyError)
+    # Documentação: Implementa create_app.database_error como parte do fluxo descrito para este
+    # arquivo.
     async def database_error(request: Request, error: SQLAlchemyError):
         logger.error("Database failure request_id=%s", request.state.request_id)
         return JSONResponse(status_code=503, content={"detail": "Banco indisponível"})
 
     @app.get("/health/live", tags=["health"])
+    # Documentação: Implementa create_app.live como parte do fluxo descrito para este arquivo.
     def live():
         return {"status": "ok", "phase": 9}
 
     @app.get("/health/ready", tags=["health"])
+    # Documentação: Implementa create_app.ready como parte do fluxo descrito para este arquivo.
     def ready():
         with get_engine().connect() as connection:
             connection.execute(text("SELECT 1"))

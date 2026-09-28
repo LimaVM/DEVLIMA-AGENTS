@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo Worker e reúne o estado/contrato descrito para este módulo.
 class Worker(Base):
     __tablename__ = "workers"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -23,6 +24,7 @@ class Worker(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo WorkerCommand e reúne o estado/contrato descrito para este módulo.
 class WorkerCommand(Base):
     __tablename__ = "worker_commands"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -41,6 +43,7 @@ class WorkerCommand(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo WorkerSnapshot e reúne o estado/contrato descrito para este módulo.
 class WorkerSnapshot(Base):
     __tablename__ = "worker_snapshots"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

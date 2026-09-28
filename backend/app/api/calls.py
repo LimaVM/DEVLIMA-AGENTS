@@ -20,16 +20,19 @@ from app.security import bearer, decode_token, get_current_user
 router = APIRouter(prefix="/calls", tags=["calls"])
 
 
+# Documentação: Define o tipo DeviceAction e reúne o estado/contrato descrito para este módulo.
 class DeviceAction(BaseModel):
     model_config = ConfigDict(extra="forbid")
     device_id: UUID
 
 
+# Documentação: Define o tipo Transcript e reúne o estado/contrato descrito para este módulo.
 class Transcript(DeviceAction):
     client_message_id: UUID
     content: str = Field(min_length=1, max_length=4000)
 
 
+# Documentação: Implementa bind como parte do fluxo descrito para este arquivo.
 def bind(session, user, data, credentials):
     claims = decode_token(credentials.credentials, get_settings())
     if "sid" in claims:
@@ -40,6 +43,7 @@ def bind(session, user, data, credentials):
 
 
 @router.get("")
+# Documentação: Lista list_calls, segundo o contrato e as verificações deste módulo.
 def list_calls(
     user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
@@ -59,6 +63,7 @@ def list_calls(
 
 
 @router.post("/incoming/{identifier}/{operation}")
+# Documentação: Implementa incoming como parte do fluxo descrito para este arquivo.
 def incoming(
     identifier: UUID,
     operation: str,
@@ -80,6 +85,7 @@ def incoming(
 
 
 @router.post("/{identifier}/end")
+# Documentação: Implementa end como parte do fluxo descrito para este arquivo.
 def end(
     identifier: UUID,
     data: DeviceAction,
@@ -97,6 +103,7 @@ def end(
 
 
 @router.post("/{identifier}/transcript")
+# Documentação: Implementa transcript como parte do fluxo descrito para este arquivo.
 def transcript(
     identifier: UUID,
     data: Transcript,

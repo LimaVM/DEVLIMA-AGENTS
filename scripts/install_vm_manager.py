@@ -11,10 +11,14 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
+# Documentação: Implementa run como parte do fluxo descrito para este arquivo.
 def run(args):
     subprocess.run(args, check=True)
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Instala runtime/serviço do
+# manager e arquivos operacionais após verificar caminhos e recursos, conservando infraestrutura
+# previamente existente.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--project", type=Path, default=Path("/srv/devlima-agent"))

@@ -18,6 +18,8 @@ import org.json.JSONObject
 val localFormat: DateTimeFormatter =
     DateTimeFormatter.ofPattern("dd/MM/uuuu HH:mm").withResolverStyle(ResolverStyle.STRICT)
 
+// Documentação: Converte data/hora local usando timezone da conta e recusa horário
+// ambíguo/inexistente.
 fun localToInstant(value: String, zone: String): Instant {
     val local = LocalDateTime.parse(value, localFormat)
     val tz = ZoneId.of(zone)
@@ -26,16 +28,19 @@ fun localToInstant(value: String, zone: String): Instant {
     return local.toInstant(offsets.first())
 }
 
+// Documentação: Implementa displayDate como parte do fluxo descrito para este arquivo.
 fun displayDate(value: String?, zone: String): String =
     if (value.isNullOrEmpty() || value == "null") "Sem horário"
     else
         runCatching { Instant.parse(value).atZone(ZoneId.of(zone)).format(localFormat) }
             .getOrDefault("Horário indisponível")
 
+// Documentação: Implementa arrayRows como parte do fluxo descrito para este arquivo.
 fun arrayRows(value: String): List<JSONObject> =
     JSONArray(value).let { arr -> (0 until arr.length()).map { arr.getJSONObject(it) } }
 
 @Composable
+// Documentação: Implementa RoutineScreen como parte do fluxo descrito para este arquivo.
 fun RoutineScreen(session: SessionData) {
     val scope = rememberCoroutineScope()
     val revision by AgentRuntime.revision.collectAsStateWithLifecycle()
@@ -49,6 +54,7 @@ fun RoutineScreen(session: SessionData) {
     var form by remember { mutableStateOf(false) }
     val paths = listOf("/tasks", "/reminders", "/scheduled-calls")
     val path = paths[kind]
+    // Documentação: Atualiza refresh, segundo o contrato e as verificações deste módulo.
     suspend fun refresh() {
         busy = true
         try {
@@ -207,6 +213,7 @@ fun RoutineScreen(session: SessionData) {
 }
 
 @Composable
+// Documentação: Implementa RoutineEditor como parte do fluxo descrito para este arquivo.
 private fun RoutineEditor(
     kind: Int,
     row: JSONObject?,
@@ -359,10 +366,12 @@ private fun RoutineEditor(
 }
 
 @Composable
+// Documentação: Implementa MemoryScreen como parte do fluxo descrito para este arquivo.
 fun MemoryScreen() {
     val scope = rememberCoroutineScope()
     var candidates by remember { mutableStateOf<List<JSONObject>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
+    // Documentação: Carrega load, segundo o contrato e as verificações deste módulo.
     suspend fun load() {
         try {
             candidates = arrayRows(AgentRuntime.auth.api("/memories/candidates"))

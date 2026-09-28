@@ -8,7 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
+// Documentação: Define o tipo CallRejectReceiver e reúne o estado/contrato descrito para este
+// módulo.
 class CallRejectReceiver : BroadcastReceiver() {
+    // Documentação: Trata o callback de CallRejectReceiver.onReceive, segundo o contrato e as
+    // verificações deste módulo.
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getStringExtra("event_id") ?: return
         val session = AgentRuntime.auth.session.value ?: return

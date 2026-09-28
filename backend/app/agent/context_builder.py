@@ -16,16 +16,21 @@ from app.workers.service import WorkerService, snapshot_data, worker_data
 
 
 @dataclass(frozen=True)
+# Documentação: Define o tipo BuiltContext e reúne o estado/contrato descrito para este módulo.
 class BuiltContext:
     messages: list[LLMMessage]
     stats: dict
 
 
+# Documentação: Define o tipo ContextBuilder e reúne o estado/contrato descrito para este módulo.
 class ContextBuilder:
+    # Documentação: Inicializa ContextBuilder com as dependências e estado declarados.
     def __init__(self, session: Session, settings: Settings):
         self.session = session
         self.settings = settings
 
+    # Documentação: Seleciona contexto do proprietário e aplica o orçamento antes de retornar
+    # mensagens e estatísticas.
     def build(self, user: User, conversation: Conversation, current: Message) -> BuiltContext:
         if (
             conversation.user_id != user.id
@@ -100,6 +105,8 @@ class ContextBuilder:
             },
         }
 
+        # Documentação: Implementa ContextBuilder.build.system_text como parte do fluxo descrito
+        # para este arquivo.
         def system_text():
             return (
                 SYSTEM_PROMPT

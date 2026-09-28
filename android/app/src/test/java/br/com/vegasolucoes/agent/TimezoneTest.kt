@@ -4,8 +4,11 @@ import java.time.Instant
 import org.junit.Assert.*
 import org.junit.Test
 
+// Documentação: Define o tipo TimezoneTest e reúne o estado/contrato descrito para este módulo.
 class TimezoneTest {
     @Test
+    // Documentação: Implementa TimezoneTest.saoPauloDateUsesAccountTimezoneAndRejectsDstGap como
+    // parte do fluxo descrito para este arquivo.
     fun saoPauloDateUsesAccountTimezoneAndRejectsDstGap() {
         assertEquals(
             Instant.parse("2026-09-28T13:30:00Z"),

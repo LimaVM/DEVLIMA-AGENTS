@@ -17,6 +17,8 @@ REMOTE_PROGRAM = (
 )
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Copia backups cifrados por
+# SSH para destino externo local e autentica metadados/checksum sem exportar segredos de conexão.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", default="ubuntu@147.15.33.140")

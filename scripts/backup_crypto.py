@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 MAGIC = b"DLAGBACKUP1"
 
 
+# Documentação: Implementa secret como parte do fluxo descrito para este arquivo.
 def secret(path):
     path = Path(path)
     if path.stat().st_mode & 0o077:
@@ -18,6 +19,7 @@ def secret(path):
     return key
 
 
+# Documentação: Implementa encrypt como parte do fluxo descrito para este arquivo.
 def encrypt(source, target, key_path):
     nonce = os.urandom(12)
     encryptor = Cipher(algorithms.AES(secret(key_path)), modes.GCM(nonce)).encryptor()
@@ -32,6 +34,7 @@ def encrypt(source, target, key_path):
         output.write(encryptor.tag)
 
 
+# Documentação: Implementa decrypt como parte do fluxo descrito para este arquivo.
 def decrypt(source, target, key_path):
     with open(source, "rb") as input_file:
         header = input_file.read(len(MAGIC) + 12)
@@ -65,6 +68,7 @@ def decrypt(source, target, key_path):
             raise
 
 
+# Documentação: Implementa sha256 como parte do fluxo descrito para este arquivo.
 def sha256(path):
     import hashlib
 

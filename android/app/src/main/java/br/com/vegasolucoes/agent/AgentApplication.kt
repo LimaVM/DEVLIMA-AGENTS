@@ -5,13 +5,18 @@ import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONObject
 
+// Documentação: Define o tipo AgentApplication e reúne o estado/contrato descrito para este
+// módulo.
 class AgentApplication : Application() {
+    // Documentação: Trata o callback de AgentApplication.onCreate, segundo o contrato e as
+    // verificações deste módulo.
     override fun onCreate() {
         super.onCreate()
         AgentRuntime.initialize(this)
     }
 }
 
+// Documentação: Define o tipo AgentRuntime e reúne o estado/contrato descrito para este módulo.
 object AgentRuntime {
     lateinit var secure: SecureStore
     lateinit var auth: AuthRepository
@@ -29,6 +34,8 @@ object AgentRuntime {
     @Volatile var sender: ((JSONObject) -> Boolean)? = null
 
     @Synchronized
+    // Documentação: Implementa AgentRuntime.initialize como parte do fluxo descrito para este
+    // arquivo.
     fun initialize(context: Context) {
         if (::auth.isInitialized) return
         secure = SecureStore(context)
@@ -37,6 +44,8 @@ object AgentRuntime {
         received.value = events.recent()
     }
 
+    // Documentação: Atualiza AgentRuntime.refreshEvents, segundo o contrato e as verificações
+    // deste módulo.
     fun refreshEvents() {
         received.value = events.recent()
         revision.value++

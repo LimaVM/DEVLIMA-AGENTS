@@ -18,23 +18,29 @@ SECRET_PATTERN = re.compile(
 )
 
 
+# Documentação: Implementa normalize como parte do fluxo descrito para este arquivo.
 def normalize(value: str) -> str:
     return " ".join(value.casefold().split()).rstrip(".!?")
 
 
+# Documentação: Implementa content_hash como parte do fluxo descrito para este arquivo.
 def content_hash(value: str) -> str:
     return hashlib.sha256(normalize(value).encode()).hexdigest()
 
 
+# Documentação: Implementa safe_memory_content como parte do fluxo descrito para este arquivo.
 def safe_memory_content(value: str) -> bool:
     return bool(value.strip()) and SECRET_PATTERN.search(value) is None
 
 
+# Documentação: Define o tipo MemoryManager e reúne o estado/contrato descrito para este módulo.
 class MemoryManager:
+    # Documentação: Inicializa MemoryManager com as dependências e estado declarados.
     def __init__(self, session: Session, user_id: UUID):
         self.session = session
         self.user_id = user_id
 
+    # Documentação: Cria MemoryManager.create, segundo o contrato e as verificações deste módulo.
     def create(self, content: str, category: str, source_message_id: UUID | None = None) -> Memory:
         if not safe_memory_content(content):
             raise AgentError("sensitive_memory_rejected", 422)
@@ -77,6 +83,8 @@ class MemoryManager:
         )
         return memory
 
+    # Documentação: Classifica a proposta em aceita, pendente ou rejeitada segundo pedido
+    # explícito e sensibilidade do conteúdo.
     def consider(self, proposal: MemoryProposal, source: Message) -> MemoryCandidate:
         if source.user_id != self.user_id or source.role != "user":
             raise AgentError("not_found", 404)
@@ -111,6 +119,8 @@ class MemoryManager:
         )
         return candidate
 
+    # Documentação: Implementa MemoryManager.accept como parte do fluxo descrito para este
+    # arquivo.
     def accept(self, identifier: UUID) -> Memory:
         candidate = self.session.scalar(
             select(MemoryCandidate)
@@ -135,6 +145,8 @@ class MemoryManager:
         candidate.accepted_memory_id = memory.id
         return memory
 
+    # Documentação: Seleciona memórias ativas do usuário e ordena sua pertinência para o texto
+    # atual.
     def relevant(self, query: str, limit: int = 5) -> list[Memory]:
         terms = set(re.findall(r"\w{3,}", query.casefold()))
         rows = list(
@@ -146,6 +158,8 @@ class MemoryManager:
             )
         )
 
+        # Documentação: Implementa MemoryManager.relevant.score como parte do fluxo descrito para
+        # este arquivo.
         def score(memory):
             overlap = len(terms & set(re.findall(r"\w{3,}", memory.content.casefold())))
             return overlap + (2 if memory.category == "preference" else 0)

@@ -9,16 +9,19 @@ branch_labels = None
 depends_on = None
 
 
+# Documentação: Implementa owner como parte do fluxo descrito para este arquivo.
 def owner():
     return sa.Column("user_id", sa.Uuid(), sa.ForeignKey("users.id"), nullable=False)
 
 
+# Documentação: Implementa created como parte do fluxo descrito para este arquivo.
 def created():
     return sa.Column(
         "created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
     )
 
 
+# Documentação: Aplica tabelas, campos, índices e constraints desta revisão Alembic.
 def upgrade():
     op.create_table(
         "devices",
@@ -68,6 +71,7 @@ def upgrade():
             op.create_index(f"ix_{table}_{column}", table, [column])
 
 
+# Documentação: Reverte os elementos de schema criados por esta revisão, respeitando dependências.
 def downgrade():
     for table in ["event_deliveries", "refresh_tokens", "refresh_families", "devices"]:
         op.drop_table(table)

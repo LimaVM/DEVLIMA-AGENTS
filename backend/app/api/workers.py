@@ -15,10 +15,12 @@ from app.workers.service import WorkerService, command_data, snapshot_data, work
 router = APIRouter(prefix="/workers", tags=["workers"])
 
 
+# Documentação: Define o tipo CreateRequest e reúne o estado/contrato descrito para este módulo.
 class CreateRequest(WorkerCreate):
     request_id: UUID
 
 
+# Documentação: Define o tipo CommandRequest e reúne o estado/contrato descrito para este módulo.
 class CommandRequest(StrictModel):
     request_id: UUID
     kind: Literal["DESTROY", "RESET", "START", "STOP", "SNAPSHOT", "RESTORE", "EXECUTE"]
@@ -27,6 +29,8 @@ class CommandRequest(StrictModel):
     timeout: int = Field(120, ge=1, le=300)
 
     @model_validator(mode="after")
+    # Documentação: Valida CommandRequest.validate_operation, segundo o contrato e as verificações
+    # deste módulo.
     def validate_operation(self):
         if self.kind == "RESTORE" and self.snapshot_id is None:
             raise ValueError("snapshot_id required")
@@ -39,6 +43,7 @@ class CommandRequest(StrictModel):
         return self
 
 
+# Documentação: Implementa invoke como parte do fluxo descrito para este arquivo.
 def invoke(session, owner, operation):
     try:
         data = operation(WorkerService(session, owner))
@@ -50,6 +55,7 @@ def invoke(session, owner, operation):
 
 
 @router.post("", status_code=202)
+# Documentação: Cria create, segundo o contrato e as verificações deste módulo.
 def create(
     data: CreateRequest,
     session: Session = Depends(get_session),
@@ -69,11 +75,13 @@ def create(
 
 
 @router.get("")
+# Documentação: Lista list_workers, segundo o contrato e as verificações deste módulo.
 def list_workers(session: Session = Depends(get_session), user: User = Depends(get_current_user)):
     return [worker_data(row) for row in WorkerService(session, user.id).workers()]
 
 
 @router.get("/{identifier}")
+# Documentação: Implementa status como parte do fluxo descrito para este arquivo.
 def status(
     identifier: UUID,
     session: Session = Depends(get_session),
@@ -83,6 +91,7 @@ def status(
 
 
 @router.post("/{identifier}/commands", status_code=202)
+# Documentação: Implementa command como parte do fluxo descrito para este arquivo.
 def command(
     identifier: UUID,
     data: CommandRequest,
@@ -98,6 +107,7 @@ def command(
 
 
 @router.get("/{identifier}/commands")
+# Documentação: Implementa commands como parte do fluxo descrito para este arquivo.
 def commands(
     identifier: UUID,
     session: Session = Depends(get_session),
@@ -111,6 +121,7 @@ def commands(
 
 
 @router.get("/{identifier}/snapshots")
+# Documentação: Implementa snapshots como parte do fluxo descrito para este arquivo.
 def snapshots(
     identifier: UUID,
     session: Session = Depends(get_session),

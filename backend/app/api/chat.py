@@ -24,6 +24,7 @@ from app.security import get_current_user
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
+# Documentação: Implementa owned como parte do fluxo descrito para este arquivo.
 def owned(session, user, identifier, lock=False):
     query = select(Conversation).where(
         Conversation.id == identifier, Conversation.user_id == user.id
@@ -35,6 +36,7 @@ def owned(session, user, identifier, lock=False):
 
 
 @router.post("/conversations", response_model=ConversationResponse, status_code=201)
+# Documentação: Cria create_conversation, segundo o contrato e as verificações deste módulo.
 def create_conversation(
     data: ConversationCreate,
     user: User = Depends(get_current_user),
@@ -53,6 +55,7 @@ def create_conversation(
 
 
 @router.get("/conversations", response_model=list[ConversationResponse])
+# Documentação: Lista list_conversations, segundo o contrato e as verificações deste módulo.
 def list_conversations(
     archived: bool = False,
     offset: int = Query(0, ge=0),
@@ -70,6 +73,7 @@ def list_conversations(
 
 
 @router.get("/conversations/{identifier}", response_model=ConversationResponse)
+# Documentação: Obtém get_conversation, segundo o contrato e as verificações deste módulo.
 def get_conversation(
     identifier: UUID,
     user: User = Depends(get_current_user),
@@ -79,6 +83,7 @@ def get_conversation(
 
 
 @router.post("/conversations/{identifier}/archive", status_code=204)
+# Documentação: Implementa archive_conversation como parte do fluxo descrito para este arquivo.
 def archive_conversation(
     identifier: UUID,
     user: User = Depends(get_current_user),
@@ -103,6 +108,7 @@ def archive_conversation(
 
 
 @router.get("/conversations/{identifier}/messages", response_model=list[MessageResponse])
+# Documentação: Lista list_messages, segundo o contrato e as verificações deste módulo.
 def list_messages(
     identifier: UUID,
     after_sequence: int = Query(0, ge=0),
@@ -124,6 +130,7 @@ def list_messages(
 
 
 @router.get("/conversations/{identifier}/summaries", response_model=list[SummaryResponse])
+# Documentação: Lista list_summaries, segundo o contrato e as verificações deste módulo.
 def list_summaries(
     identifier: UUID,
     limit: int = Query(20, ge=1, le=100),
@@ -143,6 +150,7 @@ def list_summaries(
 
 
 @router.post("/messages", response_model=ChatReply)
+# Documentação: Implementa send_message como parte do fluxo descrito para este arquivo.
 def send_message(
     data: ChatSend, user: User = Depends(get_current_user), session: Session = Depends(get_session)
 ):

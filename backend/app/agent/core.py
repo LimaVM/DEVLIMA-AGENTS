@@ -19,12 +19,16 @@ from app.models.planning import OutboxEvent
 from app.schemas.chat import ChatReply, ChatSend
 
 
+# Documentação: Define o tipo AgentCore e reúne o estado/contrato descrito para este módulo.
 class AgentCore:
+    # Documentação: Inicializa AgentCore com as dependências e estado declarados.
     def __init__(self, session: Session, settings: Settings, router_factory=build_router):
         self.session = session
         self.settings = settings
         self.router_factory = router_factory
 
+    # Documentação: Reconstrói a resposta pública a partir da mensagem assistente persistida sem
+    # executar novamente inferência/ações.
     def _replay(self, assistant: Message) -> ChatReply:
         return ChatReply(
             conversation_id=assistant.conversation_id,
@@ -35,6 +39,8 @@ class AgentCore:
             **assistant.info,
         )
 
+    # Documentação: Reivindica o turno sob lock e lease, ou reproduz uma resposta já persistida
+    # para o mesmo client_message_id.
     def _claim(self, user_id: UUID, data: ChatSend, lease: UUID):
         digest = hashlib.sha256(f"{user_id}:{data.client_message_id}".encode()).digest()
         key = int.from_bytes(digest[:8], "big", signed=True)
@@ -115,6 +121,8 @@ class AgentCore:
         self.session.commit()
         return conversation, source
 
+    # Documentação: Marca falha apenas se o lease ainda pertence à requisição e libera a conversa
+    # para retry controlado.
     def _fail(self, conversation_id: UUID, source_id: UUID, lease: UUID, code: str):
         self.session.rollback()
         conversation = self.session.scalar(
@@ -138,6 +146,8 @@ class AgentCore:
             )
         self.session.commit()
 
+    # Documentação: Executa o turno completo, conserva idempotência e confirma mensagem, ações,
+    # memória e outbox no banco.
     def send(self, user_id: UUID, data: ChatSend) -> ChatReply:
         user = self.session.get(User, user_id)
         if user is None:

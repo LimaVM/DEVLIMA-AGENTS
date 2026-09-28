@@ -14,6 +14,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 import org.json.JSONObject
 
+// Documentação: Define o tipo SessionData e reúne o estado/contrato descrito para este módulo.
 data class SessionData(
     val server: String,
     val access: String,
@@ -25,12 +26,15 @@ data class SessionData(
     val timezone: String = "America/Sao_Paulo",
 )
 
+// Documentação: Define o tipo SecureStore e reúne o estado/contrato descrito para este módulo.
 class SecureStore(private val context: Context) {
     private val sessionFile = AtomicFile(File(context.noBackupFilesDir, "session.bin"))
     private val deviceFile = File(context.noBackupFilesDir, "device-id")
     private val alias = "devlima-session-v1"
 
     @Synchronized
+    // Documentação: Recupera ou gera chave AES no Android Keystore sem exportar seu material para
+    // o aplicativo.
     private fun key(): SecretKey {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
         (store.getKey(alias, null) as? SecretKey)?.let {
@@ -52,6 +56,8 @@ class SecureStore(private val context: Context) {
     }
 
     @Synchronized
+    // Documentação: Cifra UTF-8 com IV GCM novo e AAD do applicationId, retornando envelope
+    // Base64.
     fun encrypt(text: String): String {
         val cipher =
             Cipher.getInstance("AES/GCM/NoPadding").apply {
@@ -65,6 +71,7 @@ class SecureStore(private val context: Context) {
     }
 
     @Synchronized
+    // Documentação: Valida tamanho e autentica o envelope AES-GCM antes de retornar texto UTF-8.
     fun decrypt(text: String): String {
         val bytes = Base64.decode(text, Base64.NO_WRAP)
         require(bytes.size > 28)
@@ -77,12 +84,15 @@ class SecureStore(private val context: Context) {
     }
 
     @Synchronized
+    // Documentação: Implementa SecureStore.deviceId como parte do fluxo descrito para este
+    // arquivo.
     fun deviceId(): String {
         if (deviceFile.exists()) return UUID.fromString(deviceFile.readText()).toString()
         return UUID.randomUUID().toString().also { deviceFile.writeText(it) }
     }
 
     @Synchronized
+    // Documentação: Persiste SecureStore.save, segundo o contrato e as verificações deste módulo.
     fun save(data: SessionData) {
         val json =
             JSONObject()
@@ -105,6 +115,7 @@ class SecureStore(private val context: Context) {
     }
 
     @Synchronized
+    // Documentação: Carrega SecureStore.load, segundo o contrato e as verificações deste módulo.
     fun load(): SessionData? =
         try {
             val data =
@@ -126,6 +137,7 @@ class SecureStore(private val context: Context) {
         }
 
     @Synchronized
+    // Documentação: Limpa SecureStore.clear, segundo o contrato e as verificações deste módulo.
     fun clear() {
         sessionFile.delete()
         deviceFile.delete()

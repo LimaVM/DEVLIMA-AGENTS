@@ -31,11 +31,14 @@ from app.schemas.chat import ChatSend
 from app.security import create_token
 
 
+# Documentação: Define o tipo StubRouter e reúne o estado/contrato descrito para este módulo.
 class StubRouter:
+    # Documentação: Inicializa StubRouter com as dependências e estado declarados.
     def __init__(self, *outputs):
         self.outputs = list(outputs) or [{"reply": "Olá", "actions": [], "memory_candidates": []}]
         self.calls = []
 
+    # Documentação: Implementa StubRouter.chat como parte do fluxo descrito para este arquivo.
     def chat(self, messages, **kwargs):
         self.calls.append((messages, kwargs))
         output = self.outputs.pop(0)
@@ -53,10 +56,12 @@ class StubRouter:
         )
 
     @contextmanager
+    # Documentação: Implementa StubRouter.factory como parte do fluxo descrito para este arquivo.
     def factory(self, settings, session):
         yield self
 
 
+# Documentação: Implementa send como parte do fluxo descrito para este arquivo.
 def send(core, user, content="Olá", conversation_id=None, identifier=None):
     return core.send(
         user.id,
@@ -68,6 +73,7 @@ def send(core, user, content="Olá", conversation_id=None, identifier=None):
     )
 
 
+# Documentação: Implementa history como parte do fluxo descrito para este arquivo.
 def history(session, user, texts):
     conversation = Conversation(user_id=user.id, title="Contexto", last_sequence=len(texts))
     session.add(conversation)
@@ -103,11 +109,15 @@ def history(session, user, texts):
         '{"reply":"a","memory_candidates":[{"content":"x","category":"fact","confidence":2}]}',
     ],
 )
+# Documentação: Verifica o cenário test_untrusted_envelope_rejected; as condições e resultados
+# esperados aparecem nos asserts.
 def test_untrusted_envelope_rejected(raw):
     with pytest.raises(InvalidAgentResponse):
         parse_response(raw)
 
 
+# Documentação: Verifica o cenário test_action_datetime_normalized_and_limits; as condições e
+# resultados esperados aparecem nos asserts.
 def test_action_datetime_normalized_and_limits():
     result = parse_response(
         json.dumps(
@@ -147,6 +157,8 @@ def test_action_datetime_normalized_and_limits():
         ("Lembre que token=secret123456", "token=secret123456", 0.99, "REJECTED"),
     ],
 )
+# Documentação: Verifica o cenário test_memory_requires_explicit_grounded_confidence; as condições
+# e resultados esperados aparecem nos asserts.
 def test_memory_requires_explicit_grounded_confidence(
     session, user, source_text, content, confidence, status
 ):
@@ -164,6 +176,8 @@ def test_memory_requires_explicit_grounded_confidence(
             manager.accept(candidate.id)
 
 
+# Documentação: Verifica o cenário test_pending_confirmation_dedup_deactivate; as condições e
+# resultados esperados aparecem nos asserts.
 def test_pending_confirmation_dedup_deactivate(session, user):
     _, rows = history(session, user, ["Eu gosto de café"])
     manager = MemoryManager(session, user.id)
@@ -181,6 +195,8 @@ def test_pending_confirmation_dedup_deactivate(session, user):
         manager.accept(candidate.id)
 
 
+# Documentação: Verifica o cenário test_context_bounds_timezone_and_original_history; as condições
+# e resultados esperados aparecem nos asserts.
 def test_context_bounds_timezone_and_original_history(session, user):
     conversation, rows = history(session, user, [f"{i}:" + "x" * 3990 for i in range(20)])
     current = Message(
@@ -208,6 +224,8 @@ def test_context_bounds_timezone_and_original_history(session, user):
     assert session.scalar(select(func.count()).select_from(Message)) == 21
 
 
+# Documentação: Verifica o cenário test_core_persistence_replay_and_key_conflict; as condições e
+# resultados esperados aparecem nos asserts.
 def test_core_persistence_replay_and_key_conflict(session, user):
     stub = StubRouter()
     core = AgentCore(session, get_settings(), stub.factory)
@@ -226,6 +244,8 @@ def test_core_persistence_replay_and_key_conflict(session, user):
     "failure",
     [LLMError("timeout"), '{"reply": "bad", "actions":[{"type":"shell","arguments":{}}]}'],
 )
+# Documentação: Verifica o cenário test_failed_user_message_survives_and_can_retry; as condições e
+# resultados esperados aparecem nos asserts.
 def test_failed_user_message_survives_and_can_retry(session, user, failure):
     stub = StubRouter(failure, {"reply": "Funcionou"})
     core = AgentCore(session, get_settings(), stub.factory)
@@ -242,6 +262,8 @@ def test_failed_user_message_survives_and_can_retry(session, user, failure):
     assert len(stub.calls) == 2
 
 
+# Documentação: Verifica o cenário test_failed_old_turn_cannot_be_inserted_out_of_order; as
+# condições e resultados esperados aparecem nos asserts.
 def test_failed_old_turn_cannot_be_inserted_out_of_order(session, user):
     stub = StubRouter(LLMError("timeout"), {"reply": "nova"})
     core = AgentCore(session, get_settings(), stub.factory)
@@ -254,6 +276,8 @@ def test_failed_old_turn_cannot_be_inserted_out_of_order(session, user):
         send(core, user, identifier=identifier)
 
 
+# Documentação: Verifica o cenário test_action_is_validated_and_executed_once; as condições e
+# resultados esperados aparecem nos asserts.
 def test_action_is_validated_and_executed_once(session, user):
     proposal = {"type": "create_task", "arguments": {"title": "Teste"}}
     stub = StubRouter({"reply": "Tarefa criada", "actions": [proposal, proposal]})
@@ -264,6 +288,8 @@ def test_action_is_validated_and_executed_once(session, user):
     assert session.scalar(select(AuditLog).where(AuditLog.event == "agent.action_result"))
 
 
+# Documentação: Verifica o cenário test_duplicate_proposals_and_pending_feedback; as condições e
+# resultados esperados aparecem nos asserts.
 def test_duplicate_proposals_and_pending_feedback(session, user):
     proposal = {"content": "gosto de café", "category": "fact", "confidence": 0.95}
     stub = StubRouter({"reply": "Entendi", "memory_candidates": [proposal, proposal]})
@@ -273,6 +299,8 @@ def test_duplicate_proposals_and_pending_feedback(session, user):
     assert session.scalar(select(func.count()).select_from(Memory)) == 0
 
 
+# Documentação: Verifica o cenário test_summary_keeps_raw_history_and_recent_pair; as condições e
+# resultados esperados aparecem nos asserts.
 def test_summary_keeps_raw_history_and_recent_pair(session, user):
     settings = get_settings().model_copy(
         update={"context_recent_messages": 2, "summary_trigger_messages": 4}
@@ -306,6 +334,8 @@ def test_summary_keeps_raw_history_and_recent_pair(session, user):
 
 
 @pytest.mark.parametrize("summary_failure", [LLMError("timeout"), "not json"])
+# Documentação: Verifica o cenário test_optional_summary_failure_preserves_chat; as condições e
+# resultados esperados aparecem nos asserts.
 def test_optional_summary_failure_preserves_chat(session, user, summary_failure):
     settings = get_settings().model_copy(
         update={"context_recent_messages": 2, "summary_trigger_messages": 4}
@@ -318,11 +348,19 @@ def test_optional_summary_failure_preserves_chat(session, user, summary_failure)
     assert session.scalar(select(AuditLog).where(AuditLog.event == "summary.failed"))
 
 
+# Documentação: Verifica o cenário test_concurrent_turn_busy_without_duplicate_provider; as
+# condições e resultados esperados aparecem nos asserts.
 def test_concurrent_turn_busy_without_duplicate_provider(session, user):
     conversation, _ = history(session, user, [])
     entered, release = Event(), Event()
 
+    # Documentação: Define o tipo
+    # test_concurrent_turn_busy_without_duplicate_provider.BlockingRouter e reúne o
+    # estado/contrato descrito para este módulo.
     class BlockingRouter(StubRouter):
+        # Documentação: Implementa
+        # test_concurrent_turn_busy_without_duplicate_provider.BlockingRouter.chat como parte do
+        # fluxo descrito para este arquivo.
         def chat(self, messages, **kwargs):
             entered.set()
             assert release.wait(10)
@@ -330,6 +368,8 @@ def test_concurrent_turn_busy_without_duplicate_provider(session, user):
 
     stub = BlockingRouter()
 
+    # Documentação: Implementa test_concurrent_turn_busy_without_duplicate_provider.first como
+    # parte do fluxo descrito para este arquivo.
     def first():
         with Session(get_engine(), expire_on_commit=False) as independent:
             return send(
@@ -356,6 +396,8 @@ def test_concurrent_turn_busy_without_duplicate_provider(session, user):
     assert session.scalar(select(func.count()).select_from(Message)) == 2
 
 
+# Documentação: Verifica o cenário test_expired_lease_recovers_and_stale_owner_cannot_release; as
+# condições e resultados esperados aparecem nos asserts.
 def test_expired_lease_recovers_and_stale_owner_cannot_release(session, user):
     core = AgentCore(session, get_settings(), StubRouter().factory)
     lease = uuid4()
@@ -380,6 +422,8 @@ def test_expired_lease_recovers_and_stale_owner_cannot_release(session, user):
     )
 
 
+# Documentação: Verifica o cenário test_api_auth_tenant_isolation_and_memory_lifecycle; as
+# condições e resultados esperados aparecem nos asserts.
 def test_api_auth_tenant_isolation_and_memory_lifecycle(client, session, user):
     headers = {"Authorization": f"Bearer {create_token(user, get_settings())}"}
     assert client.get("/chat/conversations").status_code == 401
@@ -458,6 +502,8 @@ def test_api_auth_tenant_isolation_and_memory_lifecycle(client, session, user):
     )
 
 
+# Documentação: Verifica o cenário test_context_memory_owner_isolation; as condições e resultados
+# esperados aparecem nos asserts.
 def test_context_memory_owner_isolation(session, user):
     other = User(username="other", password_hash=user.password_hash, timezone=user.timezone)
     session.add(other)
@@ -471,6 +517,8 @@ def test_context_memory_owner_isolation(session, user):
         ContextBuilder(session, get_settings()).build(other, conversation, rows[0])
 
 
+# Documentação: Verifica o cenário test_api_reject_candidate_and_pagination; as condições e
+# resultados esperados aparecem nos asserts.
 def test_api_reject_candidate_and_pagination(client, session, user):
     conversation, rows = history(session, user, ["a", "b", "c", "d"])
     candidate = MemoryManager(session, user.id).consider(
@@ -497,6 +545,8 @@ def test_api_reject_candidate_and_pagination(client, session, user):
     )
 
 
+# Documentação: Verifica o cenário test_api_chat_response_replay_and_failure; as condições e
+# resultados esperados aparecem nos asserts.
 def test_api_chat_response_replay_and_failure(client, session, user, monkeypatch):
     stub = StubRouter({"reply": "Resposta humana"}, LLMError("timeout"))
     monkeypatch.setattr(
@@ -515,6 +565,8 @@ def test_api_chat_response_replay_and_failure(client, session, user, monkeypatch
     assert session.scalar(select(Message).where(Message.status == "FAILED")).content == "Oi"
 
 
+# Documentação: Verifica o cenário test_context_low_budget_long_message_and_summary; as condições
+# e resultados esperados aparecem nos asserts.
 def test_context_low_budget_long_message_and_summary(session, user):
     conversation, rows = history(session, user, ["a", "b"])
     session.add(
@@ -549,6 +601,8 @@ def test_context_low_budget_long_message_and_summary(session, user):
     assert len(context.messages[0].content) <= 8000
 
 
+# Documentação: Verifica o cenário test_archive_busy_and_expired_turn_revokes_old_lease; as
+# condições e resultados esperados aparecem nos asserts.
 def test_archive_busy_and_expired_turn_revokes_old_lease(client, session, user):
     core = AgentCore(session, get_settings(), StubRouter().factory)
     lease = uuid4()

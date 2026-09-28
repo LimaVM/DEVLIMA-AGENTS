@@ -9,18 +9,24 @@ from vm_manager.linux import LinuxWorkerProvider, WindowsWorkerProvider
 from vm_manager.service import WorkerService
 
 
+# Documentação: Define o tipo FakeProvider e reúne o estado/contrato descrito para este módulo.
 class FakeProvider:
+    # Documentação: Inicializa FakeProvider com as dependências e estado declarados.
     def __init__(self):
         self.rows, self.calls = {}, []
         self.fail = None
 
+    # Documentação: Libera FakeProvider.close, segundo o contrato e as verificações deste módulo.
     def close(self):
         pass
 
+    # Documentação: Confere FakeProvider.check_resources, segundo o contrato e as verificações
+    # deste módulo.
     def check_resources(self, rows, desired):
         if len([row for row in rows if row["status"] != "DESTROYED"]) >= 2:
             raise VMError("worker_quota_exceeded", 429)
 
+    # Documentação: Cria FakeProvider.create, segundo o contrato e as verificações deste módulo.
     def create(self, row):
         self.calls.append("CREATE")
         if self.fail:
@@ -28,46 +34,63 @@ class FakeProvider:
         self.rows[row["id"]] = {**row, "status": "BOOTING"}
         return self.rows[row["id"]]
 
+    # Documentação: Implementa FakeProvider.status como parte do fluxo descrito para este arquivo.
     def status(self, row):
         return self.rows.get(row["id"], {**row, "status": "ERROR"})
 
+    # Documentação: Implementa FakeProvider.destroy como parte do fluxo descrito para este
+    # arquivo.
     def destroy(self, row):
         self.calls.append("DESTROY")
         self.rows[row["id"]] = {**row, "status": "DESTROYED"}
         return self.rows[row["id"]]
 
+    # Documentação: Interrompe FakeProvider.stop, segundo o contrato e as verificações deste
+    # módulo.
     def stop(self, row):
         self.rows[row["id"]] = {**row, "status": "STOPPED"}
 
+    # Documentação: Inicia FakeProvider.start, segundo o contrato e as verificações deste módulo.
     def start(self, row):
         self.rows[row["id"]] = {**row, "status": "BOOTING"}
         return self.rows[row["id"]]
 
+    # Documentação: Implementa FakeProvider.reset como parte do fluxo descrito para este arquivo.
     def reset(self, row, generation):
         return self.create({**row, "generation": generation})
 
+    # Documentação: Implementa FakeProvider.snapshot como parte do fluxo descrito para este
+    # arquivo.
     def snapshot(self, row, identifier):
         return {"id": str(identifier), "worker_id": row["id"], "sha256": "a" * 64}, row
 
+    # Documentação: Implementa FakeProvider.restore como parte do fluxo descrito para este
+    # arquivo.
     def restore(self, row, snapshot):
         return row
 
+    # Documentação: Implementa FakeProvider.execute como parte do fluxo descrito para este
+    # arquivo.
     def execute(self, row, identifier, script, timeout):
         self.calls.append("EXECUTE")
         return {"exit_code": 0, "output": "done", "truncated": False}
 
 
 @pytest.fixture
+# Documentação: Implementa setup como parte do fluxo descrito para este arquivo.
 def setup(tmp_path):
     config = Settings(token="t" * 40, state_root=tmp_path / "registry")
     provider = FakeProvider()
     return config, provider, WorkerService(config, provider)
 
 
+# Documentação: Implementa operation como parte do fluxo descrito para este arquivo.
 def operation(kind="CREATE", **args):
     return Operation(request_id=uuid4(), worker_id=uuid4(), owner=uuid4(), kind=kind, **args)
 
 
+# Documentação: Verifica o cenário test_auth_and_private_contract; as condições e resultados
+# esperados aparecem nos asserts.
 def test_auth_and_private_contract(setup):
     config, provider, _ = setup
     with TestClient(create_app(config, provider)) as client:
@@ -97,6 +120,8 @@ def test_auth_and_private_contract(setup):
         assert "secret-value" not in bad.text
 
 
+# Documentação: Verifica o cenário test_idempotency_and_argument_conflict; as condições e
+# resultados esperados aparecem nos asserts.
 def test_idempotency_and_argument_conflict(setup):
     _, provider, service = setup
     request = operation()
@@ -110,6 +135,8 @@ def test_idempotency_and_argument_conflict(setup):
     assert service.registry.worker(request.worker_id)["status"] == "BOOTING"
 
 
+# Documentação: Verifica o cenário test_quota_owner_and_destroy_cleanup; as condições e resultados
+# esperados aparecem nos asserts.
 def test_quota_owner_and_destroy_cleanup(setup):
     _, provider, service = setup
     requests = [operation() for _ in range(3)]
@@ -131,6 +158,8 @@ def test_quota_owner_and_destroy_cleanup(setup):
     assert provider.calls.count("DESTROY") == 1
 
 
+# Documentação: Verifica o cenário test_recovery_never_reexecutes_uncertain_job; as condições e
+# resultados esperados aparecem nos asserts.
 def test_recovery_never_reexecutes_uncertain_job(setup):
     _, provider, service = setup
     request = operation()
@@ -148,6 +177,8 @@ def test_recovery_never_reexecutes_uncertain_job(setup):
         service.perform(job)
 
 
+# Documentação: Verifica o cenário test_reconcile_proves_create_from_actual_provider; as condições
+# e resultados esperados aparecem nos asserts.
 def test_reconcile_proves_create_from_actual_provider(setup):
     _, _, service = setup
     request = operation()
@@ -161,6 +192,8 @@ def test_reconcile_proves_create_from_actual_provider(setup):
     assert service.registry.operation(request.request_id, request.owner)["status"] == "SUCCEEDED"
 
 
+# Documentação: Verifica o cenário test_snapshot_limit_and_cross_worker_restore; as condições e
+# resultados esperados aparecem nos asserts.
 def test_snapshot_limit_and_cross_worker_restore(setup):
     _, _, service = setup
     request = operation()
@@ -185,6 +218,8 @@ def test_snapshot_limit_and_cross_worker_restore(setup):
         )
 
 
+# Documentação: Verifica o cenário test_linux_path_and_xml_protection; as condições e resultados
+# esperados aparecem nos asserts.
 def test_linux_path_and_xml_protection(tmp_path):
     provider = LinuxWorkerProvider.__new__(LinuxWorkerProvider)
     provider.root = tmp_path.resolve()
@@ -203,6 +238,8 @@ def test_linux_path_and_xml_protection(tmp_path):
         provider.path(identifier, "../template")
 
 
+# Documentação: Verifica o cenário test_xml_labels_cannot_inject_host_paths; as condições e
+# resultados esperados aparecem nos asserts.
 def test_xml_labels_cannot_inject_host_paths(tmp_path):
     provider = LinuxWorkerProvider.__new__(LinuxWorkerProvider)
     provider.settings = Settings(token="t" * 40)
@@ -223,6 +260,8 @@ def test_xml_labels_cannot_inject_host_paths(tmp_path):
 
 
 @pytest.mark.parametrize("problem", ["metadata", "owner", "storage"])
+# Documentação: Verifica o cenário test_foreign_domains_never_reach_lifecycle_commands; as
+# condições e resultados esperados aparecem nos asserts.
 def test_foreign_domains_never_reach_lifecycle_commands(tmp_path, problem):
     import xml.etree.ElementTree as ET
     from types import SimpleNamespace
@@ -247,7 +286,12 @@ def test_foreign_domains_never_reach_lifecycle_commands(tmp_path, problem):
     else:
         xml.find("devices/disk[@device='disk']/source").set("file", str(tmp_path / "foreign.qcow2"))
 
+    # Documentação: Define o tipo test_foreign_domains_never_reach_lifecycle_commands.Domain e
+    # reúne o estado/contrato descrito para este módulo.
     class Domain:
+        # Documentação: Implementa
+        # test_foreign_domains_never_reach_lifecycle_commands.Domain.XMLDesc como parte do fluxo
+        # descrito para este arquivo.
         def XMLDesc(self, _):
             return ET.tostring(xml, encoding="unicode")
 

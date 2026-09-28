@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 @Composable
+// Documentação: Implementa ChatScreen como parte do fluxo descrito para este arquivo.
 fun ChatScreen(onConnect: () -> Unit) {
     val revision by AgentRuntime.revision.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
@@ -32,6 +33,7 @@ fun ChatScreen(onConnect: () -> Unit) {
             thread?.let { AgentRuntime.events.bubbles(it) } ?: emptyList()
         }
     val list = rememberLazyListState()
+    // Documentação: Implementa sync como parte do fluxo descrito para este arquivo.
     suspend fun sync() {
         syncing = true
         try {

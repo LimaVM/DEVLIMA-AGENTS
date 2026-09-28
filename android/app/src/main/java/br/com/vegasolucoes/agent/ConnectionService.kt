@@ -26,6 +26,7 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.json.JSONObject
 
+// Documentação: Implementa outgoing como parte do fluxo descrito para este arquivo.
 fun outgoing(
     type: String,
     payload: JSONObject = JSONObject(),
@@ -37,6 +38,8 @@ fun outgoing(
         .put("type", type)
         .put("payload", payload)
 
+// Documentação: Define o tipo ConnectionService e reúne o estado/contrato descrito para este
+// módulo.
 class ConnectionService : Service() {
     companion object {
         const val STOP = "br.com.vegasolucoes.agent.STOP"
@@ -50,13 +53,19 @@ class ConnectionService : Service() {
     private lateinit var connectivity: ConnectivityManager
     private val networkCallback =
         object : ConnectivityManager.NetworkCallback() {
+            // Documentação: Trata o callback de ConnectionService.onAvailable, segundo o contrato
+            // e as verificações deste módulo.
             override fun onAvailable(network: Network) {
                 wake.trySend(Unit)
             }
         }
 
+    // Documentação: Trata o callback de ConnectionService.onBind, segundo o contrato e as
+    // verificações deste módulo.
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // Documentação: Trata o callback de ConnectionService.onCreate, segundo o contrato e as
+    // verificações deste módulo.
     override fun onCreate() {
         super.onCreate()
         notifications = AgentNotifications(this)
@@ -64,6 +73,8 @@ class ConnectionService : Service() {
         connectivity.registerDefaultNetworkCallback(networkCallback)
     }
 
+    // Documentação: Respeita desconexão/sessão, promove serviço com notificação e inicia um único
+    // loop WSS.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val prefs = getSharedPreferences("connection", MODE_PRIVATE)
         if (intent?.action == STOP) {
@@ -99,11 +110,15 @@ class ConnectionService : Service() {
         return START_STICKY
     }
 
+    // Documentação: Implementa ConnectionService.status como parte do fluxo descrito para este
+    // arquivo.
     private fun status(value: String) {
         AgentRuntime.connection.value = value
         notifications.status(value)
     }
 
+    // Documentação: Reabre conexão com backoff, interrompendo retries quando é necessário novo
+    // login.
     private suspend fun connectionLoop() {
         val backoff = Backoff()
         while (scope.isActive) {
@@ -129,6 +144,8 @@ class ConnectionService : Service() {
         }
     }
 
+    // Documentação: Autentica socket, processa frames/ACK e transmite fila até encerramento ou
+    // renovação da sessão.
     private suspend fun connect(auth: SessionData, backoff: Backoff) {
         val closed = CompletableDeferred<Unit>()
         val frames = Channel<String>(100)
@@ -136,6 +153,8 @@ class ConnectionService : Service() {
         var invalid = false
         val listener =
             object : WebSocketListener() {
+                // Documentação: Trata o callback de ConnectionService.onOpen, segundo o contrato
+                // e as verificações deste módulo.
                 override fun onOpen(ws: WebSocket, response: Response) {
                     ws.send(
                         outgoing(
@@ -149,6 +168,8 @@ class ConnectionService : Service() {
                     )
                 }
 
+                // Documentação: Trata o callback de ConnectionService.onMessage, segundo o
+                // contrato e as verificações deste módulo.
                 override fun onMessage(ws: WebSocket, text: String) {
                     if (text.length > 262144 || frames.trySend(text).isFailure) {
                         ws.close(1009, "Buffer limit")
@@ -156,17 +177,23 @@ class ConnectionService : Service() {
                     }
                 }
 
+                // Documentação: Trata o callback de ConnectionService.onClosing, segundo o
+                // contrato e as verificações deste módulo.
                 override fun onClosing(ws: WebSocket, code: Int, reason: String) {
                     if (code == 4401) invalid = true
                     ws.close(code, "")
                     closed.complete(Unit)
                 }
 
+                // Documentação: Trata o callback de ConnectionService.onClosed, segundo o
+                // contrato e as verificações deste módulo.
                 override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                     if (code == 4401) invalid = true
                     closed.complete(Unit)
                 }
 
+                // Documentação: Trata o callback de ConnectionService.onFailure, segundo o
+                // contrato e as verificações deste módulo.
                 override fun onFailure(ws: WebSocket, error: Throwable, response: Response?) {
                     closed.complete(Unit)
                 }
@@ -270,6 +297,8 @@ class ConnectionService : Service() {
         }
     }
 
+    // Documentação: Trata o callback de ConnectionService.onDestroy, segundo o contrato e as
+    // verificações deste módulo.
     override fun onDestroy() {
         AgentRuntime.sender = null
         activeSocket?.cancel()

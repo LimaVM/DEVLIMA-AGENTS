@@ -10,8 +10,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+// Documentação: Define o tipo StorageTest e reúne o estado/contrato descrito para este módulo.
 class StorageTest {
     @Test
+    // Documentação: Implementa
+    // StorageTest.credentialsAreEncryptedAndEventsSurviveReopenWithoutDuplicate como parte do
+    // fluxo descrito para este arquivo.
     fun credentialsAreEncryptedAndEventsSurviveReopenWithoutDuplicate() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val vault = SecureStore(context)

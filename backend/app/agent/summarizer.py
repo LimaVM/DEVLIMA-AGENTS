@@ -11,11 +11,15 @@ from app.llm.base import LLMError, LLMMessage
 from app.models import AuditLog, Conversation, ConversationSummary, Message
 
 
+# Documentação: Define o tipo Summarizer e reúne o estado/contrato descrito para este módulo.
 class Summarizer:
+    # Documentação: Inicializa Summarizer com as dependências e estado declarados.
     def __init__(self, session: Session, settings: Settings):
         self.session = session
         self.settings = settings
 
+    # Documentação: Cria resumo somente quando o limiar é atingido e preserva a faixa de mensagens
+    # já coberta.
     def maybe_summarize(self, conversation: Conversation, router) -> ConversationSummary | None:
         previous = self.session.scalar(
             select(ConversationSummary)

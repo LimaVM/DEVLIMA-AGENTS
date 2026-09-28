@@ -35,6 +35,7 @@ from app.security import hash_password
 
 
 @pytest.fixture(autouse=True)
+# Documentação: Implementa clean_test_database como parte do fluxo descrito para este arquivo.
 def clean_test_database():
     settings = get_settings()
     if settings.postgres_db != "devlima_agent_test" or settings.postgres_host != "postgres-test":
@@ -71,12 +72,14 @@ def clean_test_database():
 
 
 @pytest.fixture
+# Documentação: Implementa session como parte do fluxo descrito para este arquivo.
 def session():
     with Session(get_engine(), expire_on_commit=False) as db:
         yield db
 
 
 @pytest.fixture
+# Documentação: Implementa user como parte do fluxo descrito para este arquivo.
 def user(session):
     user = User(
         username="testuser",
@@ -89,6 +92,7 @@ def user(session):
 
 
 @pytest.fixture
+# Documentação: Implementa client como parte do fluxo descrito para este arquivo.
 def client():
     with TestClient(create_app()) as client:
         yield client

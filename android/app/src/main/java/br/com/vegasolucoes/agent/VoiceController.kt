@@ -27,6 +27,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
+// Documentação: Define o tipo VoiceController e reúne o estado/contrato descrito para este
+// módulo.
 class VoiceController(
     private val context: Context,
     private val call: JSONObject,
@@ -85,8 +87,12 @@ class VoiceController(
             }
         tts?.setOnUtteranceProgressListener(
             object : UtteranceProgressListener() {
+                // Documentação: Trata o callback de VoiceController.onStart, segundo o contrato e
+                // as verificações deste módulo.
                 override fun onStart(id: String?) {}
 
+                // Documentação: Trata o callback de VoiceController.onDone, segundo o contrato e
+                // as verificações deste módulo.
                 override fun onDone(id: String?) {
                     handler.post {
                         if (id == lastUtterance) {
@@ -96,6 +102,8 @@ class VoiceController(
                     }
                 }
 
+                // Documentação: Trata o callback de VoiceController.onError, segundo o contrato e
+                // as verificações deste módulo.
                 override fun onError(id: String?) {
                     handler.post {
                         speaking = false
@@ -109,20 +117,32 @@ class VoiceController(
             recognizer = SpeechRecognizer.createSpeechRecognizer(context)
             recognizer?.setRecognitionListener(
                 object : RecognitionListener {
+                    // Documentação: Trata o callback de VoiceController.onReadyForSpeech, segundo
+                    // o contrato e as verificações deste módulo.
                     override fun onReadyForSpeech(params: Bundle?) {
                         AgentRuntime.voiceStatus.value = "Ouvindo…"
                     }
 
+                    // Documentação: Trata o callback de VoiceController.onBeginningOfSpeech,
+                    // segundo o contrato e as verificações deste módulo.
                     override fun onBeginningOfSpeech() {}
 
+                    // Documentação: Trata o callback de VoiceController.onRmsChanged, segundo o
+                    // contrato e as verificações deste módulo.
                     override fun onRmsChanged(value: Float) {}
 
+                    // Documentação: Trata o callback de VoiceController.onBufferReceived, segundo
+                    // o contrato e as verificações deste módulo.
                     override fun onBufferReceived(buffer: ByteArray?) {}
 
+                    // Documentação: Trata o callback de VoiceController.onEndOfSpeech, segundo o
+                    // contrato e as verificações deste módulo.
                     override fun onEndOfSpeech() {
                         AgentRuntime.voiceStatus.value = "Reconhecendo…"
                     }
 
+                    // Documentação: Trata o callback de VoiceController.onError, segundo o
+                    // contrato e as verificações deste módulo.
                     override fun onError(error: Int) {
                         Log.w("DevLimaVoice", "speech_recognition_error=$error")
                         listening = false
@@ -141,6 +161,8 @@ class VoiceController(
                                 }
                     }
 
+                    // Documentação: Trata o callback de VoiceController.onResults, segundo o
+                    // contrato e as verificações deste módulo.
                     override fun onResults(results: Bundle?) {
                         listening = false
                         val text =
@@ -152,14 +174,20 @@ class VoiceController(
                         else AgentRuntime.voiceStatus.value = "Toque em Falar para continuar."
                     }
 
+                    // Documentação: Trata o callback de VoiceController.onPartialResults, segundo
+                    // o contrato e as verificações deste módulo.
                     override fun onPartialResults(results: Bundle?) {}
 
+                    // Documentação: Trata o callback de VoiceController.onEvent, segundo o
+                    // contrato e as verificações deste módulo.
                     override fun onEvent(type: Int, params: Bundle?) {}
                 }
             )
         }
     }
 
+    // Documentação: Inicia reconhecimento respeitando estado da chamada/mute e libera foco antes
+    // da captura.
     fun listen() {
         handler.post {
             if (finished || listening || speaking || awaiting != null || AgentRuntime.mute.value)
@@ -193,6 +221,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.sendText como parte do fluxo descrito para este
+    // arquivo.
     fun sendText(text: String) {
         handler.post {
             if (finished || awaiting != null || text.isBlank()) return@post
@@ -203,6 +233,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Encaminha resposta da chamada correspondente ao TTS sem misturar outra
+    // conversa.
     fun reply(payload: JSONObject) {
         handler.post {
             if (
@@ -243,6 +275,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.response como parte do fluxo descrito para este
+    // arquivo.
     fun response(event: JSONObject) {
         handler.post {
             val body = event.getJSONObject("payload")
@@ -259,6 +293,7 @@ class VoiceController(
         }
     }
 
+    // Documentação: Interrompe TTS/escuta ativos e libera recursos/foco conforme o estado.
     private fun pause() {
         if (listening) recognizer?.cancel()
         tts?.stop()
@@ -266,6 +301,8 @@ class VoiceController(
         speaking = false
     }
 
+    // Documentação: Alterna VoiceController.toggleMute, segundo o contrato e as verificações
+    // deste módulo.
     fun toggleMute() {
         handler.post {
             AgentRuntime.mute.value = !AgentRuntime.mute.value
@@ -276,6 +313,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Alterna VoiceController.toggleSpeaker, segundo o contrato e as verificações
+    // deste módulo.
     fun toggleSpeaker() {
         handler.post {
             AgentRuntime.speaker.value = !AgentRuntime.speaker.value
@@ -283,6 +322,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.route como parte do fluxo descrito para este
+    // arquivo.
     private fun route(speaker: Boolean) {
         if (Build.VERSION.SDK_INT >= 31) {
             val type =
@@ -296,6 +337,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.end como parte do fluxo descrito para este
+    // arquivo.
     fun end() {
         handler.post {
             if (finished) return@post
@@ -319,6 +362,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.finishLocal como parte do fluxo descrito para este
+    // arquivo.
     fun finishLocal() {
         handler.post {
             if (finished) return@post
@@ -330,6 +375,8 @@ class VoiceController(
         }
     }
 
+    // Documentação: Implementa VoiceController.destroy como parte do fluxo descrito para este
+    // arquivo.
     fun destroy() {
         finished = true
         pause()

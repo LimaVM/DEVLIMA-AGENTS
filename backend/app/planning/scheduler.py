@@ -20,6 +20,7 @@ NAMESPACE = UUID("13d7b843-49eb-47bb-b9bd-bb842df8988a")
 logger = logging.getLogger("devlima.scheduler")
 
 
+# Documentação: Implementa tick como parte do fluxo descrito para este arquivo.
 def tick(session: Session, now: datetime | None = None, batch_size: int = 100) -> int:
     now = now or datetime.now(UTC)
     rows = session.scalars(
@@ -102,6 +103,9 @@ def tick(session: Session, now: datetime | None = None, batch_size: int = 100) -
     return len(rows)
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Busca agendamentos vencidos
+# com locks PostgreSQL, cria ocorrência/outbox em transação, avança recorrência e publica
+# heartbeat para readiness operacional.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["run", "once", "health"])
@@ -115,6 +119,8 @@ def main():
                 raise SystemExit(1)
         return
 
+    # Documentação: Processa agendamentos vencidos e conserva ocorrência/evento/avanço de
+    # recorrência em transação.
     def run_tick():
         try:
             with Session(get_engine(), expire_on_commit=False) as session:

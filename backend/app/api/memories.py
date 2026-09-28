@@ -16,6 +16,7 @@ router = APIRouter(prefix="/memories", tags=["memories"])
 
 
 @router.get("", response_model=list[MemoryResponse])
+# Documentação: Lista list_memories, segundo o contrato e as verificações deste módulo.
 def list_memories(
     offset: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
@@ -32,6 +33,7 @@ def list_memories(
 
 
 @router.post("", response_model=MemoryResponse, status_code=201)
+# Documentação: Cria create_memory, segundo o contrato e as verificações deste módulo.
 def create_memory(
     data: MemoryCreate,
     user: User = Depends(get_current_user),
@@ -43,6 +45,7 @@ def create_memory(
 
 
 @router.delete("/{identifier}", status_code=204)
+# Documentação: Implementa deactivate_memory como parte do fluxo descrito para este arquivo.
 def deactivate_memory(
     identifier: UUID,
     user: User = Depends(get_current_user),
@@ -62,6 +65,7 @@ def deactivate_memory(
 
 
 @router.get("/candidates", response_model=list[CandidateResponse])
+# Documentação: Lista list_candidates, segundo o contrato e as verificações deste módulo.
 def list_candidates(
     status: str = Query("PENDING", pattern="^(PENDING|ACCEPTED|REJECTED)$"),
     offset: int = Query(0, ge=0),
@@ -79,6 +83,7 @@ def list_candidates(
 
 
 @router.post("/candidates/{identifier}/accept", response_model=MemoryResponse)
+# Documentação: Implementa accept_candidate como parte do fluxo descrito para este arquivo.
 def accept_candidate(
     identifier: UUID,
     user: User = Depends(get_current_user),
@@ -93,6 +98,7 @@ def accept_candidate(
 
 
 @router.post("/candidates/{identifier}/reject", status_code=204)
+# Documentação: Implementa reject_candidate como parte do fluxo descrito para este arquivo.
 def reject_candidate(
     identifier: UUID,
     user: User = Depends(get_current_user),

@@ -8,7 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+# Documentação: Define o tipo EnvironmentGenerationTests e reúne o estado/contrato descrito para
+# este módulo.
 class EnvironmentGenerationTests(unittest.TestCase):
+    # Documentação: Implementa EnvironmentGenerationTests.layout como parte do fluxo descrito para
+    # este arquivo.
     def layout(self, folder):
         root = Path(folder)
         (root / "scripts").mkdir()
@@ -16,6 +20,9 @@ class EnvironmentGenerationTests(unittest.TestCase):
         shutil.copy(ROOT / ".env.example", root / ".env.example")
         return root
 
+    # Documentação: Verifica o cenário
+    # test_role_passwords_are_distinct_private_and_existing_env_is_preserved; as condições e
+    # resultados esperados aparecem nos asserts.
     def test_role_passwords_are_distinct_private_and_existing_env_is_preserved(self):
         with tempfile.TemporaryDirectory() as folder:
             root = self.layout(folder)
@@ -44,6 +51,8 @@ class EnvironmentGenerationTests(unittest.TestCase):
             self.assertNotEqual(repeated.returncode, 0)
             self.assertEqual((root / ".env").read_bytes(), original)
 
+    # Documentação: Verifica o cenário test_domain_configuration_and_invalid_input; as condições e
+    # resultados esperados aparecem nos asserts.
     def test_domain_configuration_and_invalid_input(self):
         with tempfile.TemporaryDirectory() as folder:
             root = self.layout(folder)

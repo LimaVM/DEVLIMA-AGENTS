@@ -8,6 +8,8 @@ from app.llm.base import LLMError, LLMMessage
 from app.llm.service import build_router
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Executa diagnóstico do
+# router e dos providers configurados, observando a política de fallback e sem imprimir API keys.
 def main() -> None:
     parser = argparse.ArgumentParser(description="Diagnóstico LLM no host autorizado")
     parser.add_argument("command", choices=["health", "smoke"])

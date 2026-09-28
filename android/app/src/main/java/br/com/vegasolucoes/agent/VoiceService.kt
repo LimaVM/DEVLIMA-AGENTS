@@ -11,11 +11,16 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 
+// Documentação: Define o tipo VoiceService e reúne o estado/contrato descrito para este módulo.
 class VoiceService : Service() {
     private var controller: VoiceController? = null
 
+    // Documentação: Trata o callback de VoiceService.onBind, segundo o contrato e as verificações
+    // deste módulo.
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // Documentação: Trata o callback de VoiceService.onStartCommand, segundo o contrato e as
+    // verificações deste módulo.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val call = AgentRuntime.call.value
         if (call == null || call.optString("status") != "ACTIVE") {
@@ -55,6 +60,8 @@ class VoiceService : Service() {
         return START_NOT_STICKY
     }
 
+    // Documentação: Trata o callback de VoiceService.onDestroy, segundo o contrato e as
+    // verificações deste módulo.
     override fun onDestroy() {
         controller?.destroy()
         if (AgentRuntime.voice.value === controller) AgentRuntime.voice.value = null

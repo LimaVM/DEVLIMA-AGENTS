@@ -17,12 +17,14 @@ dummy_hash = password_hasher.hash("dummy-password-for-timing-only")
 bearer = HTTPBearer(auto_error=False)
 
 
+# Documentação: Produz hash Argon2 da senha; o valor original não deve ser persistido.
 def hash_password(password: str) -> str:
     if not 12 <= len(password) <= 1024:
         raise ValueError("Senha deve ter entre 12 e 1024 caracteres")
     return password_hasher.hash(password)
 
 
+# Documentação: Confere a senha fornecida contra seu hash e trata hash inválido como rejeição.
 def verify_password(password_hash: str, password: str) -> bool:
     try:
         return password_hasher.verify(password_hash, password)
@@ -30,6 +32,8 @@ def verify_password(password_hash: str, password: str) -> bool:
         return False
 
 
+# Documentação: Emite JWT com claims, validade, issuer/audience e versão de revogação definidos
+# pelo serviço.
 def create_token(user: User, settings: Settings, session_id=None) -> str:
     now = datetime.now(UTC)
     return jwt.encode(
@@ -48,6 +52,7 @@ def create_token(user: User, settings: Settings, session_id=None) -> str:
     )
 
 
+# Documentação: Verifica assinatura e claims obrigatórios antes de aceitar a identidade do JWT.
 def decode_token(token: str, settings: Settings) -> dict:
     claims = jwt.decode(
         token,
@@ -63,6 +68,7 @@ def decode_token(token: str, settings: Settings) -> dict:
     return claims
 
 
+# Documentação: Valida JWT e estado do usuário no banco antes de disponibilizar identidade à rota.
 def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
     session: Session = Depends(get_session),

@@ -16,6 +16,7 @@ from vm_manager.config import VMError
 METADATA_NS = "urn:devlima:worker:1"
 
 
+# Documentação: Implementa command como parte do fluxo descrito para este arquivo.
 def command(arguments, timeout=90, input=None):
     try:
         result = subprocess.run(
@@ -28,7 +29,10 @@ def command(arguments, timeout=90, input=None):
     return result.stdout
 
 
+# Documentação: Define o tipo LinuxWorkerProvider e reúne o estado/contrato descrito para este
+# módulo.
 class LinuxWorkerProvider:
+    # Documentação: Inicializa LinuxWorkerProvider com as dependências e estado declarados.
     def __init__(self, settings):
         import libvirt
 
@@ -46,9 +50,13 @@ class LinuxWorkerProvider:
         self.qemu = pwd.getpwnam("libvirt-qemu")
         self.conn.nwfilterLookupByName("devlima-worker-egress")
 
+    # Documentação: Libera LinuxWorkerProvider.close, segundo o contrato e as verificações deste
+    # módulo.
     def close(self):
         self.conn.close()
 
+    # Documentação: Implementa LinuxWorkerProvider.hash_file como parte do fluxo descrito para
+    # este arquivo.
     def hash_file(self, path):
         digest = hashlib.sha256()
         with path.open("rb") as source:
@@ -56,6 +64,8 @@ class LinuxWorkerProvider:
                 digest.update(chunk)
         return digest.hexdigest()
 
+    # Documentação: Implementa LinuxWorkerProvider.directory como parte do fluxo descrito para
+    # este arquivo.
     def directory(self, identifier):
         identifier = str(UUID(str(identifier)))
         raw = self.root / identifier
@@ -63,6 +73,8 @@ class LinuxWorkerProvider:
             raise VMError("unsafe_worker_path", 422)
         return raw
 
+    # Documentação: Implementa LinuxWorkerProvider.path como parte do fluxo descrito para este
+    # arquivo.
     def path(self, identifier, name):
         base = self.directory(identifier)
         target = base / name
@@ -70,10 +82,14 @@ class LinuxWorkerProvider:
             raise VMError("unsafe_worker_path", 422)
         return target
 
+    # Documentação: Implementa LinuxWorkerProvider.own_file como parte do fluxo descrito para este
+    # arquivo.
     def own_file(self, path):
         os.chown(path, self.qemu.pw_uid, self.qemu.pw_gid)
         path.chmod(0o660)
 
+    # Documentação: Implementa LinuxWorkerProvider.domain como parte do fluxo descrito para este
+    # arquivo.
     def domain(self, row, missing=False):
         try:
             domain = self.conn.lookupByUUIDString(row["id"])
@@ -98,6 +114,8 @@ class LinuxWorkerProvider:
             raise VMError("foreign_storage_protected", 403)
         return domain
 
+    # Documentação: Confere LinuxWorkerProvider.check_resources, segundo o contrato e as
+    # verificações deste módulo.
     def check_resources(self, rows, desired):
         active = [row for row in rows if row["status"] != "DESTROYED"]
         config = self.settings
@@ -124,6 +142,8 @@ class LinuxWorkerProvider:
         ):
             raise VMError("host_disk_reserve", 429)
 
+    # Documentação: Implementa LinuxWorkerProvider.make_xml como parte do fluxo descrito para este
+    # arquivo.
     def make_xml(self, row, disk, seed):
         domain = ET.Element("domain", type="kvm")
         ET.SubElement(domain, "name").text = f"devlima-{UUID(row['id']).hex}"
@@ -167,6 +187,8 @@ class LinuxWorkerProvider:
         ET.SubElement(devices, "memballoon", model="virtio")
         return ET.tostring(domain, encoding="unicode")
 
+    # Documentação: Cria LinuxWorkerProvider.create, segundo o contrato e as verificações deste
+    # módulo.
     def create(self, row):
         if (self.template.stat().st_size, self.template.stat().st_mtime_ns) != self.template_stat:
             raise VMError("template_changed", 503)
@@ -236,6 +258,8 @@ class LinuxWorkerProvider:
             domain.create()
         return {**row, "status": "BOOTING", "ip": None}
 
+    # Documentação: Implementa LinuxWorkerProvider.ip como parte do fluxo descrito para este
+    # arquivo.
     def ip(self, domain):
         root = ET.fromstring(domain.XMLDesc(0))
         mac = root.find("devices/interface/mac").attrib["address"]
@@ -251,6 +275,8 @@ class LinuxWorkerProvider:
                 pass
         return None
 
+    # Documentação: Implementa LinuxWorkerProvider.ssh_args como parte do fluxo descrito para este
+    # arquivo.
     def ssh_args(self, row, remote_command):
         hosts = self.settings.state_root / f"known-{row['id']}"
         return [
@@ -271,6 +297,8 @@ class LinuxWorkerProvider:
             remote_command,
         ]
 
+    # Documentação: Implementa LinuxWorkerProvider.status como parte do fluxo descrito para este
+    # arquivo.
     def status(self, row):
         if row["status"] == "DESTROYED":
             return row
@@ -297,6 +325,8 @@ class LinuxWorkerProvider:
             return {**state, "status": "BOOTING"}
         return {**state, "status": "READY", "error_code": None}
 
+    # Documentação: Interrompe LinuxWorkerProvider.stop, segundo o contrato e as verificações
+    # deste módulo.
     def stop(self, row):
         domain = self.domain(row, missing=True)
         running = bool(domain and domain.isActive())
@@ -312,12 +342,16 @@ class LinuxWorkerProvider:
                 domain.destroy()
         return running
 
+    # Documentação: Inicia LinuxWorkerProvider.start, segundo o contrato e as verificações deste
+    # módulo.
     def start(self, row):
         domain = self.domain(row)
         if not domain.isActive():
             domain.create()
         return {**row, "status": "BOOTING", "ip": None}
 
+    # Documentação: Implementa LinuxWorkerProvider.destroy como parte do fluxo descrito para este
+    # arquivo.
     def destroy(self, row):
         self.stop(row)
         domain = self.domain(row, missing=True)
@@ -329,6 +363,8 @@ class LinuxWorkerProvider:
         (self.settings.state_root / f"known-{row['id']}").unlink(missing_ok=True)
         return {**row, "status": "DESTROYED", "ip": None}
 
+    # Documentação: Implementa LinuxWorkerProvider.reset como parte do fluxo descrito para este
+    # arquivo.
     def reset(self, row, generation):
         self.stop(row)
         domain = self.domain(row, missing=True)
@@ -339,6 +375,8 @@ class LinuxWorkerProvider:
         (self.settings.state_root / f"known-{row['id']}").unlink(missing_ok=True)
         return self.create({**row, "generation": generation})
 
+    # Documentação: Implementa LinuxWorkerProvider.snapshot como parte do fluxo descrito para este
+    # arquivo.
     def snapshot(self, row, identifier):
         destination = self.path(row["id"], f"snapshots/{UUID(str(identifier))}.qcow2")
         destination.parent.mkdir(mode=0o755, exist_ok=True)
@@ -378,6 +416,8 @@ class LinuxWorkerProvider:
         }
         return data, self.start(row) if running else {**row, "status": "STOPPED", "ip": None}
 
+    # Documentação: Implementa LinuxWorkerProvider.restore como parte do fluxo descrito para este
+    # arquivo.
     def restore(self, row, snapshot):
         source = self.path(row["id"], f"snapshots/{UUID(snapshot['id'])}.qcow2")
         if not source.is_file() or self.hash_file(source) != snapshot["sha256"]:
@@ -408,6 +448,8 @@ class LinuxWorkerProvider:
         (self.settings.state_root / f"known-{row['id']}").unlink(missing_ok=True)
         return self.start(row) if running else {**row, "status": "STOPPED", "ip": None}
 
+    # Documentação: Implementa LinuxWorkerProvider.execute como parte do fluxo descrito para este
+    # arquivo.
     def execute(self, row, identifier, script, timeout):
         state = self.status(row)
         if state["status"] != "READY":
@@ -457,7 +499,11 @@ class LinuxWorkerProvider:
         }
 
 
+# Documentação: Define o tipo WindowsWorkerProvider e reúne o estado/contrato descrito para este
+# módulo.
 class WindowsWorkerProvider:
+    # Documentação: Cria WindowsWorkerProvider.create, segundo o contrato e as verificações deste
+    # módulo.
     def create(self, *_):
         raise VMError("windows_not_available", 501)
 
@@ -471,5 +517,7 @@ class WindowsWorkerProvider:
     restore = create
     execute = create
 
+    # Documentação: Libera WindowsWorkerProvider.close, segundo o contrato e as verificações deste
+    # módulo.
     def close(self):
         pass

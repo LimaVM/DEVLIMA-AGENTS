@@ -1,0 +1,1127 @@
+{
+  "format_version": 1,
+  "source_files": 158,
+  "physical_lines": 18297,
+  "files": [
+    {
+      "path": ".env.example",
+      "reference": "docs/code/environment-example.md",
+      "sha256": "6467c101104ddade8c627fec1b67ef9a5aa870a921857b79e30588c15e182111",
+      "lines": 39,
+      "nonempty_lines": 38
+    },
+    {
+      "path": ".github/workflows/validate.yml",
+      "reference": "docs/code/.github/workflows/validate.yml.md",
+      "sha256": "f9c398fc3266c166d198a29a78f994d24b44610c82d5180eb9a45206f1468efa",
+      "lines": 35,
+      "nonempty_lines": 35
+    },
+    {
+      "path": ".gitignore",
+      "reference": "docs/code/.gitignore.md",
+      "sha256": "ec8bdefdf0da22d149f9686d8d369a3e0981f0e5892e69470e316fe5aeb85488",
+      "lines": 40,
+      "nonempty_lines": 39
+    },
+    {
+      "path": "android/app/build.gradle.kts",
+      "reference": "docs/code/android/app/build.gradle.kts.md",
+      "sha256": "03f86db3b9b095464a2f3c2dc65d52bb969f632a43a378f2250ff51b8dd1202f",
+      "lines": 72,
+      "nonempty_lines": 68
+    },
+    {
+      "path": "android/app/src/androidTest/java/br/com/vegasolucoes/agent/BackgroundCallsTest.kt",
+      "reference": "docs/code/android/app/src/androidTest/java/br/com/vegasolucoes/agent/BackgroundCallsTest.kt.md",
+      "sha256": "780b3723fbf2233fadfcc81db48e51fa641d94aa62d43b935d10df49b1472d86",
+      "lines": 154,
+      "nonempty_lines": 147
+    },
+    {
+      "path": "android/app/src/androidTest/java/br/com/vegasolucoes/agent/EndToEndTest.kt",
+      "reference": "docs/code/android/app/src/androidTest/java/br/com/vegasolucoes/agent/EndToEndTest.kt.md",
+      "sha256": "24826944673e0e49a84d8dec77095ff9c75817dafb68027391a62cd0575d7f62",
+      "lines": 233,
+      "nonempty_lines": 231
+    },
+    {
+      "path": "android/app/src/androidTest/java/br/com/vegasolucoes/agent/QueueTest.kt",
+      "reference": "docs/code/android/app/src/androidTest/java/br/com/vegasolucoes/agent/QueueTest.kt.md",
+      "sha256": "90ad1cd8a80438bc42b7e89c4bd56073e2b693cfe8639f96bc41151190591224",
+      "lines": 88,
+      "nonempty_lines": 85
+    },
+    {
+      "path": "android/app/src/androidTest/java/br/com/vegasolucoes/agent/StorageTest.kt",
+      "reference": "docs/code/android/app/src/androidTest/java/br/com/vegasolucoes/agent/StorageTest.kt.md",
+      "sha256": "fd57713bc03bc3130bed9787004e268791fb2b9525d2a87cef36f0bff4fc1542",
+      "lines": 61,
+      "nonempty_lines": 59
+    },
+    {
+      "path": "android/app/src/androidTest/java/br/com/vegasolucoes/agent/VoiceCapabilitiesTest.kt",
+      "reference": "docs/code/android/app/src/androidTest/java/br/com/vegasolucoes/agent/VoiceCapabilitiesTest.kt.md",
+      "sha256": "3b2c9cf86605c6730eee871e5b0a5ab71720d71d5de8809a78d7b0a6b3c118f1",
+      "lines": 55,
+      "nonempty_lines": 53
+    },
+    {
+      "path": "android/app/src/main/AndroidManifest.xml",
+      "reference": "docs/code/android/app/src/main/AndroidManifest.xml.md",
+      "sha256": "4bf57279ee547a99195948e2fe5057ec0a9d8b970642fd91cedc798efc979817",
+      "lines": 32,
+      "nonempty_lines": 32
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/AgentApplication.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/AgentApplication.kt.md",
+      "sha256": "68a112698494107deacd92c97d22212340bb41671e25b3fb9976d00677ee9737",
+      "lines": 53,
+      "nonempty_lines": 48
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/AgentNotifications.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/AgentNotifications.kt.md",
+      "sha256": "cbaff8325650513df73f79f7e0299e3aca93a489418a65b90cb7fd19ab3ae566",
+      "lines": 190,
+      "nonempty_lines": 182
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/CallDeliverySettings.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/CallDeliverySettings.kt.md",
+      "sha256": "e6d91707fe2331d1ffc7bf0185ec19f51e3b3086e131e3bbf03831d0b2c30f46",
+      "lines": 95,
+      "nonempty_lines": 93
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/CallRejectReceiver.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/CallRejectReceiver.kt.md",
+      "sha256": "850bd217c40100102d17b8bcc51712f384dda73068980478c6bffbf94afaf606",
+      "lines": 42,
+      "nonempty_lines": 40
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/CallScreen.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/CallScreen.kt.md",
+      "sha256": "cd5b25f513893b09768911e379f2aabf3ea1ab64d39a0612c33a279ec142243b",
+      "lines": 300,
+      "nonempty_lines": 298
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/ChatScreen.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/ChatScreen.kt.md",
+      "sha256": "3ce6743cb4aab182c653a57734034494d2fdf5b903db1ecb5e3949d64a20d378",
+      "lines": 198,
+      "nonempty_lines": 196
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionRestoreReceiver.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionRestoreReceiver.kt.md",
+      "sha256": "afa9485eb2fcc00f8f115949263798bc066ef994a9222108c0d0ea13f7fab2af",
+      "lines": 46,
+      "nonempty_lines": 44
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionService.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionService.kt.md",
+      "sha256": "af8852375d06f18683f3623088923cf63d7abc48b8f39a56b6cd047be3b9db7a",
+      "lines": 311,
+      "nonempty_lines": 296
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/EventStore.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/EventStore.kt.md",
+      "sha256": "66bd75a2a079961207c65366720daf9cdd08f43292a26277ab6312631b0122e5",
+      "lines": 463,
+      "nonempty_lines": 436
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCallActivity.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCallActivity.kt.md",
+      "sha256": "10e80248bd65e865078b655a01fd9a12b2832fb26b228b048c67ca5c02e3c3f1",
+      "lines": 142,
+      "nonempty_lines": 137
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCalls.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCalls.kt.md",
+      "sha256": "9a715e21701da9c560ad814a3a179508b8864b8b437edbb73476fcba7727dd1a",
+      "lines": 31,
+      "nonempty_lines": 28
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/MainActivity.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/MainActivity.kt.md",
+      "sha256": "e9b8e2e077a0d1ac5e9c0fdeace8b66330a36220ccd2f230cc8b12795f8da857",
+      "lines": 239,
+      "nonempty_lines": 232
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/Network.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/Network.kt.md",
+      "sha256": "007df02136dd9b6413483d9af202c03120137cd036043e5ac9a2c7773b2434d4",
+      "lines": 213,
+      "nonempty_lines": 199
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/RoutineScreen.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/RoutineScreen.kt.md",
+      "sha256": "e931fc7494417038c1cdb5d11ce8bbad37e38072a79d2d4a13298e109f42ebcf",
+      "lines": 411,
+      "nonempty_lines": 403
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/SecureStore.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/SecureStore.kt.md",
+      "sha256": "06319b5a78a854e57c12975e9572b73297810c0bab9fcab3736bbcc1db4a5eac",
+      "lines": 145,
+      "nonempty_lines": 135
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/VoiceController.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/VoiceController.kt.md",
+      "sha256": "e4eb0c20c3b97bc9093cf6edbbb134b6f6c1a44129f8d3869e79c29af485d164",
+      "lines": 390,
+      "nonempty_lines": 366
+    },
+    {
+      "path": "android/app/src/main/java/br/com/vegasolucoes/agent/VoiceService.kt",
+      "reference": "docs/code/android/app/src/main/java/br/com/vegasolucoes/agent/VoiceService.kt.md",
+      "sha256": "987338a37989ba98802893977349129565d6d03c0f59181cd43d933a17693e35",
+      "lines": 70,
+      "nonempty_lines": 65
+    },
+    {
+      "path": "android/app/src/main/res/drawable/ic_agent.xml",
+      "reference": "docs/code/android/app/src/main/res/drawable/ic_agent.xml.md",
+      "sha256": "6e956e60bcbac4290bda4b8b3f58de76781c18796095111dafecb36863328894",
+      "lines": 1,
+      "nonempty_lines": 1
+    },
+    {
+      "path": "android/app/src/main/res/values/styles.xml",
+      "reference": "docs/code/android/app/src/main/res/values/styles.xml.md",
+      "sha256": "ef9efa35e56d1784ec88c7a106bf7a8d24ca54578d3c593d1f43810d99b72685",
+      "lines": 1,
+      "nonempty_lines": 1
+    },
+    {
+      "path": "android/app/src/test/java/br/com/vegasolucoes/agent/IncomingCallsTest.kt",
+      "reference": "docs/code/android/app/src/test/java/br/com/vegasolucoes/agent/IncomingCallsTest.kt.md",
+      "sha256": "2cb5e22b06131e1d00a40582be8570776732d3e6ba160f450020caaef8f9f768",
+      "lines": 22,
+      "nonempty_lines": 20
+    },
+    {
+      "path": "android/app/src/test/java/br/com/vegasolucoes/agent/NetworkPolicyTest.kt",
+      "reference": "docs/code/android/app/src/test/java/br/com/vegasolucoes/agent/NetworkPolicyTest.kt.md",
+      "sha256": "63f50003f1570c9d95dab80cdf0fc7fd7b866c1fccaef2816eb2a873fd8ffad2",
+      "lines": 40,
+      "nonempty_lines": 37
+    },
+    {
+      "path": "android/app/src/test/java/br/com/vegasolucoes/agent/TimezoneTest.kt",
+      "reference": "docs/code/android/app/src/test/java/br/com/vegasolucoes/agent/TimezoneTest.kt.md",
+      "sha256": "853a020d7faaa712338020b1b3df52ac50ee739c7c0b90a0a5574b4f1a522430",
+      "lines": 24,
+      "nonempty_lines": 22
+    },
+    {
+      "path": "android/build.gradle.kts",
+      "reference": "docs/code/android/build.gradle.kts.md",
+      "sha256": "3120598110d304cc605c5919399ce5a9e68776b327d1462c0ba15bd0dd915b2a",
+      "lines": 5,
+      "nonempty_lines": 5
+    },
+    {
+      "path": "android/gradle.properties",
+      "reference": "docs/code/android/gradle.properties.md",
+      "sha256": "b33ca900eaff8413585ca2ffae955e198c2f8db8a7b080746d17e22a1098c595",
+      "lines": 5,
+      "nonempty_lines": 5
+    },
+    {
+      "path": "android/gradle/wrapper/gradle-wrapper.properties",
+      "reference": "docs/code/android/gradle/wrapper/gradle-wrapper.properties.md",
+      "sha256": "1bb6d43ff8af30abb0eaf03fe58f636ed9b37f758a748bf30a9cebd809639c9d",
+      "lines": 8,
+      "nonempty_lines": 8
+    },
+    {
+      "path": "android/gradlew",
+      "reference": "docs/code/android/gradlew.md",
+      "sha256": "734b3879d3501dce471cf0522d3bcbafe76873d9fc5129345b67fb43bd15e933",
+      "lines": 251,
+      "nonempty_lines": 223
+    },
+    {
+      "path": "android/gradlew.bat",
+      "reference": "docs/code/android/gradlew.bat.md",
+      "sha256": "57931b17dd228e5c24dac90e815d0bf82477e831a4618dfab4136f5446b42a9f",
+      "lines": 94,
+      "nonempty_lines": 73
+    },
+    {
+      "path": "android/settings.gradle.kts",
+      "reference": "docs/code/android/settings.gradle.kts.md",
+      "sha256": "1e720f6a5fc4e3cc1e730deb0ce39ef012281a869c4cc2643108f5fde76e0d02",
+      "lines": 19,
+      "nonempty_lines": 16
+    },
+    {
+      "path": "backend/.dockerignore",
+      "reference": "docs/code/backend/.dockerignore.md",
+      "sha256": "1e35b6e1441b6162956f9b8a1fa5200c240fff789279ec35ced3487d3ee1f014",
+      "lines": 6,
+      "nonempty_lines": 6
+    },
+    {
+      "path": "backend/Dockerfile",
+      "reference": "docs/code/backend/Dockerfile.md",
+      "sha256": "e641c9862d8335f28fca10eaf43d37e7c6d466fdd319dfb1676dd3082fa3108b",
+      "lines": 22,
+      "nonempty_lines": 20
+    },
+    {
+      "path": "backend/alembic.ini",
+      "reference": "docs/code/backend/alembic.ini.md",
+      "sha256": "28fb9142854093004ac82cf4bffb65b8bdec2824f7e93684466939d01052b6c4",
+      "lines": 30,
+      "nonempty_lines": 29
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "reference": "docs/code/backend/app/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/agent/__init__.py",
+      "reference": "docs/code/backend/app/agent/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/agent/action_engine.py",
+      "reference": "docs/code/backend/app/agent/action_engine.py.md",
+      "sha256": "ff7b30939320bdfe26535941d745982b6f071099036ec5da34134e1724bf2ba5",
+      "lines": 157,
+      "nonempty_lines": 151
+    },
+    {
+      "path": "backend/app/agent/action_parser.py",
+      "reference": "docs/code/backend/app/agent/action_parser.py.md",
+      "sha256": "fe6b09225e2bba1cc06f41f31d8c7c91044ec59c981a7be1667e841460aad7c0",
+      "lines": 201,
+      "nonempty_lines": 156
+    },
+    {
+      "path": "backend/app/agent/cli.py",
+      "reference": "docs/code/backend/app/agent/cli.py.md",
+      "sha256": "eb5dd57795235112e993762edf92090422e9fc7321bb3996d4bc9b781530f4d7",
+      "lines": 187,
+      "nonempty_lines": 178
+    },
+    {
+      "path": "backend/app/agent/context_builder.py",
+      "reference": "docs/code/backend/app/agent/context_builder.py.md",
+      "sha256": "addf656ea9348bc84d0c038f580b03458eed09cd332d4344f4a6b0b3c3e0c2ff",
+      "lines": 169,
+      "nonempty_lines": 160
+    },
+    {
+      "path": "backend/app/agent/core.py",
+      "reference": "docs/code/backend/app/agent/core.py.md",
+      "sha256": "5997453f2767fe6a94daa9b52b25e98ac356a3a6b0ea4cb26fae019c8eab5fd4",
+      "lines": 254,
+      "nonempty_lines": 246
+    },
+    {
+      "path": "backend/app/agent/errors.py",
+      "reference": "docs/code/backend/app/agent/errors.py.md",
+      "sha256": "09a72290fafdaf7668d9c9df3dc8316039782284b969fdcc134b7c5c5a265390",
+      "lines": 15,
+      "nonempty_lines": 13
+    },
+    {
+      "path": "backend/app/agent/memory_manager.py",
+      "reference": "docs/code/backend/app/agent/memory_manager.py.md",
+      "sha256": "3791e4e0110a1c059156a743dd6ffdd81d5572b9775a6bd360e17585c1382e80",
+      "lines": 167,
+      "nonempty_lines": 150
+    },
+    {
+      "path": "backend/app/agent/prompts.py",
+      "reference": "docs/code/backend/app/agent/prompts.py.md",
+      "sha256": "a3ebebd7db0e5f51f22375765e89f6dbdd4c03595cb56e0d5658c2dd416a73ad",
+      "lines": 45,
+      "nonempty_lines": 44
+    },
+    {
+      "path": "backend/app/agent/summarizer.py",
+      "reference": "docs/code/backend/app/agent/summarizer.py.md",
+      "sha256": "b77ae254198c111fdeaa7ceff4e3900518fee413eceffcca89fcb2f79f44884b",
+      "lines": 112,
+      "nonempty_lines": 107
+    },
+    {
+      "path": "backend/app/api/__init__.py",
+      "reference": "docs/code/backend/app/api/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/api/auth.py",
+      "reference": "docs/code/backend/app/api/auth.py.md",
+      "sha256": "9be2f1b7ef3673b76761454be6cc41fab38824c451c964035833b9190eed1216",
+      "lines": 148,
+      "nonempty_lines": 133
+    },
+    {
+      "path": "backend/app/api/calls.py",
+      "reference": "docs/code/backend/app/api/calls.py.md",
+      "sha256": "20cc1860c3710f99e3b2c8c4134d1afd83b662d363a3df19bffe783c7f79cfb2",
+      "lines": 127,
+      "nonempty_lines": 110
+    },
+    {
+      "path": "backend/app/api/chat.py",
+      "reference": "docs/code/backend/app/api/chat.py.md",
+      "sha256": "6d407e3ad8a36200192ac24ac7cd04b2e0f2b9d243a667496c16cd8181dd6290",
+      "lines": 162,
+      "nonempty_lines": 143
+    },
+    {
+      "path": "backend/app/api/devices.py",
+      "reference": "docs/code/backend/app/api/devices.py.md",
+      "sha256": "1b6d03aaa84df86fc339c3dd7d950890b4bb3b7021fbc3acef4855f263de54c9",
+      "lines": 50,
+      "nonempty_lines": 43
+    },
+    {
+      "path": "backend/app/api/llm.py",
+      "reference": "docs/code/backend/app/api/llm.py.md",
+      "sha256": "715cca1cc3ef4b44cdabe1f95129e627437f422b056f7fba2de1ccbd78898a7d",
+      "lines": 54,
+      "nonempty_lines": 47
+    },
+    {
+      "path": "backend/app/api/memories.py",
+      "reference": "docs/code/backend/app/api/memories.py.md",
+      "sha256": "3216560ac8fb30511e7c2511af60444c3afe4917ed854ba72803a22ddc8d4b17",
+      "lines": 125,
+      "nonempty_lines": 110
+    },
+    {
+      "path": "backend/app/api/planning.py",
+      "reference": "docs/code/backend/app/api/planning.py.md",
+      "sha256": "00f7c7bda840b23d515ef1a7fb6e6a5a01a4513d936fcaab9d874b9139bf654c",
+      "lines": 191,
+      "nonempty_lines": 156
+    },
+    {
+      "path": "backend/app/api/websocket.py",
+      "reference": "docs/code/backend/app/api/websocket.py.md",
+      "sha256": "5567827931e0f21e2173b83633896a5190abe5cb60897ce0dca0af21b01ec455",
+      "lines": 375,
+      "nonempty_lines": 339
+    },
+    {
+      "path": "backend/app/api/workers.py",
+      "reference": "docs/code/backend/app/api/workers.py.md",
+      "sha256": "45a98c008598807d3f40e6e0043795b5d05de0ec9b179f6efe9933f4359f3f44",
+      "lines": 134,
+      "nonempty_lines": 112
+    },
+    {
+      "path": "backend/app/calls/__init__.py",
+      "reference": "docs/code/backend/app/calls/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/calls/service.py",
+      "reference": "docs/code/backend/app/calls/service.py.md",
+      "sha256": "b3e4d0a1237caf43743d42b29d2f8ab90a8ffc4675112ab3c83a52479b412afc",
+      "lines": 217,
+      "nonempty_lines": 197
+    },
+    {
+      "path": "backend/app/cli.py",
+      "reference": "docs/code/backend/app/cli.py.md",
+      "sha256": "41c8e49bd4c23470a2bf3cd8609ef0eef587f1709a103716ca2e9b158adb583c",
+      "lines": 73,
+      "nonempty_lines": 65
+    },
+    {
+      "path": "backend/app/config.py",
+      "reference": "docs/code/backend/app/config.py.md",
+      "sha256": "1fca2924b34cf046b2fc58255c19d71cb93e7d2d5d920d8447e076d8ba2f6f39",
+      "lines": 175,
+      "nonempty_lines": 160
+    },
+    {
+      "path": "backend/app/db/__init__.py",
+      "reference": "docs/code/backend/app/db/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/db/base.py",
+      "reference": "docs/code/backend/app/db/base.py.md",
+      "sha256": "68abe171d65caad0407c93068b904f10a36ceb1f82bce35bda87b31936d27119",
+      "lines": 6,
+      "nonempty_lines": 4
+    },
+    {
+      "path": "backend/app/db/provision.py",
+      "reference": "docs/code/backend/app/db/provision.py.md",
+      "sha256": "f047e90c1dbce5637cbe76f1dccb960a90d973015581bc5a84ce3881d4f87bde",
+      "lines": 100,
+      "nonempty_lines": 95
+    },
+    {
+      "path": "backend/app/db/session.py",
+      "reference": "docs/code/backend/app/db/session.py.md",
+      "sha256": "daecad57d6befa90e060efefdd8a69fbbe5795de012a0a842490bed89af866a0",
+      "lines": 27,
+      "nonempty_lines": 21
+    },
+    {
+      "path": "backend/app/devices/__init__.py",
+      "reference": "docs/code/backend/app/devices/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/devices/cli.py",
+      "reference": "docs/code/backend/app/devices/cli.py.md",
+      "sha256": "a56a553539f30b22f39c2071021b3ea0d45b5754117f581a9cdafe8e27516782",
+      "lines": 143,
+      "nonempty_lines": 130
+    },
+    {
+      "path": "backend/app/devices/service.py",
+      "reference": "docs/code/backend/app/devices/service.py.md",
+      "sha256": "499620b674f1f79dff7a75feb59108b598793d5c518dc65ec211e3433063bccb",
+      "lines": 213,
+      "nonempty_lines": 192
+    },
+    {
+      "path": "backend/app/llm/__init__.py",
+      "reference": "docs/code/backend/app/llm/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/llm/base.py",
+      "reference": "docs/code/backend/app/llm/base.py.md",
+      "sha256": "1b402cae02c0fff80c6186e070f598333de654e603c6f50f90e255415ae53bae",
+      "lines": 74,
+      "nonempty_lines": 57
+    },
+    {
+      "path": "backend/app/llm/cli.py",
+      "reference": "docs/code/backend/app/llm/cli.py.md",
+      "sha256": "cfc2ad349fb1f1ddb08f5f27e97ce9562457f475641f1bb12cca569a7fc8508b",
+      "lines": 40,
+      "nonempty_lines": 34
+    },
+    {
+      "path": "backend/app/llm/groq.py",
+      "reference": "docs/code/backend/app/llm/groq.py.md",
+      "sha256": "d18f2586f8550b7162303b1cb8b00fde60d3c58d07851f132f93582fbba82d24",
+      "lines": 16,
+      "nonempty_lines": 13
+    },
+    {
+      "path": "backend/app/llm/llama_cpp.py",
+      "reference": "docs/code/backend/app/llm/llama_cpp.py.md",
+      "sha256": "dff2aed8b74eb9897c86eceb96aea6106add599781623212b678eadb5e10bc74",
+      "lines": 13,
+      "nonempty_lines": 10
+    },
+    {
+      "path": "backend/app/llm/openai_compatible.py",
+      "reference": "docs/code/backend/app/llm/openai_compatible.py.md",
+      "sha256": "d2776c28008c6ad0bcd0f9653a3e4cc39afb464dc99747d0c1cb0018b63195a1",
+      "lines": 150,
+      "nonempty_lines": 140
+    },
+    {
+      "path": "backend/app/llm/router.py",
+      "reference": "docs/code/backend/app/llm/router.py.md",
+      "sha256": "675bc1a9565b5a9c3c2ec0c008cf668f2f3ecfbe0ea1f9ac928e4cd5839df4e1",
+      "lines": 151,
+      "nonempty_lines": 140
+    },
+    {
+      "path": "backend/app/llm/service.py",
+      "reference": "docs/code/backend/app/llm/service.py.md",
+      "sha256": "b076049fd2bcaf077dd3d6ecdf2b22ce9952190b15320d4bb347f5582ef4e69e",
+      "lines": 80,
+      "nonempty_lines": 72
+    },
+    {
+      "path": "backend/app/main.py",
+      "reference": "docs/code/backend/app/main.py.md",
+      "sha256": "d0a65932461db822403eb506596f48439d4ff775c0713788bc459016a48629d1",
+      "lines": 100,
+      "nonempty_lines": 85
+    },
+    {
+      "path": "backend/app/models/__init__.py",
+      "reference": "docs/code/backend/app/models/__init__.py.md",
+      "sha256": "29c72f63ba241326f734dc894acba61d4636dd02c44dfb757f386c35baa10204",
+      "lines": 40,
+      "nonempty_lines": 39
+    },
+    {
+      "path": "backend/app/models/calls.py",
+      "reference": "docs/code/backend/app/models/calls.py.md",
+      "sha256": "7566deb660d8ffdc895703925d6c406602ec6e891b84f25393dd00929cc03475",
+      "lines": 24,
+      "nonempty_lines": 20
+    },
+    {
+      "path": "backend/app/models/context.py",
+      "reference": "docs/code/backend/app/models/context.py.md",
+      "sha256": "7595390882852d034f1a03fd44645f5c0b7e57035463b09b5710a79546470568",
+      "lines": 138,
+      "nonempty_lines": 124
+    },
+    {
+      "path": "backend/app/models/devices.py",
+      "reference": "docs/code/backend/app/models/devices.py.md",
+      "sha256": "434e7defe400e0950c7475dc6522340cb90920f5c60325c2e472b271aac19047",
+      "lines": 53,
+      "nonempty_lines": 43
+    },
+    {
+      "path": "backend/app/models/identity.py",
+      "reference": "docs/code/backend/app/models/identity.py.md",
+      "sha256": "1f4a3488e8ca439e0e607c5a0cf0b1da425bc45095fee694e9838da26d456613",
+      "lines": 45,
+      "nonempty_lines": 34
+    },
+    {
+      "path": "backend/app/models/llm_request.py",
+      "reference": "docs/code/backend/app/models/llm_request.py.md",
+      "sha256": "14735d941a7e36ee4479fa5062504e296625494ab1066b943cbf355b2dd35ced",
+      "lines": 29,
+      "nonempty_lines": 24
+    },
+    {
+      "path": "backend/app/models/planning.py",
+      "reference": "docs/code/backend/app/models/planning.py.md",
+      "sha256": "bc5cb3524d0a92d32a1d3f48c507a691cdb74ae03e71196f44ce0f4bea344551",
+      "lines": 78,
+      "nonempty_lines": 66
+    },
+    {
+      "path": "backend/app/models/workers.py",
+      "reference": "docs/code/backend/app/models/workers.py.md",
+      "sha256": "650d47758952667d744cb26aa49f66ee9889e58fc0ba2fbff735f302f9a92dce",
+      "lines": 55,
+      "nonempty_lines": 47
+    },
+    {
+      "path": "backend/app/planning/__init__.py",
+      "reference": "docs/code/backend/app/planning/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/planning/cli.py",
+      "reference": "docs/code/backend/app/planning/cli.py.md",
+      "sha256": "ea9067c0849bb05bcb56fee29435742e96c97d6b66b8a17f03f273eb0260b447",
+      "lines": 100,
+      "nonempty_lines": 93
+    },
+    {
+      "path": "backend/app/planning/recurrence.py",
+      "reference": "docs/code/backend/app/planning/recurrence.py.md",
+      "sha256": "2a53804b2398d4b26dae91582115eb424030cb0c89dbfc8cea8df0f9626600ad",
+      "lines": 68,
+      "nonempty_lines": 59
+    },
+    {
+      "path": "backend/app/planning/scheduler.py",
+      "reference": "docs/code/backend/app/planning/scheduler.py.md",
+      "sha256": "3db324d2b12acbed3ce2d7c7d74af21f372fdf80623b95418c78dd1cd58a3ca4",
+      "lines": 156,
+      "nonempty_lines": 145
+    },
+    {
+      "path": "backend/app/planning/service.py",
+      "reference": "docs/code/backend/app/planning/service.py.md",
+      "sha256": "935b8389cac21390abe1c434463b7b951a64f523b1cb419ff1ce1cd59358019d",
+      "lines": 283,
+      "nonempty_lines": 260
+    },
+    {
+      "path": "backend/app/schemas/__init__.py",
+      "reference": "docs/code/backend/app/schemas/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/schemas/auth.py",
+      "reference": "docs/code/backend/app/schemas/auth.py.md",
+      "sha256": "5a9b2883f351936bd186f99922f1e216845b78390d989a947897a5d7dc4e1a13",
+      "lines": 29,
+      "nonempty_lines": 22
+    },
+    {
+      "path": "backend/app/schemas/chat.py",
+      "reference": "docs/code/backend/app/schemas/chat.py.md",
+      "sha256": "b69d4e780355b7ad347bc46b23e3c5344f7c80c7b0391178ce67414803fc1027",
+      "lines": 76,
+      "nonempty_lines": 62
+    },
+    {
+      "path": "backend/app/schemas/llm.py",
+      "reference": "docs/code/backend/app/schemas/llm.py.md",
+      "sha256": "125f0c482999608a9ca4fc0898f3b4881a71f227e6c3e5ad0f781d4d724bb0cd",
+      "lines": 32,
+      "nonempty_lines": 25
+    },
+    {
+      "path": "backend/app/schemas/memories.py",
+      "reference": "docs/code/backend/app/schemas/memories.py.md",
+      "sha256": "fa5e121c30bc9564f6a5c42de22fcfaadeec285429660d22f8527711673e839f",
+      "lines": 47,
+      "nonempty_lines": 38
+    },
+    {
+      "path": "backend/app/security.py",
+      "reference": "docs/code/backend/app/security.py.md",
+      "sha256": "d2dff8e5a9b05dd7a7ebf4916ab1dcb125535881da9f32160ad349a8e7110be0",
+      "lines": 91,
+      "nonempty_lines": 77
+    },
+    {
+      "path": "backend/app/workers/__init__.py",
+      "reference": "docs/code/backend/app/workers/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "backend/app/workers/cli.py",
+      "reference": "docs/code/backend/app/workers/cli.py.md",
+      "sha256": "6a17a0ed23d796bb027d080d502e1f576347e4a5a1b195a3338658b0396c9fe9",
+      "lines": 65,
+      "nonempty_lines": 58
+    },
+    {
+      "path": "backend/app/workers/client.py",
+      "reference": "docs/code/backend/app/workers/client.py.md",
+      "sha256": "c0c35ae0ff012bb0e7249b49c1e7648caa119655b332acbf0d32134139124c37",
+      "lines": 73,
+      "nonempty_lines": 63
+    },
+    {
+      "path": "backend/app/workers/runner.py",
+      "reference": "docs/code/backend/app/workers/runner.py.md",
+      "sha256": "c41e03682ece1336a585989437f84d2068e241211570e65cf41adce90bab279f",
+      "lines": 212,
+      "nonempty_lines": 197
+    },
+    {
+      "path": "backend/app/workers/service.py",
+      "reference": "docs/code/backend/app/workers/service.py.md",
+      "sha256": "57d5e7cf98164787f73128f9977c0b734091cb04ac0f1d4648dc2a42f7379641",
+      "lines": 208,
+      "nonempty_lines": 193
+    },
+    {
+      "path": "backend/migrations/env.py",
+      "reference": "docs/code/backend/migrations/env.py.md",
+      "sha256": "d6aa46eea10211490a5912a0265559fdbd74bd3969cc0d779a035bb1b7790f90",
+      "lines": 28,
+      "nonempty_lines": 24
+    },
+    {
+      "path": "backend/migrations/script.py.mako",
+      "reference": "docs/code/backend/migrations/script.py.mako.md",
+      "sha256": "e872497783a86c37adff84230ffe3893188aa3babe5b1f3da52f235470c79e26",
+      "lines": 15,
+      "nonempty_lines": 12
+    },
+    {
+      "path": "backend/migrations/versions/0001_identity.py",
+      "reference": "docs/code/backend/migrations/versions/0001_identity.py.md",
+      "sha256": "84760a7e80a27bc0a6dfe3d81c02690cc1702e8b99563acaed352b24fb444a1c",
+      "lines": 51,
+      "nonempty_lines": 45
+    },
+    {
+      "path": "backend/migrations/versions/0002_llm_requests.py",
+      "reference": "docs/code/backend/migrations/versions/0002_llm_requests.py.md",
+      "sha256": "47a00187f24483a04741ac5830a8138de34029673f2cae6e5fe3d3264e7be917",
+      "lines": 39,
+      "nonempty_lines": 33
+    },
+    {
+      "path": "backend/migrations/versions/0003_context.py",
+      "reference": "docs/code/backend/migrations/versions/0003_context.py.md",
+      "sha256": "4eaa638faf27652285593c740c1bf6eb542ec98e240a161938501d6e79fbab78",
+      "lines": 132,
+      "nonempty_lines": 120
+    },
+    {
+      "path": "backend/migrations/versions/0004_planning.py",
+      "reference": "docs/code/backend/migrations/versions/0004_planning.py.md",
+      "sha256": "400e2c022483b848ab767f3b1b4c8d382b88a4c41452797efdf4dd6912223f6e",
+      "lines": 104,
+      "nonempty_lines": 92
+    },
+    {
+      "path": "backend/migrations/versions/0005_workers.py",
+      "reference": "docs/code/backend/migrations/versions/0005_workers.py.md",
+      "sha256": "2d1156845c261889ce64d2a1c931d145c64f498f46238d89ead96cb9fa85f886",
+      "lines": 83,
+      "nonempty_lines": 71
+    },
+    {
+      "path": "backend/migrations/versions/0006_devices.py",
+      "reference": "docs/code/backend/migrations/versions/0006_devices.py.md",
+      "sha256": "103665743ae2471d969467507339c9242f489e1b21a4744cafbe0806d84fba39",
+      "lines": 77,
+      "nonempty_lines": 67
+    },
+    {
+      "path": "backend/migrations/versions/0007_calls.py",
+      "reference": "docs/code/backend/migrations/versions/0007_calls.py.md",
+      "sha256": "bd1b777dd5a839c668b9a12cfcb472ff591a9ff8afe6327144de8cf5d9723dd4",
+      "lines": 46,
+      "nonempty_lines": 40
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "reference": "docs/code/backend/pyproject.toml.md",
+      "sha256": "5cfed2c0c06a15b8d08045128ba996933b5b91258c600fbb7934193a5d1cad91",
+      "lines": 15,
+      "nonempty_lines": 12
+    },
+    {
+      "path": "backend/requirements-dev.txt",
+      "reference": "docs/code/backend/requirements-dev.txt.md",
+      "sha256": "c4d940e417d77ee76c02a56832a47d79ab31064d0ff8283ce16881596281fa1a",
+      "lines": 41,
+      "nonempty_lines": 41
+    },
+    {
+      "path": "backend/requirements.txt",
+      "reference": "docs/code/backend/requirements.txt.md",
+      "sha256": "131af20e898faa029adaa7325209348a2ed117fdd655b35bd62a2e9e30f38dd1",
+      "lines": 36,
+      "nonempty_lines": 36
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "reference": "docs/code/backend/tests/conftest.py.md",
+      "sha256": "39a37fb9b51bf4d0533ab9f284144243e31aa4644a743cbeff715444dfe53194",
+      "lines": 98,
+      "nonempty_lines": 89
+    },
+    {
+      "path": "backend/tests/test_calls.py",
+      "reference": "docs/code/backend/tests/test_calls.py.md",
+      "sha256": "0bfe13c503fa9505a74cfa07a978c7eee73b9a6c1f0a72f6438d44369360f734",
+      "lines": 247,
+      "nonempty_lines": 222
+    },
+    {
+      "path": "backend/tests/test_context.py",
+      "reference": "docs/code/backend/tests/test_context.py.md",
+      "sha256": "91353f20a69fa2528d57eb530613f2562d24ebd44acc292665d236999474d958",
+      "lines": 621,
+      "nonempty_lines": 567
+    },
+    {
+      "path": "backend/tests/test_devices.py",
+      "reference": "docs/code/backend/tests/test_devices.py.md",
+      "sha256": "994f78e3c95a0ade573ac16044b47c74b10ed33b0f8c93c633a556f4de9ba7af",
+      "lines": 283,
+      "nonempty_lines": 250
+    },
+    {
+      "path": "backend/tests/test_foundation.py",
+      "reference": "docs/code/backend/tests/test_foundation.py.md",
+      "sha256": "6ce42f1cea99d2d5b1ac31423117b74dce281dc30205996008c83eadfc5b4fbb",
+      "lines": 252,
+      "nonempty_lines": 211
+    },
+    {
+      "path": "backend/tests/test_llm.py",
+      "reference": "docs/code/backend/tests/test_llm.py.md",
+      "sha256": "d76d034f831dd7b2b5acacf60dd1ef638ecc8eae431584a3835bc6a5e99d5bb7",
+      "lines": 437,
+      "nonempty_lines": 377
+    },
+    {
+      "path": "backend/tests/test_planning.py",
+      "reference": "docs/code/backend/tests/test_planning.py.md",
+      "sha256": "f35039adae50a350709c461e4af3bf604aea2ba9ce15e1bc32c402a5ea851927",
+      "lines": 295,
+      "nonempty_lines": 257
+    },
+    {
+      "path": "backend/tests/test_workers.py",
+      "reference": "docs/code/backend/tests/test_workers.py.md",
+      "sha256": "d7369f87b4683af0260145d1ddd96227737d1b4e0fd9c923630e3d6eb79a133c",
+      "lines": 176,
+      "nonempty_lines": 157
+    },
+    {
+      "path": "infra/Caddyfile",
+      "reference": "docs/code/infra/Caddyfile.md",
+      "sha256": "d2062aac343ea970c260d9ddf63b816110848997ac0725165c335b89fae8589f",
+      "lines": 20,
+      "nonempty_lines": 19
+    },
+    {
+      "path": "infra/Caddyfile.private",
+      "reference": "docs/code/infra/Caddyfile.private.md",
+      "sha256": "78f34b272c2587880ae90924bf72bbb760e5a85b59787bb26d64eb2eca4ed2de",
+      "lines": 21,
+      "nonempty_lines": 20
+    },
+    {
+      "path": "infra/docker-compose.yml",
+      "reference": "docs/code/infra/docker-compose.yml.md",
+      "sha256": "cf7752c886bd0f88fd464e36a7aaafe2e3b0fe807b603453902d3f785dd10b2b",
+      "lines": 291,
+      "nonempty_lines": 274
+    },
+    {
+      "path": "infra/systemd/devlima-backup.service",
+      "reference": "docs/code/infra/systemd/devlima-backup.service.md",
+      "sha256": "8b3af7adcf564c6b3071cd185b67cd9904e4efe7e5bf366ba1cc3ab6719fa1f9",
+      "lines": 13,
+      "nonempty_lines": 13
+    },
+    {
+      "path": "infra/systemd/devlima-backup.timer",
+      "reference": "docs/code/infra/systemd/devlima-backup.timer.md",
+      "sha256": "a82790322bf2657f7f4af5b317804ab8f48700d6c60ca095785695d197baea7e",
+      "lines": 8,
+      "nonempty_lines": 8
+    },
+    {
+      "path": "scripts/backup.py",
+      "reference": "docs/code/scripts/backup.py.md",
+      "sha256": "e40d67be513fe4eef19f2206a6afedbc8ae0dda5e1ed09d3093c5cbf6628cc8f",
+      "lines": 131,
+      "nonempty_lines": 124
+    },
+    {
+      "path": "scripts/backup_crypto.py",
+      "reference": "docs/code/scripts/backup_crypto.py.md",
+      "sha256": "dc43a97364bdcc4ee82328b2d53712f1bad4ed238f7bddc0ffc09ef4d526a7df",
+      "lines": 79,
+      "nonempty_lines": 67
+    },
+    {
+      "path": "scripts/bootstrap_android.py",
+      "reference": "docs/code/scripts/bootstrap_android.py.md",
+      "sha256": "86ed68828725f01018914424b5f3fee5b471c1460322533c2c0852116988c947",
+      "lines": 100,
+      "nonempty_lines": 90
+    },
+    {
+      "path": "scripts/check_database_privileges.py",
+      "reference": "docs/code/scripts/check_database_privileges.py.md",
+      "sha256": "d4425c1ba5f4991d14d985bd9922ad6b0fd093098141b06bc6e60a7865476ff3",
+      "lines": 48,
+      "nonempty_lines": 45
+    },
+    {
+      "path": "scripts/code_reference_catalog.json",
+      "reference": "docs/code/scripts/code_reference_catalog.json.md",
+      "sha256": "26f7b2123e4058fa48122a2a0f2e968fbc811223254109a36f0caaba132cee42",
+      "lines": 199,
+      "nonempty_lines": 199
+    },
+    {
+      "path": "scripts/document_code.py",
+      "reference": "docs/code/scripts/document_code.py.md",
+      "sha256": "a6c8e67c402f7509a98e6f6a8317a49cefaa107191052b82fb49a657b3e03e58",
+      "lines": 965,
+      "nonempty_lines": 921
+    },
+    {
+      "path": "scripts/init_env.py",
+      "reference": "docs/code/scripts/init_env.py.md",
+      "sha256": "f97ef7ac346aa8f27af39f6b1668451face75f9c7c4080a64b6a3c6ea8c8c447",
+      "lines": 45,
+      "nonempty_lines": 40
+    },
+    {
+      "path": "scripts/install_vm_manager.py",
+      "reference": "docs/code/scripts/install_vm_manager.py.md",
+      "sha256": "c131d2bb6891557dd97e112f943cddcf6fd9b338f3e59a5a776a923e81536c2a",
+      "lines": 108,
+      "nonempty_lines": 101
+    },
+    {
+      "path": "scripts/provision_database_roles.py",
+      "reference": "docs/code/scripts/provision_database_roles.py.md",
+      "sha256": "4335eed990e71596f3f6cebb3061db0fb49a07171762736a846a4b43033717ad",
+      "lines": 92,
+      "nonempty_lines": 86
+    },
+    {
+      "path": "scripts/pull_backups.py",
+      "reference": "docs/code/scripts/pull_backups.py.md",
+      "sha256": "884fef2fd6a9a5e5ba1f2f15f5323b5d72b864923233c1d85a857b590db02cb8",
+      "lines": 85,
+      "nonempty_lines": 79
+    },
+    {
+      "path": "scripts/restore_validate.py",
+      "reference": "docs/code/scripts/restore_validate.py.md",
+      "sha256": "1345cbeeefc3807225989bcc6ecce012fa02f33269e414d5dcdcdc36e5c80c47",
+      "lines": 115,
+      "nonempty_lines": 108
+    },
+    {
+      "path": "scripts/smoke_core_worker_ready.py",
+      "reference": "docs/code/scripts/smoke_core_worker_ready.py.md",
+      "sha256": "fba65786cd8c733dfd26b688d0e6b5239851222c640d7aefd2635b40d83abfb5",
+      "lines": 68,
+      "nonempty_lines": 64
+    },
+    {
+      "path": "scripts/smoke_vm_manager.py",
+      "reference": "docs/code/scripts/smoke_vm_manager.py.md",
+      "sha256": "96f4c56fc77038b162febf3cf6a9d70aa3482a5f58faddcbe9f4b38a49208b71",
+      "lines": 165,
+      "nonempty_lines": 154
+    },
+    {
+      "path": "tests/test_backup_crypto.py",
+      "reference": "docs/code/tests/test_backup_crypto.py.md",
+      "sha256": "5a4ec2b78171bc2bf4b3e4db99d2aa0ebd104745fe85d1f83ecd8dd23ab4a71d",
+      "lines": 88,
+      "nonempty_lines": 80
+    },
+    {
+      "path": "tests/test_code_reference.py",
+      "reference": "docs/code/tests/test_code_reference.py.md",
+      "sha256": "95bf1d7ad1be4631e320a283d5e2b962133e8acaa0975c58a5e8b5ab9e6e1457",
+      "lines": 162,
+      "nonempty_lines": 149
+    },
+    {
+      "path": "tests/test_init_env.py",
+      "reference": "docs/code/tests/test_init_env.py.md",
+      "sha256": "1dc405ce902361461bdc90ec891af20bad49f83f5ef8dbe7b8e3adfb01d5a9f1",
+      "lines": 79,
+      "nonempty_lines": 72
+    },
+    {
+      "path": "vm-manager/requirements.txt",
+      "reference": "docs/code/vm-manager/requirements.txt.md",
+      "sha256": "f7532c955bfe2b65528e3f06b266d285c9a6f2bf799e1e08b79fc840425262ca",
+      "lines": 15,
+      "nonempty_lines": 15
+    },
+    {
+      "path": "vm-manager/systemd/devlima-vm-manager.service",
+      "reference": "docs/code/vm-manager/systemd/devlima-vm-manager.service.md",
+      "sha256": "3725d6bc5c42342ee1f82fff839a910b04a430d1e3a61512706100c6f80516d3",
+      "lines": 37,
+      "nonempty_lines": 35
+    },
+    {
+      "path": "vm-manager/systemd/devlima-worker-egress.xml",
+      "reference": "docs/code/vm-manager/systemd/devlima-worker-egress.xml.md",
+      "sha256": "e24123adba7729b53ecaaf1e2bf8bdfe3743d5385e2e286e1e5b36b15c8ce0b8",
+      "lines": 18,
+      "nonempty_lines": 18
+    },
+    {
+      "path": "vm-manager/tests/test_manager.py",
+      "reference": "docs/code/vm-manager/tests/test_manager.py.md",
+      "sha256": "1cb111ae9900b19ae30dd92c3b7364917a17c1879cd773674720e9ac58681a62",
+      "lines": 303,
+      "nonempty_lines": 263
+    },
+    {
+      "path": "vm-manager/vm_manager/__init__.py",
+      "reference": "docs/code/vm-manager/vm_manager/__init__.py.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "lines": 0,
+      "nonempty_lines": 0
+    },
+    {
+      "path": "vm-manager/vm_manager/app.py",
+      "reference": "docs/code/vm-manager/vm_manager/app.py.md",
+      "sha256": "3d46894a7722df6df591cd1f573f1fc16e0c4fb8c7f864469d2d1d906f7708c6",
+      "lines": 128,
+      "nonempty_lines": 107
+    },
+    {
+      "path": "vm-manager/vm_manager/config.py",
+      "reference": "docs/code/vm-manager/vm_manager/config.py.md",
+      "sha256": "0173a8f3c1d16379b2eb9904158bdbc5158b0975ee7e3c78ecb5e4e408346bb4",
+      "lines": 39,
+      "nonempty_lines": 33
+    },
+    {
+      "path": "vm-manager/vm_manager/linux.py",
+      "reference": "docs/code/vm-manager/vm_manager/linux.py.md",
+      "sha256": "5c831be4565abdd436dcdf8c96891f0f8aed7d6e86891a719925db7018d6ca94",
+      "lines": 523,
+      "nonempty_lines": 493
+    },
+    {
+      "path": "vm-manager/vm_manager/provider.py",
+      "reference": "docs/code/vm-manager/vm_manager/provider.py.md",
+      "sha256": "0c48abec05a8c861e27c3c6996fa31d663887b0b4030971e4d8d63dfb441a8aa",
+      "lines": 39,
+      "nonempty_lines": 36
+    },
+    {
+      "path": "vm-manager/vm_manager/registry.py",
+      "reference": "docs/code/vm-manager/vm_manager/registry.py.md",
+      "sha256": "12f432638414a1b5ea7271a2072c4aca7ace6e8f9bb583e1df1f37f4db2af481",
+      "lines": 200,
+      "nonempty_lines": 183
+    },
+    {
+      "path": "vm-manager/vm_manager/service.py",
+      "reference": "docs/code/vm-manager/vm_manager/service.py.md",
+      "sha256": "555aefc5f10ba1a722c047a62f8180be8f450bd3a84050cf7125a38119d00e7d",
+      "lines": 208,
+      "nonempty_lines": 202
+    }
+  ],
+  "binary_assets": [
+    {
+      "path": "android/gradle/wrapper/gradle-wrapper.jar",
+      "reason": "Binário/asset sem linhas de código textual."
+    },
+    {
+      "path": "docs/images/android-e2e-coffee.png",
+      "reason": "Binário/asset sem linhas de código textual."
+    },
+    {
+      "path": "docs/images/android-release-login.png",
+      "reason": "Binário/asset sem linhas de código textual."
+    }
+  ]
+}

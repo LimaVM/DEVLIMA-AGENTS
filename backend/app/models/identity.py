@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo User e reúne o estado/contrato descrito para este módulo.
 class User(Base):
     __tablename__ = "users"
 
@@ -21,6 +22,7 @@ class User(Base):
     )
 
 
+# Documentação: Define o tipo AuditLog e reúne o estado/contrato descrito para este módulo.
 class AuditLog(Base):
     __tablename__ = "audit_log"
 
@@ -34,6 +36,7 @@ class AuditLog(Base):
     )
 
 
+# Documentação: Define o tipo LoginThrottle e reúne o estado/contrato descrito para este módulo.
 class LoginThrottle(Base):
     __tablename__ = "login_throttles"
 

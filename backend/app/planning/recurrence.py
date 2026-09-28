@@ -19,6 +19,7 @@ ALLOWED_FIELDS = {
 }
 
 
+# Documentação: Implementa rule como parte do fluxo descrito para este arquivo.
 def rule(text: str, start: datetime, timezone: str):
     try:
         parts = text.upper().removeprefix("RRULE:").split(";")
@@ -45,6 +46,7 @@ def rule(text: str, start: datetime, timezone: str):
         raise AgentError("invalid_recurrence", 422) from None
 
 
+# Documentação: Implementa first_occurrence como parte do fluxo descrito para este arquivo.
 def first_occurrence(text: str | None, start: datetime, timezone: str) -> datetime:
     if not text:
         return start.astimezone(UTC)
@@ -56,6 +58,7 @@ def first_occurrence(text: str | None, start: datetime, timezone: str) -> dateti
     return occurrence.astimezone(UTC)
 
 
+# Documentação: Implementa next_occurrence como parte do fluxo descrito para este arquivo.
 def next_occurrence(
     text: str | None, start: datetime, timezone: str, after: datetime
 ) -> datetime | None:

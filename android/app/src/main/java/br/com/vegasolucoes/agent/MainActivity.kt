@@ -35,7 +35,10 @@ val AgentColors =
         onPrimary = Color(0xFF07241C),
     )
 
+// Documentação: Define o tipo MainActivity e reúne o estado/contrato descrito para este módulo.
 class MainActivity : ComponentActivity() {
+    // Documentação: Trata o callback de MainActivity.onCreate, segundo o contrato e as
+    // verificações deste módulo.
     override fun onCreate(state: Bundle?) {
         super.onCreate(state)
         enableEdgeToEdge()
@@ -46,10 +49,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Documentação: Implementa MainActivity.connect como parte do fluxo descrito para este
+    // arquivo.
     fun connect() {
         ContextCompat.startForegroundService(this, Intent(this, ConnectionService::class.java))
     }
 
+    // Documentação: Implementa MainActivity.disconnect como parte do fluxo descrito para este
+    // arquivo.
     fun disconnect() {
         AgentRuntime.voice.value?.end()
         stopService(Intent(this, ConnectionService::class.java))
@@ -58,6 +65,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+// Documentação: Implementa AgentScreen como parte do fluxo descrito para este arquivo.
 fun AgentScreen(activity: MainActivity) {
     val session by AgentRuntime.auth.session.collectAsStateWithLifecycle()
     val connection by AgentRuntime.connection.collectAsStateWithLifecycle()
@@ -69,6 +77,7 @@ fun AgentScreen(activity: MainActivity) {
             denied = !granted
             activity.connect()
         }
+    // Documentação: Inicia startConnection, segundo o contrato e as verificações deste módulo.
     fun startConnection() {
         if (
             Build.VERSION.SDK_INT >= 33 &&
@@ -155,6 +164,7 @@ fun AgentScreen(activity: MainActivity) {
 }
 
 @Composable
+// Documentação: Implementa LoginScreen como parte do fluxo descrito para este arquivo.
 private fun LoginScreen(onLogged: () -> Unit) {
     val scope = rememberCoroutineScope()
     var busy by remember { mutableStateOf(false) }

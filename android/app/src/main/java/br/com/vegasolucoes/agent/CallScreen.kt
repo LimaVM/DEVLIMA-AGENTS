@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 @Composable
+// Documentação: Implementa CallOverlay como parte do fluxo descrito para este arquivo.
 fun CallOverlay(activity: MainActivity, session: SessionData) {
     val received by AgentRuntime.received.collectAsStateWithLifecycle()
     val call by AgentRuntime.call.collectAsStateWithLifecycle()
@@ -40,6 +41,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
         }
     }
     val incoming = remember(received, now) { incomingCall(received) }
+    // Documentação: Inicia startVoice, segundo o contrato e as verificações deste módulo.
     fun startVoice() {
         try {
             if (!activity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
@@ -55,6 +57,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
             error = "Não foi possível ativar o áudio. Continue por texto ou tente novamente."
         }
     }
+    // Documentação: Implementa accept como parte do fluxo descrito para este arquivo.
     fun accept(id: String) {
         scope.launch {
             busy = true

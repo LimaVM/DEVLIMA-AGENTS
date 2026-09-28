@@ -28,6 +28,7 @@ router = APIRouter()
 logger = logging.getLogger("devlima.websocket")
 
 
+# Documentação: Define o tipo Envelope e reúne o estado/contrato descrito para este módulo.
 class Envelope(BaseModel):
     model_config = ConfigDict(extra="forbid")
     event_id: UUID
@@ -36,6 +37,7 @@ class Envelope(BaseModel):
     payload: dict = Field(default_factory=dict)
 
 
+# Documentação: Define o tipo Authenticate e reúne o estado/contrato descrito para este módulo.
 class Authenticate(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
     access_token: str = Field(min_length=20, max_length=4096)
@@ -43,11 +45,13 @@ class Authenticate(BaseModel):
     name: str = Field("Android", min_length=1, max_length=64)
 
 
+# Documentação: Define o tipo Ack e reúne o estado/contrato descrito para este módulo.
 class Ack(BaseModel):
     model_config = ConfigDict(extra="forbid")
     event_id: UUID
 
 
+# Documentação: Implementa authenticate como parte do fluxo descrito para este arquivo.
 def authenticate(data, connection_id):
     settings = get_settings()
     claims = decode_token(data.access_token, settings)
@@ -63,6 +67,7 @@ def authenticate(data, connection_id):
         return user.id
 
 
+# Documentação: Implementa verify como parte do fluxo descrito para este arquivo.
 def verify(token, owner, device_id, connection_id):
     claims = decode_token(token, get_settings())
     with Session(get_engine(), expire_on_commit=False) as session:
@@ -79,31 +84,37 @@ def verify(token, owner, device_id, connection_id):
         return True
 
 
+# Documentação: Implementa events como parte do fluxo descrito para este arquivo.
 def events(owner, device_id):
     with Session(get_engine(), expire_on_commit=False) as session:
         return pending(session, owner, device_id)
 
 
+# Documentação: Implementa ack_event como parte do fluxo descrito para este arquivo.
 def ack_event(owner, device_id, event_id):
     with Session(get_engine()) as session:
         acknowledge(session, owner, device_id, event_id)
 
 
+# Documentação: Define o tipo CallAction e reúne o estado/contrato descrito para este módulo.
 class CallAction(BaseModel):
     model_config = ConfigDict(extra="forbid")
     incoming_event_id: UUID
 
 
+# Documentação: Define o tipo CallEnd e reúne o estado/contrato descrito para este módulo.
 class CallEnd(BaseModel):
     model_config = ConfigDict(extra="forbid")
     call_session_id: UUID
 
 
+# Documentação: Define o tipo VoiceTranscript e reúne o estado/contrato descrito para este módulo.
 class VoiceTranscript(CallEnd):
     client_message_id: UUID
     content: str = Field(min_length=1, max_length=4000)
 
 
+# Documentação: Implementa call_command como parte do fluxo descrito para este arquivo.
 def call_command(owner, device_id, operation, identifier):
     with Session(get_engine(), expire_on_commit=False) as session:
         result = getattr(CallService(session, owner, device_id), operation)(identifier)
@@ -111,6 +122,7 @@ def call_command(owner, device_id, operation, identifier):
         return result
 
 
+# Documentação: Implementa voice como parte do fluxo descrito para este arquivo.
 def voice(owner, device_id, identifier, data):
     with Session(get_engine(), expire_on_commit=False) as session:
         conversation = CallService(session, owner, device_id).touch(identifier)
@@ -125,12 +137,14 @@ def voice(owner, device_id, identifier, data):
         )
 
 
+# Documentação: Implementa chat como parte do fluxo descrito para este arquivo.
 def chat(owner, data):
     with Session(get_engine(), expire_on_commit=False) as session:
         return AgentCore(session, get_settings()).send(owner, data)
 
 
 @router.websocket("/ws")
+# Documentação: Implementa websocket como parte do fluxo descrito para este arquivo.
 async def websocket(socket: WebSocket):
     if socket.query_params:
         await socket.close(code=1008)
@@ -140,6 +154,7 @@ async def websocket(socket: WebSocket):
     jobs, writer, stopped = set(), asyncio.Lock(), asyncio.Event()
     last_pong, token = time.monotonic(), ""
 
+    # Documentação: Implementa websocket.send como parte do fluxo descrito para este arquivo.
     async def send(kind, payload, event_id=None):
         async with writer:
             if not stopped.is_set():
@@ -152,11 +167,14 @@ async def websocket(socket: WebSocket):
                     }
                 )
 
+    # Documentação: Implementa websocket.transmit como parte do fluxo descrito para este arquivo.
     async def transmit(raw):
         async with writer:
             if not stopped.is_set():
                 await socket.send_json(raw)
 
+    # Documentação: Implementa websocket.process_chat como parte do fluxo descrito para este
+    # arquivo.
     async def process_chat(data, request_id, call_id=None):
         try:
             # The Core writes agent.message to its durable outbox in the same transaction.
@@ -192,6 +210,7 @@ async def websocket(socket: WebSocket):
                     request_id,
                 )
 
+    # Documentação: Implementa websocket.pump como parte do fluxo descrito para este arquivo.
     async def pump():
         ping_at = time.monotonic()
         try:

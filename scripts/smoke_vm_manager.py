@@ -9,13 +9,19 @@ from pathlib import Path
 from uuid import uuid4
 
 
+# Documentação: Define o tipo UnixConnection e reúne o estado/contrato descrito para este módulo.
 class UnixConnection(http.client.HTTPConnection):
+    # Documentação: Implementa UnixConnection.connect como parte do fluxo descrito para este
+    # arquivo.
     def connect(self):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.sock.settimeout(350)
         self.sock.connect("/run/devlima-vm-manager/api.sock")
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Valida API Unix socket e
+# ciclo de vida real de workers no manager; exige preservar template e remover apenas recursos
+# criados pelo smoke.
 def main():
     token = next(
         line.split("=", 1)[1]
@@ -27,6 +33,8 @@ def main():
     digest = hashlib.sha256(template.read_bytes()).hexdigest()
     calls = []
 
+    # Documentação: Executa a requisição de main.request, segundo o contrato e as verificações
+    # deste módulo.
     def request(method, path, data=None, authenticate=True):
         connection = UnixConnection("vm-manager")
         headers = {"Content-Type": "application/json"}
@@ -40,6 +48,7 @@ def main():
         finally:
             connection.close()
 
+    # Documentação: Implementa main.operation como parte do fluxo descrito para este arquivo.
     def operation(kind, **args):
         data = {
             "request_id": str(uuid4()),
@@ -58,6 +67,7 @@ def main():
         )
         return result, data
 
+    # Documentação: Implementa main.ready como parte do fluxo descrito para este arquivo.
     def ready():
         deadline = time.monotonic() + 900
         last, heartbeat = None, 0

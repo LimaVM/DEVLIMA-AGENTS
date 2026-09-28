@@ -21,10 +21,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+// Documentação: Define o tipo BackgroundCallsTest e reúne o estado/contrato descrito para este
+// módulo.
 class BackgroundCallsTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
     private val context = instrumentation.targetContext
 
+    // Documentação: Implementa BackgroundCallsTest.await como parte do fluxo descrito para este
+    // arquivo.
     private fun await(label: String, condition: () -> Boolean) {
         val deadline = SystemClock.elapsedRealtime() + 45000
         while (SystemClock.elapsedRealtime() < deadline) {
@@ -34,6 +38,8 @@ class BackgroundCallsTest {
         throw AssertionError("Timeout: $label")
     }
 
+    // Documentação: Implementa BackgroundCallsTest.connect como parte do fluxo descrito para este
+    // arquivo.
     private fun connect() {
         val file = File(context.noBackupFilesDir, "e2e-private.json")
         assumeTrue("Isolated, private configuration required", file.exists())
@@ -68,11 +74,15 @@ class BackgroundCallsTest {
     }
 
     @Test
+    // Documentação: Implementa BackgroundCallsTest.loginAndConnectForExternalIdleProbe como parte
+    // do fluxo descrito para este arquivo.
     fun loginAndConnectForExternalIdleProbe() {
         connect()
     }
 
     @Test
+    // Documentação: Implementa BackgroundCallsTest.removedTaskAndLockedScreenReceiveCall como
+    // parte do fluxo descrito para este arquivo.
     fun removedTaskAndLockedScreenReceiveCall() {
         connect()
         val schedule = runBlocking {

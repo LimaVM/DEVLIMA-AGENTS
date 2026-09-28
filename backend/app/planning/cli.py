@@ -16,6 +16,8 @@ from app.schemas.chat import ChatSend
 from app.security import hash_password
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Executa smoke de tarefas,
+# lembretes, recorrência e scheduler usando registros isolados para validar APIs e persistência.
 def main():
     settings = get_settings()
     if (

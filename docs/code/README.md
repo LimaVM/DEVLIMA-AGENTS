@@ -1,0 +1,176 @@
+# Referência completa do código
+
+158 arquivos textuais e 18297 linhas físicas documentados.
+
+Inclui código de produção, testes, migrations, build e configuração, além de linhas em branco/comentários/delimitadores. Arquivos privados ignorados não são lidos; binários não têm linhas. Markdown existente é documentação; não entra no inventário de código.
+
+Cada guia traz contexto editorial, responsabilidades dos símbolos e tabela com código original/número/explicação. O conteúdo literal é identificado como dados. Explicações sintáticas automáticas devem ser lidas junto ao contexto do módulo; cobertura de linhas não equivale a testes aprovados.
+
+[Como atualizar e validar](../CODE_DOCUMENTATION.md) · [Manifesto](manifest.json)
+
+| Arquivo | Linhas | Referência |
+| --- | ---: | --- |
+| .env.example | 39 | [Ler](environment-example.md) |
+| .github/workflows/validate.yml | 35 | [Ler](.github/workflows/validate.yml.md) |
+| .gitignore | 40 | [Ler](.gitignore.md) |
+| android/app/build.gradle.kts | 72 | [Ler](android/app/build.gradle.kts.md) |
+| android/app/src/androidTest/java/br/com/vegasolucoes/agent/BackgroundCallsTest.kt | 154 | [Ler](android/app/src/androidTest/java/br/com/vegasolucoes/agent/BackgroundCallsTest.kt.md) |
+| android/app/src/androidTest/java/br/com/vegasolucoes/agent/EndToEndTest.kt | 233 | [Ler](android/app/src/androidTest/java/br/com/vegasolucoes/agent/EndToEndTest.kt.md) |
+| android/app/src/androidTest/java/br/com/vegasolucoes/agent/QueueTest.kt | 88 | [Ler](android/app/src/androidTest/java/br/com/vegasolucoes/agent/QueueTest.kt.md) |
+| android/app/src/androidTest/java/br/com/vegasolucoes/agent/StorageTest.kt | 61 | [Ler](android/app/src/androidTest/java/br/com/vegasolucoes/agent/StorageTest.kt.md) |
+| android/app/src/androidTest/java/br/com/vegasolucoes/agent/VoiceCapabilitiesTest.kt | 55 | [Ler](android/app/src/androidTest/java/br/com/vegasolucoes/agent/VoiceCapabilitiesTest.kt.md) |
+| android/app/src/main/AndroidManifest.xml | 32 | [Ler](android/app/src/main/AndroidManifest.xml.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/AgentApplication.kt | 53 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/AgentApplication.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/AgentNotifications.kt | 190 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/AgentNotifications.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/CallDeliverySettings.kt | 95 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/CallDeliverySettings.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/CallRejectReceiver.kt | 42 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/CallRejectReceiver.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/CallScreen.kt | 300 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/CallScreen.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/ChatScreen.kt | 198 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/ChatScreen.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionRestoreReceiver.kt | 46 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionRestoreReceiver.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionService.kt | 311 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/ConnectionService.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/EventStore.kt | 463 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/EventStore.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCallActivity.kt | 142 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCallActivity.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCalls.kt | 31 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/IncomingCalls.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/MainActivity.kt | 239 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/MainActivity.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/Network.kt | 213 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/Network.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/RoutineScreen.kt | 411 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/RoutineScreen.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/SecureStore.kt | 145 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/SecureStore.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/VoiceController.kt | 390 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/VoiceController.kt.md) |
+| android/app/src/main/java/br/com/vegasolucoes/agent/VoiceService.kt | 70 | [Ler](android/app/src/main/java/br/com/vegasolucoes/agent/VoiceService.kt.md) |
+| android/app/src/main/res/drawable/ic_agent.xml | 1 | [Ler](android/app/src/main/res/drawable/ic_agent.xml.md) |
+| android/app/src/main/res/values/styles.xml | 1 | [Ler](android/app/src/main/res/values/styles.xml.md) |
+| android/app/src/test/java/br/com/vegasolucoes/agent/IncomingCallsTest.kt | 22 | [Ler](android/app/src/test/java/br/com/vegasolucoes/agent/IncomingCallsTest.kt.md) |
+| android/app/src/test/java/br/com/vegasolucoes/agent/NetworkPolicyTest.kt | 40 | [Ler](android/app/src/test/java/br/com/vegasolucoes/agent/NetworkPolicyTest.kt.md) |
+| android/app/src/test/java/br/com/vegasolucoes/agent/TimezoneTest.kt | 24 | [Ler](android/app/src/test/java/br/com/vegasolucoes/agent/TimezoneTest.kt.md) |
+| android/build.gradle.kts | 5 | [Ler](android/build.gradle.kts.md) |
+| android/gradle.properties | 5 | [Ler](android/gradle.properties.md) |
+| android/gradle/wrapper/gradle-wrapper.properties | 8 | [Ler](android/gradle/wrapper/gradle-wrapper.properties.md) |
+| android/gradlew | 251 | [Ler](android/gradlew.md) |
+| android/gradlew.bat | 94 | [Ler](android/gradlew.bat.md) |
+| android/settings.gradle.kts | 19 | [Ler](android/settings.gradle.kts.md) |
+| backend/.dockerignore | 6 | [Ler](backend/.dockerignore.md) |
+| backend/Dockerfile | 22 | [Ler](backend/Dockerfile.md) |
+| backend/alembic.ini | 30 | [Ler](backend/alembic.ini.md) |
+| backend/app/__init__.py | 0 | [Ler](backend/app/__init__.py.md) |
+| backend/app/agent/__init__.py | 0 | [Ler](backend/app/agent/__init__.py.md) |
+| backend/app/agent/action_engine.py | 157 | [Ler](backend/app/agent/action_engine.py.md) |
+| backend/app/agent/action_parser.py | 201 | [Ler](backend/app/agent/action_parser.py.md) |
+| backend/app/agent/cli.py | 187 | [Ler](backend/app/agent/cli.py.md) |
+| backend/app/agent/context_builder.py | 169 | [Ler](backend/app/agent/context_builder.py.md) |
+| backend/app/agent/core.py | 254 | [Ler](backend/app/agent/core.py.md) |
+| backend/app/agent/errors.py | 15 | [Ler](backend/app/agent/errors.py.md) |
+| backend/app/agent/memory_manager.py | 167 | [Ler](backend/app/agent/memory_manager.py.md) |
+| backend/app/agent/prompts.py | 45 | [Ler](backend/app/agent/prompts.py.md) |
+| backend/app/agent/summarizer.py | 112 | [Ler](backend/app/agent/summarizer.py.md) |
+| backend/app/api/__init__.py | 0 | [Ler](backend/app/api/__init__.py.md) |
+| backend/app/api/auth.py | 148 | [Ler](backend/app/api/auth.py.md) |
+| backend/app/api/calls.py | 127 | [Ler](backend/app/api/calls.py.md) |
+| backend/app/api/chat.py | 162 | [Ler](backend/app/api/chat.py.md) |
+| backend/app/api/devices.py | 50 | [Ler](backend/app/api/devices.py.md) |
+| backend/app/api/llm.py | 54 | [Ler](backend/app/api/llm.py.md) |
+| backend/app/api/memories.py | 125 | [Ler](backend/app/api/memories.py.md) |
+| backend/app/api/planning.py | 191 | [Ler](backend/app/api/planning.py.md) |
+| backend/app/api/websocket.py | 375 | [Ler](backend/app/api/websocket.py.md) |
+| backend/app/api/workers.py | 134 | [Ler](backend/app/api/workers.py.md) |
+| backend/app/calls/__init__.py | 0 | [Ler](backend/app/calls/__init__.py.md) |
+| backend/app/calls/service.py | 217 | [Ler](backend/app/calls/service.py.md) |
+| backend/app/cli.py | 73 | [Ler](backend/app/cli.py.md) |
+| backend/app/config.py | 175 | [Ler](backend/app/config.py.md) |
+| backend/app/db/__init__.py | 0 | [Ler](backend/app/db/__init__.py.md) |
+| backend/app/db/base.py | 6 | [Ler](backend/app/db/base.py.md) |
+| backend/app/db/provision.py | 100 | [Ler](backend/app/db/provision.py.md) |
+| backend/app/db/session.py | 27 | [Ler](backend/app/db/session.py.md) |
+| backend/app/devices/__init__.py | 0 | [Ler](backend/app/devices/__init__.py.md) |
+| backend/app/devices/cli.py | 143 | [Ler](backend/app/devices/cli.py.md) |
+| backend/app/devices/service.py | 213 | [Ler](backend/app/devices/service.py.md) |
+| backend/app/llm/__init__.py | 0 | [Ler](backend/app/llm/__init__.py.md) |
+| backend/app/llm/base.py | 74 | [Ler](backend/app/llm/base.py.md) |
+| backend/app/llm/cli.py | 40 | [Ler](backend/app/llm/cli.py.md) |
+| backend/app/llm/groq.py | 16 | [Ler](backend/app/llm/groq.py.md) |
+| backend/app/llm/llama_cpp.py | 13 | [Ler](backend/app/llm/llama_cpp.py.md) |
+| backend/app/llm/openai_compatible.py | 150 | [Ler](backend/app/llm/openai_compatible.py.md) |
+| backend/app/llm/router.py | 151 | [Ler](backend/app/llm/router.py.md) |
+| backend/app/llm/service.py | 80 | [Ler](backend/app/llm/service.py.md) |
+| backend/app/main.py | 100 | [Ler](backend/app/main.py.md) |
+| backend/app/models/__init__.py | 40 | [Ler](backend/app/models/__init__.py.md) |
+| backend/app/models/calls.py | 24 | [Ler](backend/app/models/calls.py.md) |
+| backend/app/models/context.py | 138 | [Ler](backend/app/models/context.py.md) |
+| backend/app/models/devices.py | 53 | [Ler](backend/app/models/devices.py.md) |
+| backend/app/models/identity.py | 45 | [Ler](backend/app/models/identity.py.md) |
+| backend/app/models/llm_request.py | 29 | [Ler](backend/app/models/llm_request.py.md) |
+| backend/app/models/planning.py | 78 | [Ler](backend/app/models/planning.py.md) |
+| backend/app/models/workers.py | 55 | [Ler](backend/app/models/workers.py.md) |
+| backend/app/planning/__init__.py | 0 | [Ler](backend/app/planning/__init__.py.md) |
+| backend/app/planning/cli.py | 100 | [Ler](backend/app/planning/cli.py.md) |
+| backend/app/planning/recurrence.py | 68 | [Ler](backend/app/planning/recurrence.py.md) |
+| backend/app/planning/scheduler.py | 156 | [Ler](backend/app/planning/scheduler.py.md) |
+| backend/app/planning/service.py | 283 | [Ler](backend/app/planning/service.py.md) |
+| backend/app/schemas/__init__.py | 0 | [Ler](backend/app/schemas/__init__.py.md) |
+| backend/app/schemas/auth.py | 29 | [Ler](backend/app/schemas/auth.py.md) |
+| backend/app/schemas/chat.py | 76 | [Ler](backend/app/schemas/chat.py.md) |
+| backend/app/schemas/llm.py | 32 | [Ler](backend/app/schemas/llm.py.md) |
+| backend/app/schemas/memories.py | 47 | [Ler](backend/app/schemas/memories.py.md) |
+| backend/app/security.py | 91 | [Ler](backend/app/security.py.md) |
+| backend/app/workers/__init__.py | 0 | [Ler](backend/app/workers/__init__.py.md) |
+| backend/app/workers/cli.py | 65 | [Ler](backend/app/workers/cli.py.md) |
+| backend/app/workers/client.py | 73 | [Ler](backend/app/workers/client.py.md) |
+| backend/app/workers/runner.py | 212 | [Ler](backend/app/workers/runner.py.md) |
+| backend/app/workers/service.py | 208 | [Ler](backend/app/workers/service.py.md) |
+| backend/migrations/env.py | 28 | [Ler](backend/migrations/env.py.md) |
+| backend/migrations/script.py.mako | 15 | [Ler](backend/migrations/script.py.mako.md) |
+| backend/migrations/versions/0001_identity.py | 51 | [Ler](backend/migrations/versions/0001_identity.py.md) |
+| backend/migrations/versions/0002_llm_requests.py | 39 | [Ler](backend/migrations/versions/0002_llm_requests.py.md) |
+| backend/migrations/versions/0003_context.py | 132 | [Ler](backend/migrations/versions/0003_context.py.md) |
+| backend/migrations/versions/0004_planning.py | 104 | [Ler](backend/migrations/versions/0004_planning.py.md) |
+| backend/migrations/versions/0005_workers.py | 83 | [Ler](backend/migrations/versions/0005_workers.py.md) |
+| backend/migrations/versions/0006_devices.py | 77 | [Ler](backend/migrations/versions/0006_devices.py.md) |
+| backend/migrations/versions/0007_calls.py | 46 | [Ler](backend/migrations/versions/0007_calls.py.md) |
+| backend/pyproject.toml | 15 | [Ler](backend/pyproject.toml.md) |
+| backend/requirements-dev.txt | 41 | [Ler](backend/requirements-dev.txt.md) |
+| backend/requirements.txt | 36 | [Ler](backend/requirements.txt.md) |
+| backend/tests/conftest.py | 98 | [Ler](backend/tests/conftest.py.md) |
+| backend/tests/test_calls.py | 247 | [Ler](backend/tests/test_calls.py.md) |
+| backend/tests/test_context.py | 621 | [Ler](backend/tests/test_context.py.md) |
+| backend/tests/test_devices.py | 283 | [Ler](backend/tests/test_devices.py.md) |
+| backend/tests/test_foundation.py | 252 | [Ler](backend/tests/test_foundation.py.md) |
+| backend/tests/test_llm.py | 437 | [Ler](backend/tests/test_llm.py.md) |
+| backend/tests/test_planning.py | 295 | [Ler](backend/tests/test_planning.py.md) |
+| backend/tests/test_workers.py | 176 | [Ler](backend/tests/test_workers.py.md) |
+| infra/Caddyfile | 20 | [Ler](infra/Caddyfile.md) |
+| infra/Caddyfile.private | 21 | [Ler](infra/Caddyfile.private.md) |
+| infra/docker-compose.yml | 291 | [Ler](infra/docker-compose.yml.md) |
+| infra/systemd/devlima-backup.service | 13 | [Ler](infra/systemd/devlima-backup.service.md) |
+| infra/systemd/devlima-backup.timer | 8 | [Ler](infra/systemd/devlima-backup.timer.md) |
+| scripts/backup.py | 131 | [Ler](scripts/backup.py.md) |
+| scripts/backup_crypto.py | 79 | [Ler](scripts/backup_crypto.py.md) |
+| scripts/bootstrap_android.py | 100 | [Ler](scripts/bootstrap_android.py.md) |
+| scripts/check_database_privileges.py | 48 | [Ler](scripts/check_database_privileges.py.md) |
+| scripts/code_reference_catalog.json | 199 | [Ler](scripts/code_reference_catalog.json.md) |
+| scripts/document_code.py | 965 | [Ler](scripts/document_code.py.md) |
+| scripts/init_env.py | 45 | [Ler](scripts/init_env.py.md) |
+| scripts/install_vm_manager.py | 108 | [Ler](scripts/install_vm_manager.py.md) |
+| scripts/provision_database_roles.py | 92 | [Ler](scripts/provision_database_roles.py.md) |
+| scripts/pull_backups.py | 85 | [Ler](scripts/pull_backups.py.md) |
+| scripts/restore_validate.py | 115 | [Ler](scripts/restore_validate.py.md) |
+| scripts/smoke_core_worker_ready.py | 68 | [Ler](scripts/smoke_core_worker_ready.py.md) |
+| scripts/smoke_vm_manager.py | 165 | [Ler](scripts/smoke_vm_manager.py.md) |
+| tests/test_backup_crypto.py | 88 | [Ler](tests/test_backup_crypto.py.md) |
+| tests/test_code_reference.py | 162 | [Ler](tests/test_code_reference.py.md) |
+| tests/test_init_env.py | 79 | [Ler](tests/test_init_env.py.md) |
+| vm-manager/requirements.txt | 15 | [Ler](vm-manager/requirements.txt.md) |
+| vm-manager/systemd/devlima-vm-manager.service | 37 | [Ler](vm-manager/systemd/devlima-vm-manager.service.md) |
+| vm-manager/systemd/devlima-worker-egress.xml | 18 | [Ler](vm-manager/systemd/devlima-worker-egress.xml.md) |
+| vm-manager/tests/test_manager.py | 303 | [Ler](vm-manager/tests/test_manager.py.md) |
+| vm-manager/vm_manager/__init__.py | 0 | [Ler](vm-manager/vm_manager/__init__.py.md) |
+| vm-manager/vm_manager/app.py | 128 | [Ler](vm-manager/vm_manager/app.py.md) |
+| vm-manager/vm_manager/config.py | 39 | [Ler](vm-manager/vm_manager/config.py.md) |
+| vm-manager/vm_manager/linux.py | 523 | [Ler](vm-manager/vm_manager/linux.py.md) |
+| vm-manager/vm_manager/provider.py | 39 | [Ler](vm-manager/vm_manager/provider.py.md) |
+| vm-manager/vm_manager/registry.py | 200 | [Ler](vm-manager/vm_manager/registry.py.md) |
+| vm-manager/vm_manager/service.py | 208 | [Ler](vm-manager/vm_manager/service.py.md) |
+
+## Assets binários
+
+- `android/gradle/wrapper/gradle-wrapper.jar`: Binário/asset sem linhas de código textual.
+- `docs/images/android-e2e-coffee.png`: Binário/asset sem linhas de código textual.
+- `docs/images/android-release-login.png`: Binário/asset sem linhas de código textual.

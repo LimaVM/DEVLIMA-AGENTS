@@ -1,5 +1,9 @@
 # Changelog
 
+## Documentação completa do código — 2026-09-28
+
+Adiciona referência numerada de cada linha de código textual, testes, migrations, build e infraestrutura, com catálogo editorial, manifesto de hashes/contagem e verificação de atualização. Acrescenta comentários a classes/funções Python/Kotlin sem alterar a AST/tokens dos fontes existentes. CI inclui check da referência; execução hospedada continua dependente da disponibilidade do GitHub. Credenciais operacionais conservadas fora do Git, com configuração externa documentada.
+
 ## Android 1.0.3 — pré-release, 2026-09-28
 
 Acrescenta CallStyle com toque contínuo limitado ao prazo real de atendimento, tela de chamada sobre bloqueio quando autorizada, desbloqueio antes do atendimento/microfone, atalhos de permissões/bateria e restauração da conexão desejada após boot/atualização. Preserva Desconectar e encerramento explícito pelo usuário; eventos expirados não voltam a tocar.

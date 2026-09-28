@@ -17,6 +17,7 @@ from app.workers.client import ManagerClient, ManagerError
 logger = logging.getLogger("worker-runner")
 
 
+# Documentação: Implementa claim como parte do fluxo descrito para este arquivo.
 def claim(session, now=None, command_id=None):
     now = now or datetime.now(UTC)
     row = session.scalar(
@@ -43,6 +44,7 @@ def claim(session, now=None, command_id=None):
     return row
 
 
+# Documentação: Implementa apply_status como parte do fluxo descrito para este arquivo.
 def apply_status(worker, data):
     worker.status = data["status"]
     worker.ip = data.get("ip")
@@ -50,6 +52,7 @@ def apply_status(worker, data):
     worker.updated_at = datetime.now(UTC)
 
 
+# Documentação: Reivindica e executa comando de worker com lease e registra seu resultado no Core.
 def execute_one(session, client, command_id=None):
     command = claim(session, command_id=command_id)
     if command is None:
@@ -135,6 +138,7 @@ def execute_one(session, client, command_id=None):
     return True
 
 
+# Documentação: Implementa reconcile como parte do fluxo descrito para este arquivo.
 def reconcile(session, client):
     identifiers = [
         (row.id, row.user_id)
@@ -165,6 +169,9 @@ def reconcile(session, client):
     session.commit()
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Reivindica comandos duráveis
+# com lease/locks, executa operação idempotente no manager, atualiza Core e reconcilia operações
+# interrompidas.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["run", "once", "health"])

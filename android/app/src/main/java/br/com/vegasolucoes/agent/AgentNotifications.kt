@@ -16,6 +16,8 @@ import androidx.core.app.Person
 import androidx.core.content.ContextCompat
 import org.json.JSONObject
 
+// Documentação: Define o tipo AgentNotifications e reúne o estado/contrato descrito para este
+// módulo.
 class AgentNotifications(private val context: Context) {
     companion object {
         const val CALL_CHANNEL = "incoming_calls_v2"
@@ -55,6 +57,8 @@ class AgentNotifications(private val context: Context) {
         )
     }
 
+    // Documentação: Implementa AgentNotifications.foreground como parte do fluxo descrito para
+    // este arquivo.
     fun foreground(text: String): Notification {
         val open =
             PendingIntent.getActivity(
@@ -81,10 +85,14 @@ class AgentNotifications(private val context: Context) {
             .build()
     }
 
+    // Documentação: Implementa AgentNotifications.status como parte do fluxo descrito para este
+    // arquivo.
     fun status(text: String) {
         manager.notify(1, foreground(text))
     }
 
+    // Documentação: Publica somente tipos notificáveis, cancela eventos resolvidos e limita toque
+    // de chamada ao tempo restante.
     fun event(event: JSONObject) {
         val type = event.getString("type")
         if (type == "call.dismissed" || type == "call.state") {
@@ -174,6 +182,8 @@ class AgentNotifications(private val context: Context) {
         manager.notify(id, 2, notification)
     }
 
+    // Documentação: Cancela AgentNotifications.cancel, segundo o contrato e as verificações deste
+    // módulo.
     fun cancel(id: String) {
         manager.cancel(id, 2)
     }

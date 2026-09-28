@@ -8,6 +8,10 @@ Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/r
 
 Android 1.0.3 prepara toque contínuo, tela de chamada bloqueada e reconexão após reinício. [Pré-release para testes](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.3); validação física adiada pelo proprietário. Veja [condições e limites](docs/ANDROID_BACKGROUND_CALLS.md).
 
+## Código documentado
+
+A [referência linha a linha](docs/code/README.md) inclui cada linha física dos fontes, testes, migrations, build e configuração versionados. Funções/classes Python e Kotlin possuem comentários; o guia combina contexto editorial e explicações de AST/análise lexical. Veja [como atualizar e validar](docs/CODE_DOCUMENTATION.md) e [configuração externa](docs/CONFIGURATION_SECRETS.md).
+
 ## Documentação
 
 - [Estado real e plano inicial](CURRENT_STATE.md)

@@ -18,6 +18,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo Conversation e reúne o estado/contrato descrito para este módulo.
 class Conversation(Base):
     __tablename__ = "conversations"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -36,6 +37,7 @@ class Conversation(Base):
     )
 
 
+# Documentação: Define o tipo Message e reúne o estado/contrato descrito para este módulo.
 class Message(Base):
     __tablename__ = "messages"
     __table_args__ = (
@@ -62,6 +64,8 @@ class Message(Base):
     )
 
 
+# Documentação: Define o tipo ConversationSummary e reúne o estado/contrato descrito para este
+# módulo.
 class ConversationSummary(Base):
     __tablename__ = "conversation_summaries"
     __table_args__ = (
@@ -79,6 +83,7 @@ class ConversationSummary(Base):
     )
 
 
+# Documentação: Define o tipo Memory e reúne o estado/contrato descrito para este módulo.
 class Memory(Base):
     __tablename__ = "memories"
     __table_args__ = (UniqueConstraint("user_id", "content_hash", name="uq_memories_content"),)
@@ -97,6 +102,7 @@ class Memory(Base):
     )
 
 
+# Documentação: Define o tipo MemoryCandidate e reúne o estado/contrato descrito para este módulo.
 class MemoryCandidate(Base):
     __tablename__ = "memory_candidates"
     __table_args__ = (
@@ -117,6 +123,7 @@ class MemoryCandidate(Base):
     )
 
 
+# Documentação: Define o tipo AgentAction e reúne o estado/contrato descrito para este módulo.
 class AgentAction(Base):
     __tablename__ = "agent_actions"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)

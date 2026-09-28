@@ -3,11 +3,15 @@ from vm_manager.provider import WorkerProvider
 from vm_manager.registry import Registry
 
 
+# Documentação: Define o tipo WorkerService e reúne o estado/contrato descrito para este módulo.
 class WorkerService:
+    # Documentação: Inicializa WorkerService com as dependências e estado declarados.
     def __init__(self, settings, provider: WorkerProvider):
         self.settings, self.provider = settings, provider
         self.registry = Registry(settings.state_root)
 
+    # Documentação: Implementa WorkerService.public como parte do fluxo descrito para este
+    # arquivo.
     def public(self, row):
         return {
             key: row.get(key)
@@ -26,12 +30,16 @@ class WorkerService:
             )
         }
 
+    # Documentação: Implementa WorkerService.status como parte do fluxo descrito para este
+    # arquivo.
     def status(self, identifier, owner):
         with self.registry.lock():
             row = self.registry.worker(identifier, owner)
             actual = self.provider.status(row)
             return self.public(self.registry.save(actual))
 
+    # Documentação: Implementa WorkerService.reconcile como parte do fluxo descrito para este
+    # arquivo.
     def reconcile(self):
         with self.registry.lock():
             for row in self.registry.workers():
@@ -73,6 +81,8 @@ class WorkerService:
                         "FAILED",
                     )
 
+    # Documentação: Executa a operação do manager sob lock, conserva resultado idempotente e
+    # atualiza registry.
     def perform(self, request):
         data = request.model_dump(mode="json", exclude_none=True)
         identifier, owner, request_id, kind = (

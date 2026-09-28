@@ -14,11 +14,13 @@ SDK_SHA1 = "e025545c62a8e64c7559119566a569fb1dec5f60"
 GRADLE_VERSION = "8.13"
 
 
+# Documentação: Implementa download como parte do fluxo descrito para este arquivo.
 def download(url, path):
     with urllib.request.urlopen(url, timeout=120) as response, path.open("wb") as target:
         shutil.copyfileobj(response, target)
 
 
+# Documentação: Implementa extract como parte do fluxo descrito para este arquivo.
 def extract(path, directory):
     root = directory.resolve()
     with zipfile.ZipFile(path) as archive:
@@ -28,6 +30,9 @@ def extract(path, directory):
         archive.extractall(root)
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Prepara ferramentas Android
+# na VPS por downloads/extração explícitos; verifica arquivos e limita caminhos extraídos para
+# evitar path traversal.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--sdk-root", type=Path, default=Path("/srv/devlima-android-sdk"))

@@ -14,10 +14,14 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
+// Documentação: Define o tipo ApiFailure e reúne o estado/contrato descrito para este módulo.
 class ApiFailure(val status: Int, val code: String) : Exception(code)
 
+// Documentação: Define o tipo LoginRequired e reúne o estado/contrato descrito para este módulo.
 class LoginRequired : Exception("login_required")
 
+// Documentação: Aceita somente base HTTPS válida, sem credenciais/query/fragment e normaliza
+// barra final.
 fun normalizedServer(value: String): String {
     val url =
         value.trim().toHttpUrlOrNull()
@@ -35,13 +39,16 @@ fun normalizedServer(value: String): String {
     return url.toString().removeSuffix("/")
 }
 
+// Documentação: Define o tipo Backoff e reúne o estado/contrato descrito para este módulo.
 class Backoff {
     private var attempt = 0
 
+    // Documentação: Implementa Backoff.reset como parte do fluxo descrito para este arquivo.
     fun reset() {
         attempt = 0
     }
 
+    // Documentação: Implementa Backoff.nextDelay como parte do fluxo descrito para este arquivo.
     fun nextDelay(): Long {
         val base = (1000L shl attempt.coerceAtMost(6)).coerceAtMost(60000)
         attempt = (attempt + 1).coerceAtMost(6)
@@ -49,6 +56,7 @@ class Backoff {
     }
 }
 
+// Documentação: Define o tipo AuthRepository e reúne o estado/contrato descrito para este módulo.
 class AuthRepository(private val secure: SecureStore, private val events: EventStore) {
     val session = MutableStateFlow(secure.load())
     private val refreshLock = Mutex()
@@ -60,6 +68,8 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
             .pingInterval(20, TimeUnit.SECONDS)
             .build()
 
+    // Documentação: Executa a requisição de AuthRepository.request, segundo o contrato e as
+    // verificações deste módulo.
     private fun request(
         server: String,
         path: String,
@@ -84,6 +94,8 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
             }
     }
 
+    // Documentação: Autentica, obtém identidade/timezone, associa cache ao proprietário e grava
+    // sessão cifrada.
     suspend fun login(serverInput: String, username: String, password: String) =
         withContext(Dispatchers.IO) {
             refreshLock.withLock {
@@ -121,6 +133,8 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
             }
         }
 
+    // Documentação: Renova token próximo da expiração sob mutex e exige login novamente somente
+    // para rejeição de autenticação.
     suspend fun access(): SessionData =
         withContext(Dispatchers.IO) {
             refreshLock.withLock {
@@ -156,6 +170,8 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
             }
         }
 
+    // Documentação: Implementa AuthRepository.invalidateAccess como parte do fluxo descrito para
+    // este arquivo.
     suspend fun invalidateAccess() {
         refreshLock.withLock {
             session.value?.let {
@@ -166,6 +182,8 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
         }
     }
 
+    // Documentação: Executa HTTP autenticado e tenta renovação uma vez após rejeição do access
+    // token.
     suspend fun api(path: String, method: String = "GET", data: JSONObject? = null): String =
         withContext(Dispatchers.IO) {
             val current = access()
@@ -179,6 +197,7 @@ class AuthRepository(private val secure: SecureStore, private val events: EventS
             }
         }
 
+    // Documentação: Tenta revogar a família no Core e remove sessão/dispositivo locais.
     suspend fun logout() =
         withContext(Dispatchers.IO) {
             refreshLock.withLock {

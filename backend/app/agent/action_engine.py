@@ -10,10 +10,14 @@ from app.planning.service import PlanningService, schedule_data, task_data
 from app.workers.service import WorkerService, command_data, worker_data
 
 
+# Documentação: Define o tipo ActionEngine e reúne o estado/contrato descrito para este módulo.
 class ActionEngine:
+    # Documentação: Inicializa ActionEngine com as dependências e estado declarados.
     def __init__(self, session: Session):
         self.session = session
 
+    # Documentação: Despacha exclusivamente tipos de ação validados para PlanningService ou
+    # WorkerService.
     def execute(self, action: ActionProposal, source: Message) -> tuple[dict, str]:
         service = PlanningService(self.session, source.user_id)
         args = dict(action.arguments)
@@ -91,6 +95,8 @@ class ActionEngine:
             return {"items": data}, text
         raise AgentError("feature_not_available", 409)
 
+    # Documentação: Deduplica propostas, executa cada ação em savepoint e registra resultado
+    # auditável.
     def process(self, actions: list[ActionProposal], source: Message) -> list[dict]:
         results, seen = [], set()
         for action in actions:

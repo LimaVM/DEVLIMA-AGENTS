@@ -13,7 +13,12 @@ crypto = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(crypto)
 
 
+# Documentação: Define o tipo BackupCryptoTests e reúne o estado/contrato descrito para este
+# módulo.
 class BackupCryptoTests(unittest.TestCase):
+    # Documentação: Verifica o cenário
+    # test_streaming_roundtrip_and_tampering_never_leaves_plaintext; as condições e resultados
+    # esperados aparecem nos asserts.
     def test_streaming_roundtrip_and_tampering_never_leaves_plaintext(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -42,6 +47,8 @@ class BackupCryptoTests(unittest.TestCase):
                 crypto.decrypt(encrypted, existing, key)
             self.assertEqual(existing.read_text(), "must remain")
 
+    # Documentação: Verifica o cenário test_wrong_key_and_header_are_rejected; as condições e
+    # resultados esperados aparecem nos asserts.
     def test_wrong_key_and_header_are_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -62,6 +69,8 @@ class BackupCryptoTests(unittest.TestCase):
                 crypto.decrypt(encrypted, root / "bad", root / "a")
             self.assertFalse((root / "bad").exists())
 
+    # Documentação: Verifica o cenário test_public_key_file_permissions_and_length_are_refused; as
+    # condições e resultados esperados aparecem nos asserts.
     def test_public_key_file_permissions_and_length_are_refused(self):
         with tempfile.TemporaryDirectory() as temporary:
             key = Path(temporary) / "key"

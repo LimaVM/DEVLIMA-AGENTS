@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo Task e reúne o estado/contrato descrito para este módulo.
 class Task(Base):
     __tablename__ = "tasks"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -19,6 +20,7 @@ class Task(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo Schedule e reúne o estado/contrato descrito para este módulo.
 class Schedule(Base):
     __tablename__ = "schedules"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -35,6 +37,7 @@ class Schedule(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo ScheduledEvent e reúne o estado/contrato descrito para este módulo.
 class ScheduledEvent(Base):
     __tablename__ = "scheduled_events"
     __table_args__ = (
@@ -51,6 +54,7 @@ class ScheduledEvent(Base):
     status: Mapped[str] = mapped_column(String(16))
 
 
+# Documentação: Define o tipo OutboxEvent e reúne o estado/contrato descrito para este módulo.
 class OutboxEvent(Base):
     __tablename__ = "outbox_events"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -65,6 +69,8 @@ class OutboxEvent(Base):
     )
 
 
+# Documentação: Define o tipo SchedulerHeartbeat e reúne o estado/contrato descrito para este
+# módulo.
 class SchedulerHeartbeat(Base):
     __tablename__ = "scheduler_heartbeats"
     name: Mapped[str] = mapped_column(String(40), primary_key=True)

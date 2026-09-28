@@ -66,3 +66,10 @@
 - [ ] Completar avaliação auditiva de auricular/alto-falante, bateria/Doze e cenários de permissão negada em aparelho físico; ver ANDROID_PHYSICAL.md.
 
 Fora do escopo inicial: Firebase, Kubernetes, Redis, RabbitMQ, WebRTC, Whisper server, TTS server, pgvector, automação de browser, email/calendar e multi-agent.
+
+## Documentação do código
+
+- [x] Referência por arquivo/linha para todo código textual versionado, com contexto editorial.
+- [x] Comentários em funções/classes Python e Kotlin, preservando estrutura/tokens existentes.
+- [x] Gerador determinístico, manifesto de cobertura e verificação de atualização na CI.
+- [x] Configuração externa e pontos de uso dos segredos documentados sem copiar valores privados.

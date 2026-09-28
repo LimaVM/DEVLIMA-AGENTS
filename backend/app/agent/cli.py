@@ -15,6 +15,9 @@ from app.schemas.chat import ChatSend
 from app.security import hash_password
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Executa um smoke de contexto
+# e memória com conta isolada e verifica persistência; não constitui uma interface administrativa
+# de produção.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("command", choices=["smoke", "verify"])
@@ -115,6 +118,7 @@ def main():
         )
 
 
+# Documentação: Implementa verify_persistence como parte do fluxo descrito para este arquivo.
 def verify_persistence(settings):
     with Session(get_engine(), expire_on_commit=False) as session:
         user = session.scalar(

@@ -8,6 +8,7 @@ from app.models import AuditLog, Conversation, Device, OutboxEvent, User
 from app.models.calls import CallSession
 
 
+# Documentação: Implementa state como parte do fluxo descrito para este arquivo.
 def state(row):
     return {
         "id": str(row.id),
@@ -21,23 +22,30 @@ def state(row):
     }
 
 
+# Documentação: Implementa publish como parte do fluxo descrito para este arquivo.
 def publish(session, owner, event, payload, key):
     session.add(OutboxEvent(user_id=owner, type=event, payload=payload, dedupe_key=key))
 
 
+# Documentação: Implementa audit como parte do fluxo descrito para este arquivo.
 def audit(session, owner, event, identifier):
     session.add(AuditLog(user_id=owner, event=event, details={"id": str(identifier)}))
 
 
+# Documentação: Define o tipo CallService e reúne o estado/contrato descrito para este módulo.
 class CallService:
+    # Documentação: Inicializa CallService com as dependências e estado declarados.
     def __init__(self, session, owner, device_id=None):
         self.session, self.owner, self.device_id = session, owner, device_id
 
+    # Documentação: Implementa CallService.device como parte do fluxo descrito para este arquivo.
     def device(self):
         row = self.session.get(Device, self.device_id)
         if row is None or row.user_id != self.owner or row.revoked:
             raise AgentError("device_unavailable", 403)
 
+    # Documentação: Implementa CallService.incoming como parte do fluxo descrito para este
+    # arquivo.
     def incoming(self, identifier):
         row = self.session.scalar(
             select(OutboxEvent)
@@ -52,6 +60,8 @@ class CallService:
             raise AgentError("call_not_found", 404)
         return row
 
+    # Documentação: Valida evento/dispositivo/prazo e cria ou recupera a sessão de chamada
+    # permitida.
     def answer(self, identifier):
         self.device()
         # Serializes different incoming calls and devices for this account.
@@ -105,6 +115,8 @@ class CallService:
         audit(self.session, self.owner, "call.answered", row.id)
         return result
 
+    # Documentação: Resolve chamada recebida como recusada e publica evento para fechar alertas
+    # dos dispositivos.
     def reject(self, identifier):
         self.device()
         event = self.incoming(identifier)
@@ -124,6 +136,7 @@ class CallService:
         audit(self.session, self.owner, "call.rejected", event.id)
         return {"event_id": str(identifier), "status": "REJECTED"}
 
+    # Documentação: Implementa CallService.owned como parte do fluxo descrito para este arquivo.
     def owned(self, identifier, device=False):
         row = self.session.scalar(
             select(CallSession)
@@ -136,6 +149,7 @@ class CallService:
             raise AgentError("call_device_mismatch", 403)
         return row
 
+    # Documentação: Implementa CallService.finish como parte do fluxo descrito para este arquivo.
     def finish(self, row, status):
         row.status, row.ended_at = status, datetime.now(UTC)
         publish(
@@ -147,6 +161,7 @@ class CallService:
         )
         audit(self.session, self.owner, "call.ended", row.id)
 
+    # Documentação: Encerra sessão pertencente ao dispositivo/proprietário e publica a resolução.
     def end(self, identifier):
         self.device()
         row = self.owned(identifier, True)
@@ -154,6 +169,7 @@ class CallService:
             self.finish(row, "ENDED")
         return state(row)
 
+    # Documentação: Implementa CallService.touch como parte do fluxo descrito para este arquivo.
     def touch(self, identifier):
         self.device()
         row = self.owned(identifier, True)
@@ -163,11 +179,13 @@ class CallService:
         return row.conversation_id
 
     @staticmethod
+    # Documentação: Implementa CallService.expired como parte do fluxo descrito para este arquivo.
     def expired(row, now):
         return row.last_active_at < now - timedelta(minutes=10) or row.started_at < now - timedelta(
             minutes=30
         )
 
+    # Documentação: Implementa CallService.expire como parte do fluxo descrito para este arquivo.
     def expire(self, now=None):
         now = now or datetime.now(UTC)
         for event in self.session.scalars(

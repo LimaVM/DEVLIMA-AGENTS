@@ -16,8 +16,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+// Documentação: Define o tipo EndToEndTest e reúne o estado/contrato descrito para este módulo.
 class EndToEndTest {
     @Test(timeout = 720000)
+    // Documentação: Implementa EndToEndTest.realCoreCoffeeCallVoiceAndReconnect como parte do
+    // fluxo descrito para este arquivo.
     fun realCoreCoffeeCallVoiceAndReconnect() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val context = instrumentation.targetContext
@@ -35,10 +38,14 @@ class EndToEndTest {
             )
         }
         config.delete()
+        // Documentação: Implementa EndToEndTest.milestone como parte do fluxo descrito para este
+        // arquivo.
         fun milestone(value: String) {
             File(context.filesDir, "e2e-progress.json")
                 .writeText(JSONObject().put("stage", value).toString())
         }
+        // Documentação: Implementa EndToEndTest.await como parte do fluxo descrito para este
+        // arquivo.
         fun await(label: String, timeout: Long = 180000, predicate: () -> Boolean) {
             val end = SystemClock.elapsedRealtime() + timeout
             while (SystemClock.elapsedRealtime() < end) {

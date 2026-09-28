@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 
+# Documentação: Define o tipo Settings e reúne o estado/contrato descrito para este módulo.
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", hide_input_in_errors=True)
 
@@ -42,6 +43,8 @@ class Settings(BaseSettings):
     summary_trigger_messages: int = 16
 
     @model_validator(mode="after")
+    # Documentação: Valida Settings.validate_context_limits, segundo o contrato e as verificações
+    # deste módulo.
     def validate_context_limits(self):
         if not 1 <= self.scheduler_poll_seconds <= 60:
             raise ValueError("Scheduler poll deve ser entre 1 e 60 segundos")
@@ -55,6 +58,8 @@ class Settings(BaseSettings):
 
     @field_validator("local_llm_base_url")
     @classmethod
+    # Documentação: Valida Settings.validate_local_url, segundo o contrato e as verificações deste
+    # módulo.
     def validate_local_url(cls, value: str) -> str:
         if not value:
             return value
@@ -96,6 +101,8 @@ class Settings(BaseSettings):
 
     @field_validator("local_llm_timeout", "groq_timeout", "llm_health_timeout")
     @classmethod
+    # Documentação: Valida Settings.validate_timeout, segundo o contrato e as verificações deste
+    # módulo.
     def validate_timeout(cls, value: float) -> float:
         if not 0 < value <= 120:
             raise ValueError("Timeout deve estar entre 0 e 120 segundos")
@@ -103,6 +110,8 @@ class Settings(BaseSettings):
 
     @field_validator("local_llm_model", "groq_model")
     @classmethod
+    # Documentação: Valida Settings.validate_model, segundo o contrato e as verificações deste
+    # módulo.
     def validate_model(cls, value: str) -> str:
         if len(value) > 512 or "\n" in value or "\r" in value:
             raise ValueError("Identificador de modelo inválido")
@@ -110,6 +119,8 @@ class Settings(BaseSettings):
 
     @field_validator("jwt_secret")
     @classmethod
+    # Documentação: Valida Settings.validate_jwt_secret, segundo o contrato e as verificações
+    # deste módulo.
     def validate_jwt_secret(cls, value: SecretStr) -> SecretStr:
         if len(value.get_secret_value()) < 32:
             raise ValueError("JWT_SECRET deve ter pelo menos 32 caracteres")
@@ -117,6 +128,8 @@ class Settings(BaseSettings):
 
     @field_validator("postgres_password")
     @classmethod
+    # Documentação: Valida Settings.validate_db_password, segundo o contrato e as verificações
+    # deste módulo.
     def validate_db_password(cls, value: SecretStr) -> SecretStr:
         if len(value.get_secret_value()) < 16:
             raise ValueError("POSTGRES_PASSWORD deve ter pelo menos 16 caracteres")
@@ -124,6 +137,8 @@ class Settings(BaseSettings):
 
     @field_validator("default_timezone")
     @classmethod
+    # Documentação: Valida Settings.validate_timezone, segundo o contrato e as verificações deste
+    # módulo.
     def validate_timezone(cls, value: str) -> str:
         try:
             ZoneInfo(value)
@@ -133,12 +148,16 @@ class Settings(BaseSettings):
 
     @field_validator("jwt_ttl_minutes", "login_max_attempts", "login_window_seconds")
     @classmethod
+    # Documentação: Valida Settings.validate_positive, segundo o contrato e as verificações deste
+    # módulo.
     def validate_positive(cls, value: int) -> int:
         if value < 1:
             raise ValueError("Valor deve ser positivo")
         return value
 
     @property
+    # Documentação: Implementa Settings.database_url como parte do fluxo descrito para este
+    # arquivo.
     def database_url(self) -> URL:
         return URL.create(
             "postgresql+psycopg",
@@ -151,5 +170,6 @@ class Settings(BaseSettings):
 
 
 @lru_cache
+# Documentação: Obtém get_settings, segundo o contrato e as verificações deste módulo.
 def get_settings() -> Settings:
     return Settings()

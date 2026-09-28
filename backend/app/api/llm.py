@@ -15,6 +15,7 @@ router = APIRouter(prefix="/llm", tags=["llm"])
 
 
 @router.get("/health")
+# Documentação: Implementa health como parte do fluxo descrito para este arquivo.
 def health(
     user: User = Depends(get_current_user),
     session: Session = Depends(get_session),
@@ -25,6 +26,7 @@ def health(
 
 
 @router.post("/chat", response_model=LLMChatResponse)
+# Documentação: Implementa chat como parte do fluxo descrito para este arquivo.
 def chat(
     data: LLMChatRequest,
     request: Request,

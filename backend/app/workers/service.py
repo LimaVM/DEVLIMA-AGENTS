@@ -10,6 +10,7 @@ from app.models import AuditLog
 from app.models.workers import Worker, WorkerCommand, WorkerSnapshot
 
 
+# Documentação: Implementa worker_data como parte do fluxo descrito para este arquivo.
 def worker_data(row):
     return {
         key: str(getattr(row, key))
@@ -34,6 +35,7 @@ def worker_data(row):
     }
 
 
+# Documentação: Implementa command_data como parte do fluxo descrito para este arquivo.
 def command_data(row):
     return {
         key: str(getattr(row, key))
@@ -55,6 +57,7 @@ def command_data(row):
     }
 
 
+# Documentação: Implementa snapshot_data como parte do fluxo descrito para este arquivo.
 def snapshot_data(row):
     return {
         key: str(getattr(row, key))
@@ -66,10 +69,14 @@ def snapshot_data(row):
     }
 
 
+# Documentação: Define o tipo WorkerService e reúne o estado/contrato descrito para este módulo.
 class WorkerService:
+    # Documentação: Inicializa WorkerService com as dependências e estado declarados.
     def __init__(self, session, owner):
         self.session, self.owner = session, UUID(str(owner))
 
+    # Documentação: Implementa WorkerService.worker como parte do fluxo descrito para este
+    # arquivo.
     def worker(self, identifier, lock=False):
         query = select(Worker).where(Worker.id == identifier, Worker.user_id == self.owner)
         if lock:
@@ -79,6 +86,8 @@ class WorkerService:
             raise AgentError("not_found", 404)
         return row
 
+    # Documentação: Implementa WorkerService.workers como parte do fluxo descrito para este
+    # arquivo.
     def workers(self, limit=20):
         return self.session.scalars(
             select(Worker)
@@ -87,6 +96,8 @@ class WorkerService:
             .limit(limit)
         ).all()
 
+    # Documentação: Implementa WorkerService.commands como parte do fluxo descrito para este
+    # arquivo.
     def commands(self, identifier, limit=20):
         self.worker(identifier)
         return self.session.scalars(
@@ -96,6 +107,8 @@ class WorkerService:
             .limit(limit)
         ).all()
 
+    # Documentação: Implementa WorkerService.snapshots como parte do fluxo descrito para este
+    # arquivo.
     def snapshots(self, identifier):
         self.worker(identifier)
         return self.session.scalars(
@@ -105,6 +118,8 @@ class WorkerService:
             .limit(20)
         ).all()
 
+    # Documentação: Valida operação e ownership e grava comando para execução posterior pelo
+    # runner.
     def queue(self, kind, args, request_id=None, worker_id=None):
         identifier = UUID(str(request_id)) if request_id else uuid4()
         # Serialize request IDs across concurrent requests before checking replay.

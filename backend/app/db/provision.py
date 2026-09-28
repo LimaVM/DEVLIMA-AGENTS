@@ -5,6 +5,8 @@ import psycopg
 from psycopg import sql
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Provisiona papéis e
+# privilégios PostgreSQL para separar administração, migrations e execução do Core.
 def main():
     values = json.load(sys.stdin)
     try:

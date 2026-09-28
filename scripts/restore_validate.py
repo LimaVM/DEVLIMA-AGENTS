@@ -15,6 +15,9 @@ from backup_crypto import decrypt, sha256
 ROOT = Path(__file__).resolve().parents[1]
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Decifra backup e valida
+# restore em banco temporário exclusivo; verifica pacote/template e remove o banco de validação ao
+# terminar.
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("archive", type=Path)

@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Check complete code documentation
+        run: python3 scripts/document_code.py --check
       - name: Isolated test configuration
         run: python3 scripts/init_env.py
       - name: Build and test isolated PostgreSQL backend

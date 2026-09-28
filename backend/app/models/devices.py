@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db.base import Base
 
 
+# Documentação: Define o tipo Device e reúne o estado/contrato descrito para este módulo.
 class Device(Base):
     __tablename__ = "devices"
     id: Mapped[UUID] = mapped_column(primary_key=True)
@@ -20,6 +21,7 @@ class Device(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo RefreshFamily e reúne o estado/contrato descrito para este módulo.
 class RefreshFamily(Base):
     __tablename__ = "refresh_families"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -31,6 +33,7 @@ class RefreshFamily(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo RefreshToken e reúne o estado/contrato descrito para este módulo.
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
     token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
@@ -39,6 +42,7 @@ class RefreshToken(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Documentação: Define o tipo EventDelivery e reúne o estado/contrato descrito para este módulo.
 class EventDelivery(Base):
     __tablename__ = "event_deliveries"
     device_id: Mapped[UUID] = mapped_column(ForeignKey("devices.id"), primary_key=True)

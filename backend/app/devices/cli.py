@@ -17,10 +17,12 @@ from app.models import OutboxEvent, User
 from app.security import create_token, hash_password
 
 
+# Documentação: Implementa frame como parte do fluxo descrito para este arquivo.
 def frame(kind, payload=None):
     return json.dumps({"event_id": str(uuid4()), "type": kind, "payload": payload or {}})
 
 
+# Documentação: Implementa receive como parte do fluxo descrito para este arquivo.
 def receive(socket, kind):
     for _ in range(20):
         event = json.loads(socket.recv(timeout=5))
@@ -31,6 +33,9 @@ def receive(socket, kind):
     raise RuntimeError("Expected frame unavailable")
 
 
+# Documentação: Coordena a entrada de linha de comando deste arquivo: Executa smoke WSS com
+# dispositivo e usuário sintéticos, frames reais, reconexão e ACK, sem embutir credenciais
+# operacionais.
 def main():
     settings = get_settings()
     if settings.postgres_host != "postgres-test" or settings.postgres_db != "devlima_agent_test":

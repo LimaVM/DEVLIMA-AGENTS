@@ -4,6 +4,7 @@ from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+# Documentação: Define o tipo Settings e reúne o estado/contrato descrito para este módulo.
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="VM_MANAGER_", hide_input_in_errors=True)
     token: SecretStr
@@ -22,13 +23,17 @@ class Settings(BaseSettings):
 
     @field_validator("token")
     @classmethod
+    # Documentação: Implementa Settings.secure_token como parte do fluxo descrito para este
+    # arquivo.
     def secure_token(cls, value):
         if len(value.get_secret_value()) < 32:
             raise ValueError("Manager token must have at least 32 characters")
         return value
 
 
+# Documentação: Define o tipo VMError e reúne o estado/contrato descrito para este módulo.
 class VMError(Exception):
+    # Documentação: Inicializa VMError com as dependências e estado declarados.
     def __init__(self, code, status=409):
         self.code, self.status = code, status
         super().__init__(code)
