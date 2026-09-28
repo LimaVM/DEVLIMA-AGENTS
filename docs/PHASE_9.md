@@ -21,7 +21,7 @@ APK release assinado com RSA 4096, assinatura v2 válida para min SDK 26, packag
 | Backend PostgreSQL isolado | 143 testes passaram; Ruff aprovado |
 | Manager | 11 testes unitários; ciclo real READY/job/snapshot/restore/stop/start/reset/destroy aprovado |
 | Isolamento do worker | HTTP 000 ao tentar metadata OCI com cabeçalho de autenticação, Core público e Core Tailscale; checksum do template intacto |
-| Core → runner → manager | Dois ciclos consecutivos de criação/remoção, com UUIDs novos e resultados persistidos |
+| Core → runner → manager | Dois ciclos consecutivos de criação/remoção; teste adicional confirmou READY no PostgreSQL, job real com exit_code 0/output esperado e remoção do worker |
 | Permissões PostgreSQL runtime | CREATE, ALTER e TRUNCATE rejeitados com SQLSTATE 42501; CRUD permitido; revisão somente leitura |
 | Schema/deploy | Alembic sem drift; backend/scheduler/runner/PostgreSQL saudáveis; HTTPS público válido |
 | Backup/configuração | Cinco testes host passaram: roundtrip, adulteração/chave incorreta, permissões e geração de secrets |
@@ -37,7 +37,15 @@ O E2E usa conta sintética separada, credencial externa privada e histórico pr�
 
 Logs detalhados permanecem privados em `/srv/devlima-build-tools/phase9-e2e.log`, `phase9-worker-smoke.log` e `final-android-build.log`. O workflow versionado configura testes de backend/manager/backup em push/PR e execução manual; builds Android permanecem na VPS.
 
+`/srv/devlima-build-tools/core-ready-smoke.log` registra Core READY/job/removal. O verificador [smoke_core_worker_ready.py](../scripts/smoke_core_worker_ready.py) exige o banco isolado, aguarda prontidão real e remove exclusivamente o worker criado por ele. Na VPS:
+
+```sh
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile test --profile smoke run --rm -T worker-smoke python - < scripts/smoke_core_worker_ready.py
+```
+
 **CI GitHub pendente:** o workflow passou na validação `actionlint` 1.7.12, mas o GitHub retornou `startup_failure` antes de criar qualquer job, tanto em push quanto no dispatch manual. A API não disponibilizou logs/check-runs com o motivo. [Execução manual](https://github.com/LimaVM/DEVLIMA-AGENTS/actions/runs/36426645682). Nenhum sucesso de CI hospedada é declarado; os resultados da tabela foram executados na VPS. A mensagem detalhada da interface autenticada do GitHub precisa ser examinada para resolver esse bloqueio.
+
+Actions está habilitado, ações permitidas, workflow ativo no default branch e dispatch aceito pela API. Há [relato público de desenvolvedor com a mesma assinatura BuildFailed/zero jobs](https://github.com/orgs/community/discussions/208832). A correspondência sugere problema de inicialização/registro no serviço GitHub; é uma inferência, sem confirmação do suporte para este repositório. Nenhum ticket/mensagem foi enviado em nome do proprietário.
 
 Capturas reais do emulador: [login da release](images/android-release-login.png) e [aviso de café com conversa sintética](images/android-e2e-coffee.png).
 

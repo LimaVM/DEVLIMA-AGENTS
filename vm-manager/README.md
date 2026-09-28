@@ -41,3 +41,10 @@ Testes fake não criam VMs. `scripts/smoke_vm_manager.py`, executado como root n
 ```sh
 sudo python3 -u scripts/smoke_vm_manager.py
 ```
+
+Para conferir também a fila/reconciliação do Core até READY, job real e remoção, use o banco efêmero do profile test:
+
+```sh
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile test --profile smoke run --rm -T worker-smoke python - < scripts/smoke_core_worker_ready.py
+sudo docker compose --env-file .env -f infra/docker-compose.yml --profile test stop postgres-test
+```

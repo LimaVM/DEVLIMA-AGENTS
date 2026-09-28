@@ -23,6 +23,7 @@ Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/r
 - [Chat e rotina Android](docs/PHASE_7.md)
 - [Chamadas e voz](docs/PHASE_8.md)
 - [Validação final V1](docs/PHASE_9.md)
+- [Auditoria de aceitação](docs/ACCEPTANCE.md)
 - [Operação e atualização](docs/OPERATIONS.md)
 - [Backup e recuperação](docs/RECOVERY.md)
 - [Changelog](CHANGELOG.md)

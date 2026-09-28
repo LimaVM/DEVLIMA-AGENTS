@@ -1,8 +1,24 @@
 # Arquitetura do DEVLIMA AGENT
 
+Estado da V1 1.0.0, fases 0–9 implementadas. Evidências e limites de homologação em [PHASE_9.md](PHASE_9.md).
+
 ## Responsabilidades
 
 Android → HTTPS/WSS → Caddy → Agent Core → PostgreSQL.
+
+```mermaid
+flowchart LR
+    Android -->|HTTPS e WSS| Caddy
+    Caddy --> Core
+    Core --> PostgreSQL
+    Core --> Router
+    Router -->|Tailscale| LocalLLM[llama.cpp]
+    Router -->|fallback técnico autorizado| Groq
+    Scheduler --> PostgreSQL
+    Runner --> PostgreSQL
+    Runner -->|socket Unix e token| Manager
+    Manager -->|libvirt e KVM| Workers
+```
 
 O Agent Core valida ações, aplica autorização por usuário, persiste estado e audita operações. A LLM fornece linguagem e ações estruturadas; não é fonte da verdade e não executa shell. PostgreSQL guarda histórico bruto, resumos, memórias, tarefas, agendamentos, eventos e estado dos workers.
 
@@ -20,22 +36,25 @@ Na Fase 3, uma transação salva a mensagem e uma lease durável da conversa ant
 
 - **backend:** FastAPI/SQLAlchemy/Pydantic; container não root, sem acesso ao host, libvirt ou socket Docker.
 - **postgres:** volume persistente, rede Docker interna, nenhuma porta publicada.
-- **scheduler (Fase 4):** processo separado, PostgreSQL como fonte da verdade; APScheduler acorda o processo, mas os eventos duráveis serão reivindicados transacionalmente com lock e identificador idempotente. Não depender de timers em memória.
+- **scheduler:** processo separado; APScheduler acorda o processo, e eventos PostgreSQL são reivindicados transacionalmente com lock e identificador idempotente. Agendamentos não dependem de timers em memória.
 - **caddy:** TLS, proxy HTTP e WebSocket; dados de certificados persistentes.
-- **vm-manager (Fase 5):** serviço systemd no host, API privada autenticada de operações enumeradas. Privilégios limitados ao necessário para libvirt. Core não recebe shell no host.
+- **worker-runner:** reivindica comandos duráveis, consulta resultados idempotentes e reconcilia status real dos workers. Único container com acesso ao socket/token do manager.
+- **vm-manager:** serviço root systemd no host, API privada em socket Unix autenticado, operações enumeradas, ownership/paths/quotas validados. Core HTTP não recebe shell no host.
 - **workers:** overlays QCOW2 do template existente, cloud-init individual, rede libvirt default NAT.
 
-Até a Fase 3 os processos de produção são backend, banco, migration runner e Caddy. Scheduler e VM Manager pertencem às fases seguintes.
+Android mantém serviço de conexão iniciado pelo usuário e serviço de voz durante chamada atendida. SpeechRecognizer/TTS pertencem ao aparelho; Core mantém call_sessions e a conversa associada. `voice.transcript` usa a mesma fila/contexto/idempotência do chat. Áudio contínuo/WebRTC e engines de voz próprios ficam para evolução futura.
 
 ## Dados e evolução
 
-Migrations explícitas versionam o schema. Nenhum `create_all` no startup de produção. Fase 1 inclui usuários, auditoria e buckets persistentes de limitação de login. As demais tabelas chegam com a respectiva funcionalidade; todas as relações terão escopo por usuário.
+Migrations explícitas versionam o schema até `0007_calls`. Nenhum `create_all` no startup. Usuários/auditoria, inferências, conversas/contexto/memórias, planejamento/outbox, workers/comandos/snapshots, dispositivos/refresh/ACK e chamadas são persistidos. Relações de dados pessoais usam escopo por usuário.
 
 Timestamps em UTC com timezone; preferências do usuário armazenam `America/Sao_Paulo` por padrão. Identificadores UUID. JWT de curta duração; `token_version` permite invalidar sessões ao redefinir senha/desativar usuário.
 
 Histórico bruto é preservado; Context Builder compõe janela limitada, resumo, memórias e estado relevante. Candidatos de memória e ações da LLM passam por schemas/validação antes de persistência. pgvector fica reservado para evolução.
 
-Entrega de lembretes/chamadas usará outbox persistente, ACK por dispositivo e deduplicação por `event_id`. Rede não permite prometer entrega exatamente uma vez: servidor e Android devem tolerar reenvios após perda de conexão.
+Entrega de lembretes/chamadas usa outbox persistente, ACK por dispositivo e deduplicação por `event_id`. Android grava localmente antes do ACK; mensagens usam UUID estável para replay. Rede e políticas Android não permitem prometer entrega exatamente uma vez ou após force stop: servidor e app toleram reenvios após reconexão.
+
+Banco utiliza identidades separadas de administrador, migrations e runtime. Configuração/keys permanecem fora do Git. Dump PostgreSQL e SQLite consistente do manager são cifrados com AES-256-GCM para cópia externa; discos descartáveis dos workers são excluídos. [Segurança](SECURITY.md) e [recuperação](RECOVERY.md).
 
 ## Deploy e recursos
 
@@ -45,7 +64,7 @@ Nesta implantação, o domínio fornecido `agent.vegasolucoes.com.br` aponta par
 
 Imagens Python/PostgreSQL/Caddy fixadas por digest e dependências Python por versão exata. Atualizações devem regenerar os pins e executar novamente os testes.
 
-Quotas propostas para a Fase 5 neste host: até 2 workers, 4 vCPUs e 8 GiB RAM somados, reservando pelo menos 4 GiB para host/core/banco. Verificar também RAM disponível, disco e VMs externas ao projeto antes de alocar. O template de 3,5 GiB requer expansão do overlay para 20 GiB, com growpart/resizefs no guest.
+Quotas implementadas: até 2 workers, 4 vCPUs e 8 GiB RAM somados, reserva de pelo menos 4 GiB de RAM/uma CPU/10 GiB de disco para host/core/banco. Recursos livres e domínios externos são considerados antes de alocar. Template de 3,5 GiB usa overlay expansível, por padrão 20 GiB, com growpart/resizefs no guest. BOOTING é distinto de READY; SSH, guest-agent e cloud-init precisam confirmar prontidão antes de executar jobs.
 
 ## Referências verificadas
 
