@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase1
+  image: devlima-agent-backend:phase2
   build:
     context: ../backend
     target: production
@@ -18,6 +18,14 @@ x-backend: &backend
     ENABLE_API_DOCS: ${ENABLE_API_DOCS:-false}
     LOGIN_MAX_ATTEMPTS: ${LOGIN_MAX_ATTEMPTS:-5}
     LOGIN_WINDOW_SECONDS: ${LOGIN_WINDOW_SECONDS:-900}
+    LOCAL_LLM_BASE_URL: ${LOCAL_LLM_BASE_URL:-}
+    LOCAL_LLM_MODEL: ${LOCAL_LLM_MODEL:-}
+    LOCAL_LLM_TIMEOUT: ${LOCAL_LLM_TIMEOUT:-30}
+    GROQ_API_KEY: ${GROQ_API_KEY:-}
+    GROQ_MODEL: ${GROQ_MODEL:-openai/gpt-oss-120b}
+    GROQ_TIMEOUT: ${GROQ_TIMEOUT:-30}
+    LLM_HEALTH_TIMEOUT: ${LLM_HEALTH_TIMEOUT:-5}
+    ALLOW_CLOUD_FALLBACK: ${ALLOW_CLOUD_FALLBACK:-true}
   networks: [database]
   read_only: true
   tmpfs: [/tmp]
@@ -115,6 +123,9 @@ services:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
       POSTGRES_DB: devlima_agent_test
+      LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
+      LOCAL_LLM_MODEL: test-local
+      GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
     command: [alembic, upgrade, head]
     depends_on:
@@ -123,7 +134,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase1
+    image: devlima-agent-tests:phase2
     build:
       context: ../backend
       target: test
@@ -131,6 +142,9 @@ services:
       <<: *backend-env
       POSTGRES_HOST: postgres-test
       POSTGRES_DB: devlima_agent_test
+      LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
+      LOCAL_LLM_MODEL: test-local
+      GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
     depends_on:
       migrate-test: {condition: service_completed_successfully}

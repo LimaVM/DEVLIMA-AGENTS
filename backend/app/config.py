@@ -1,4 +1,6 @@
 from functools import lru_cache
+from ipaddress import ip_address, ip_network
+from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import SecretStr, field_validator
@@ -7,7 +9,7 @@ from sqlalchemy import URL
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", hide_input_in_errors=True)
 
     app_name: str = "DEVLIMA AGENT"
     app_environment: str = "production"
@@ -24,6 +26,69 @@ class Settings(BaseSettings):
     default_timezone: str = "America/Sao_Paulo"
     login_max_attempts: int = 5
     login_window_seconds: int = 900
+    local_llm_base_url: str = ""
+    local_llm_model: str = ""
+    local_llm_timeout: float = 30
+    groq_api_key: SecretStr = SecretStr("")
+    groq_model: str = "openai/gpt-oss-120b"
+    groq_timeout: float = 30
+    llm_health_timeout: float = 5
+    allow_cloud_fallback: bool = True
+
+    @field_validator("local_llm_base_url")
+    @classmethod
+    def validate_local_url(cls, value: str) -> str:
+        if not value:
+            return value
+        parsed = urlsplit(value)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.hostname
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError("LOCAL_LLM_BASE_URL deve ser uma URL privada sem credenciais")
+        try:
+            if parsed.port is not None and not 1 <= parsed.port <= 65535:
+                raise ValueError("Porta inválida")
+        except ValueError:
+            raise ValueError("Porta da LLM inválida") from None
+        try:
+            address = ip_address(parsed.hostname)
+        except ValueError:
+            if parsed.hostname != "localhost" and not parsed.hostname.endswith(".ts.net"):
+                raise ValueError(
+                    "Use IP privado, localhost ou hostname Tailscale .ts.net"
+                ) from None
+        else:
+            private_networks = (
+                "10.0.0.0/8",
+                "172.16.0.0/12",
+                "192.168.0.0/16",
+                "100.64.0.0/10",
+                "127.0.0.0/8",
+                "::1/128",
+                "fc00::/7",
+            )
+            if not any(address in ip_network(network) for network in private_networks):
+                raise ValueError("A LLM primária deve usar endereço privado")
+        return value.rstrip("/")
+
+    @field_validator("local_llm_timeout", "groq_timeout", "llm_health_timeout")
+    @classmethod
+    def validate_timeout(cls, value: float) -> float:
+        if not 0 < value <= 120:
+            raise ValueError("Timeout deve estar entre 0 e 120 segundos")
+        return value
+
+    @field_validator("local_llm_model", "groq_model")
+    @classmethod
+    def validate_model(cls, value: str) -> str:
+        if len(value) > 512 or "\n" in value or "\r" in value:
+            raise ValueError("Identificador de modelo inválido")
+        return value
 
     @field_validator("jwt_secret")
     @classmethod

@@ -21,7 +21,7 @@ from app.security import create_token, decode_token, hash_password, verify_passw
 def test_health_and_request_id(client):
     response = client.get("/health/ready")
     assert response.status_code == 200
-    assert response.json()["schema"] == "0001_identity"
+    assert response.json()["schema"] == "0002_llm_requests"
     assert UUID(response.headers["X-Request-ID"])
     assert response.headers["Cache-Control"] == "no-store"
     assert client.get("/health/live").json()["status"] == "ok"

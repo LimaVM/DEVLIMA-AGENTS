@@ -9,6 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.auth import router as auth_router
+from app.api.llm import router as llm_router
 from app.config import get_settings
 from app.db.session import get_engine
 
@@ -25,7 +26,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
         title=settings.app_name,
-        version="0.1.0",
+        version="0.2.0",
         lifespan=lifespan,
         docs_url="/docs" if settings.enable_api_docs else None,
         redoc_url=None,
@@ -56,18 +57,19 @@ def create_app() -> FastAPI:
 
     @app.get("/health/live", tags=["health"])
     def live():
-        return {"status": "ok", "phase": 1}
+        return {"status": "ok", "phase": 2}
 
     @app.get("/health/ready", tags=["health"])
     def ready():
         with get_engine().connect() as connection:
             connection.execute(text("SELECT 1"))
             revision = connection.execute(text("SELECT version_num FROM alembic_version")).scalar()
-        if revision != "0001_identity":
+        if revision != "0002_llm_requests":
             return JSONResponse(status_code=503, content={"status": "schema_not_ready"})
         return {"status": "ready", "database": "ok", "schema": revision}
 
     app.include_router(auth_router)
+    app.include_router(llm_router)
     return app
 
 
