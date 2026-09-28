@@ -22,9 +22,11 @@
 - [x] Auditoria sem secrets, healthchecks, 61 testes e inferências reais local/fallback.
 
 ## Fase 3 — contexto e memória
-- [ ] Conversas, mensagens, summaries, memórias e candidatos.
-- [ ] Context Builder limitado, UTC/timezone, histórico bruto preservado.
-- [ ] JSON Pydantic e Action Engine sem shell arbitrário.
+- [x] Conversas, mensagens, summaries, memórias e candidatos.
+- [x] Context Builder limitado, UTC/timezone, histórico bruto preservado.
+- [x] JSON Pydantic e Action Engine sem shell arbitrário; execução nas fases seguintes.
+- [x] Replay idempotente, leases, confirmação de memória e isolamento por usuário.
+- [x] Deploy, 97 testes, fluxo local real e persistência em novo processo.
 
 ## Fase 4 — tarefas e tempo
 - [ ] Tasks, reminders, calls e recorrência RRULE.

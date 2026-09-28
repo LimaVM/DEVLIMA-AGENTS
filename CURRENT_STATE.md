@@ -70,3 +70,11 @@ Na sequência, o proprietário informou a credencial Groq e o IP Tailscale do ll
 `http://100.102.91.22:8080/health` respondeu ok; `/v1/models` confirmou Gemma 4 12B Instruct, GGUF UD-Q4_K_XL, contexto servido de 8192 tokens. A credencial foi armazenada somente no `.env` da VM (0600), sem ser reproduzida no relatório. Configuração Groq utiliza `openai/gpt-oss-120b`, presente na lista disponível e validado por inferência.
 
 Fase 2 implantada com migration `0002_llm_requests`, 61 testes passando, inferência local e fallback real validados. Relatório em [docs/PHASE_2.md](docs/PHASE_2.md).
+
+## Resultado da Fase 3
+
+Fase 3 implantada com migration `0003_context`, Agent Core, conversas e histórico persistente, contexto limitado, resumos, memórias/candidatos e parser de ações. Resultado: 97 testes, lint e Alembic check aprovados. Smoke real local confirmou preferência entre conversas, resumo sem apagar histórico e replay sem nova inferência em outro processo.
+
+Backup local anterior à migration em `/srv/devlima-agent/backups/phase2-before-0003.dump`, 0600. As cinco linhas de auditoria e quatro tentativas LLM anteriores permaneceram no banco; não há usuário padrão de produção. Dados do smoke são sintéticos e separados. Não houve alteração no llm-server, libvirt, template ou chaves dos workers.
+
+No Core, requests JSON locais desativam thinking por opções do protocolo llama.cpp, reduzindo a latência observada do chat para cerca de 2,3–4,2 segundos. Configuração de modelos, Tailscale e fallback permanece a da Fase 2. Detalhes em [docs/PHASE_3.md](docs/PHASE_3.md) e [CONTEXT.md](CONTEXT.md). Próxima etapa: Fase 4, tarefas e scheduler.

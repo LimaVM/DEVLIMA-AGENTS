@@ -6,7 +6,7 @@ A LLM não acessa credenciais, hypervisor ou shell do host. O backend não monta
 
 JWT assinado com segredo aleatório de pelo menos 32 caracteres, validação de algoritmo, issuer, audience e expiração. Senhas com Argon2id. Redefinição de senha incrementa `token_version`. Sem cadastro público automático; usuários são criados pela CLI, que solicita senha sem eco.
 
-Limitação de login baseada no banco sobre o IP observado: cinco tentativas por janela de quinze minutos. Respostas de erro não distinguem usuário inexistente e senha inválida. Banco não registra senha, token, chave ou conteúdo de `.env`. Buckets expirados são reaproveitados; sua limpeza periódica será adicionada ao scheduler.
+Limitação de login baseada no banco sobre o IP observado: cinco tentativas por janela de quinze minutos. Respostas de erro não distinguem usuário inexistente e senha inválida. Auditoria não registra senha, token, chave ou conteúdo de `.env`. Buckets expirados são reaproveitados; sua limpeza periódica será adicionada ao scheduler.
 
 Caddy sobrescreve cabeçalhos de encaminhamento recebidos. O backend aceita cabeçalhos de proxy apenas porque sua porta não é publicada e só está acessível na rede de containers controlados; não publicar a porta 8000 diretamente sem revisar essa confiança.
 
@@ -27,6 +27,10 @@ URL da LLM primária é configuração administrativa validada: IP privado/loopb
 Testes usam credential fictícia e rede de banco isolada, sem herdar a chave real Groq. Telemetria grava apenas metadados de inferência; mensagens/respostas do usuário não são copiadas para logs. Erros retornam códigos estáveis e nunca o corpo bruto do upstream. Endpoints LLM exigem autenticação e limitam quantidade/tamanho de mensagens e tokens.
 
 ## Host e template
+
+Na Fase 3, conversas, mensagens, resumos, memórias e candidatos exigem JWT e são consultados por proprietário. Ações propostas passam por allowlist e schemas; não executam shell ou operações nesta fase. UUID idempotente, lease e verificação de propriedade do turno impedem repetição da gravação e finalização por uma execução antiga.
+
+Histórico bruto contém o que o usuário enviou, inclusive conteúdo sensível que ele possa digitar; resumos também podem carregar fatos desse histórico. O filtro de candidatos recusa formatos conhecidos de segredos e não é um mecanismo universal de DLP. Desativar memória não remove mensagens/resumos anteriores. A proteção do banco e backups e a flag de fallback são, portanto, relevantes para todo o contexto. O smoke real da Fase 3 usa somente dados sintéticos no banco separado, sem chave Groq e com cloud desligado.
 
 Não remover regras Oracle/libvirt, não executar `iptables -F`, não recriar pools/redes e não tocar VMs externas ao projeto. Antes da instalação Docker, salvar regras para comparação. A configuração `ip-forward-no-drop` preserva a política de encaminhamento; as cadeias Docker adicionadas devem coexistir com as cadeias existentes.
 

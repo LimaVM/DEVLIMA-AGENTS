@@ -2,7 +2,7 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fases 1 e 2 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, CLI, Caddy, providers llama.cpp/Groq e router com fallback técnico. Há chat de diagnóstico sem persistência de conversas; contexto, memória, tarefas, scheduler, VM Manager e Android chegam nas próximas fases.
+**Fases 1–3 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas/scheduler, VM Manager e Android chegam nas próximas fases.
 
 ## Documentação
 
@@ -12,6 +12,8 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Fases](TODO.md)
 - [Validação da entrega](docs/PHASE_1.md)
 - [Router LLM e validação real](docs/PHASE_2.md)
+- [Contexto e memória](CONTEXT.md)
+- [Validação da Fase 3](docs/PHASE_3.md)
 
 ## Executar
 
@@ -78,11 +80,30 @@ sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend pyt
 sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.llm.cli smoke
 ```
 
-O comando smoke envia apenas uma frase de teste. Cada tentativa de inferência é auditada no PostgreSQL sem armazenar prompt/resposta nesses registros. Mensagens brutas terão tabelas próprias na Fase 3.
+O comando smoke envia apenas uma frase de teste. Cada tentativa de inferência é auditada no PostgreSQL sem armazenar prompt/resposta nesses registros. O chat persistente utiliza suas próprias tabelas de mensagens.
 
 Fallback acontece só com timeout, erro de conexão, HTTP 5xx ou código explícito de modelo indisponível. Não ocorre com 401/403/429, 404 genérico, payload inválido ou preferência sobre uma resposta local. Com `ALLOW_CLOUD_FALLBACK=false`, nenhuma chamada ao Groq é feita, inclusive em health checks.
 
 Para desativar fallback, edite a flag no `.env` da VM e recrie o backend com `docker compose --env-file .env -f infra/docker-compose.yml up -d backend`. Não imprimir `.env`, executar Compose `config` sem `--quiet` ou inspecionar todos os env vars do container em logs compartilhados.
+
+## Chat persistente e memórias
+
+Com JWT, `POST /chat/messages` recebe:
+
+```json
+{
+  "client_message_id": "03fd4bb1-9cd8-42c3-bc20-6f3b29f844b5",
+  "content": "Lembre que eu prefiro respostas curtas."
+}
+```
+
+Omitir `conversation_id` inicia uma conversa. Nas mensagens seguintes, envie o UUID retornado em `conversation_id` e um novo `client_message_id`. Reenvios da mesma mensagem devem reutilizar o UUID para evitar duplicatas. A resposta inclui texto humano `reply`, IDs, provider/fallback, latência, resultados das propostas e estatísticas do contexto.
+
+`GET /chat/conversations` lista conversas; `POST` cria uma conversa vazia com `title`. `GET /chat/conversations/{id}/messages?after_sequence=0&limit=100` consulta o histórico paginado; `/summaries` consulta resumos. `POST /chat/conversations/{id}/archive` arquiva preservando o histórico.
+
+`GET /memories` lista memórias ativas; `POST /memories` recebe `content` e `category` (`fact` ou `preference`) para salvar explicitamente; `DELETE /memories/{id}` desativa. `GET /memories/candidates` lista propostas pendentes. `POST /memories/candidates/{id}/accept` confirma; `/reject` recusa.
+
+Somente pedidos explícitos com proposta literal e confiança suficiente são aceitos automaticamente. Outras propostas esperam confirmação. O sistema ainda não executa tarefas, lembretes, chamadas ou VMs; ações propostas ficam registradas como indisponíveis. Limites, recuperação e política completa em [CONTEXT.md](CONTEXT.md).
 
 ## Testar
 
@@ -92,6 +113,7 @@ Os testes usam um PostgreSQL separado e efêmero; não truncam o banco de produ�
 docker compose --env-file .env -f infra/docker-compose.yml --profile test build tests
 docker compose --env-file .env -f infra/docker-compose.yml --profile test run --rm tests
 docker compose --env-file .env -f infra/docker-compose.yml --profile test run --rm --no-deps tests ruff check --no-cache .
+docker compose --env-file .env -f infra/docker-compose.yml --profile test --profile smoke run --rm context-smoke
 docker compose --env-file .env -f infra/docker-compose.yml --profile test stop postgres-test
 ```
 
@@ -101,5 +123,7 @@ Migrations:
 docker compose --env-file .env -f infra/docker-compose.yml run --rm migrate alembic current
 docker compose --env-file .env -f infra/docker-compose.yml run --rm migrate alembic check
 ```
+
+`context-smoke` usa o banco de teste e a LLM local real com cloud desligado, gerando somente conversas sintéticas. Requer URL/modelo local configurados e pode demorar conforme o hardware do llm-server.
 
 Volume `postgres_data` mantém dados após restart/recreate. Nunca usar `down -v` no servidor. Backup/restore completo, scheduler e recuperação de eventos serão implementados nas fases indicadas.

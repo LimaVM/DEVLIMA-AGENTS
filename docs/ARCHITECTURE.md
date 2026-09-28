@@ -10,9 +10,11 @@ O router usa llama.cpp por rede privada, preferencialmente Tailscale. Groq só r
 
 Esse router está implementado na Fase 2: `LLMProvider` → `LlamaCppProvider`/`GroqProvider`, com transporte HTTP compatível e uma única tentativa por provider. Fallback somente por timeout, conexão, 5xx ou erro explícito de modelo indisponível. Erros de autorização/rate limit, JSON inválido e redirects não provocam envio à nuvem. Sem proxy herdado do ambiente e sem seguir redirects.
 
-`llm_requests` registra uma linha por tentativa, correlacionada ao request ID e usuário, com provider/modelo, latência, sucesso/fallback, erro/status e uso de tokens. Não guarda prompts/respostas/chaves; `audit_log` recebe metadados da operação. O recorder faz commit por tentativa; chamadas LLM devem anteceder transações de execução de ações. A persistência de mensagens/contexto será adicionada na Fase 3.
+`llm_requests` registra uma linha por tentativa, correlacionada ao request ID e usuário, com provider/modelo, latência, sucesso/fallback, erro/status e uso de tokens. Não guarda prompts/respostas/chaves; `audit_log` recebe metadados da operação. O recorder faz commit por tentativa; chamadas LLM antecedem transações de execução de ações.
 
-Os endpoints autenticados `/llm/health` e `/llm/chat` permitem validar providers nesta fase. Chat é stateless e não executa ações. O CLI administrativo permite diagnóstico sem criar usuário padrão ou expor JWT.
+Os endpoints autenticados `/llm/health` e `/llm/chat` permitem validar providers. Esse chat de diagnóstico é stateless. `/chat/messages` passa pelo Agent Core, persiste mensagens, monta contexto e valida propostas. O CLI administrativo permite diagnóstico sem criar usuário padrão ou expor JWT.
+
+Na Fase 3, uma transação salva a mensagem e uma lease durável da conversa antes da inferência. Não há lock ou transação aberta durante HTTP. Ao receber JSON válido, o Core verifica a lease e grava resposta, candidatos, ações e auditoria atomicamente. Chave idempotente por usuário permite replay sem nova inferência. Expiração recupera turnos abandonados; falhas mantêm a mensagem original. Os módulos Context Builder, Summarizer, Memory Manager, parser Pydantic e Action Engine têm responsabilidades separadas, descritas em [CONTEXT.md](../CONTEXT.md).
 
 ## Processos e isolamento
 
@@ -23,7 +25,7 @@ Os endpoints autenticados `/llm/health` e `/llm/chat` permitem validar providers
 - **vm-manager (Fase 5):** serviço systemd no host, API privada autenticada de operações enumeradas. Privilégios limitados ao necessário para libvirt. Core não recebe shell no host.
 - **workers:** overlays QCOW2 do template existente, cloud-init individual, rede libvirt default NAT.
 
-Na Fase 1 há somente backend, banco, migration runner e Caddy. Não há scheduler fictício ou VM Manager privilegiado sem implementação.
+Até a Fase 3 os processos de produção são backend, banco, migration runner e Caddy. Scheduler e VM Manager pertencem às fases seguintes.
 
 ## Dados e evolução
 
