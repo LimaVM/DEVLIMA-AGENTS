@@ -8,12 +8,12 @@
 - [x] CURRENT_STATE.md, arquitetura, segurança e plano da Fase 1.
 
 ## Fase 1 — fundação
-- [ ] Git e exclusões de secrets.
-- [ ] FastAPI/Pydantic/SQLAlchemy e endpoints de saúde.
-- [ ] PostgreSQL persistente e migrations Alembic.
-- [ ] JWT/Argon2id, limitação de login, auditoria e CLI.
-- [ ] Compose/Caddy com acesso privado TLS.
-- [ ] Deploy real e testes, incluindo persistência e preservação do template.
+- [x] Git e exclusões de secrets.
+- [x] FastAPI/Pydantic/SQLAlchemy e endpoints de saúde.
+- [x] PostgreSQL persistente e migrations Alembic.
+- [x] JWT/Argon2id, limitação de login, auditoria e CLI.
+- [x] Compose/Caddy, default privado e HTTPS público no domínio informado.
+- [x] Deploy real, 21 testes, persistência e preservação do template.
 
 ## Fase 2 — router LLM
 - [ ] LLMProvider, llama.cpp e Groq com timeouts.
@@ -49,7 +49,8 @@
 - [ ] SpeechRecognizer, TextToSpeech, mute/speaker/encerrar.
 
 ## Fase 9 — conclusão V1
-- [ ] Domínio/HTTPS público ou VPN confiável; regras OCI verificadas.
+- [x] Domínio/HTTPS público: acesso 80/443 validado externamente; sem alteração de regras OCI.
+- [ ] Roles PostgreSQL separadas para migrations/runtime, sem superuser no Core.
 - [ ] Backup externo, restore e recovery documentados/testados.
 - [ ] Testes ponta a ponta: café 5 min, chamada 2 min, criar/apagar/recriar/restaurar worker.
 - [ ] APK compilado e teste em dispositivo real.

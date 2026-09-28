@@ -31,9 +31,11 @@ Entrega de lembretes/chamadas usará outbox persistente, ACK por dispositivo e d
 
 ## Deploy e recursos
 
-Compose com healthchecks, limites de memória/CPU e restart automático. Migrations executam uma vez antes do backend. A Fase 1 publica apenas Caddy em `127.0.0.1:8443` e `127.0.0.1:8080` para túnel SSH; não depende de abertura de portas OCI.
+Compose com healthchecks, limites de memória/CPU e restart automático. Migrations executam uma vez antes do backend. A configuração padrão é privada, com Caddy em `127.0.0.1:8443` e `127.0.0.1:8080` para túnel SSH.
 
-HTTPS público será ativado com domínio confirmado, DNS correto e regras de ingresso verificadas. Certificado interno da Fase 1 não é aceito automaticamente pelo Android.
+Nesta implantação, o domínio fornecido `agent.vegasolucoes.com.br` aponta para o host; Caddy publica 80/443 com certificado público Let’s Encrypt validado externamente. Não foi necessário alterar regras OCI. O modo privado alternativo usa certificado interno, que não é aceito automaticamente pelo Android.
+
+Imagens Python/PostgreSQL/Caddy fixadas por digest e dependências Python por versão exata. Atualizações devem regenerar os pins e executar novamente os testes.
 
 Quotas propostas para a Fase 5 neste host: até 2 workers, 4 vCPUs e 8 GiB RAM somados, reservando pelo menos 4 GiB para host/core/banco. Verificar também RAM disponível, disco e VMs externas ao projeto antes de alocar. O template de 3,5 GiB requer expansão do overlay para 20 GiB, com growpart/resizefs no guest.
 

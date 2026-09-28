@@ -54,3 +54,11 @@ Inspeção por SSH em **2026-09-28, 05:42 UTC** (02:42 America/Sao_Paulo), antes
 9. Validar migrations, autenticação, limitação de login, persistência após reinício, TLS e integridade do template/rede.
 
 Scheduler funcional pertence à Fase 4; router LLM à Fase 2; VM Manager à Fase 5; Android às Fases 6–8. A Fase 1 não simulará essas funcionalidades.
+
+## Resultado posterior da Fase 1
+
+O proprietário informou `agent.vegasolucoes.com.br` durante a implementação; DNS confirmou `147.15.33.140`. O plano de TLS privado foi adaptado para HTTPS público, mantendo o modo privado como default reutilizável. Certificado público emitido e validado externamente, sem alterações manuais no firewall/OCI.
+
+Docker 29.8.1/Compose 5.5.1 instalados como novos pacotes, sem upgrades ou remoções de pacotes existentes. Serviço em `/srv/devlima-agent`, PostgreSQL 17.11 e Caddy 2.11.4; backend Python 3.12 em container não root. Resultados detalhados em [docs/PHASE_1.md](docs/PHASE_1.md).
+
+Template mantém o SHA-256 original. Configuração da rede default, identidade/path/permissões do pool e regras Oracle/libvirt preservados. Os números de espaço disponível/alocado do pool mudaram somente pelo consumo normal de disco da instalação; isso não é alteração do pool. As chaves e arquivos cloud-init existentes permanecem intactos. Nenhuma VM foi criada, apagada ou recriada.

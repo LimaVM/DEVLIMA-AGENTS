@@ -14,7 +14,9 @@ Caddy sobrescreve cabeçalhos de encaminhamento recebidos. O backend aceita cabe
 
 Secrets residem em `/srv/devlima-agent/.env`, modo 0600, excluído de Git e do contexto Docker. Senhas e JWT são gerados aleatoriamente por script; nenhum usuário com senha padrão é criado.
 
-PostgreSQL fica sem porta publicada. Caddy usa certificados persistentes. Na Fase 1, as portas de Caddy ficam restritas ao loopback e são acessadas por túnel SSH; TLS interno exige confiar explicitamente na CA. Nunca desativar validação TLS no app de produção.
+PostgreSQL fica sem porta publicada. Caddy usa certificados persistentes. Defaults privados restringem portas ao loopback para túnel SSH; TLS interno exige confiar explicitamente na CA. Nesta implantação, o domínio informado usa certificado público Let’s Encrypt e somente 80/443 são publicados pelo projeto. As portas 5432, 8000 e 2019 não aceitaram conexão externa na validação. Nunca desativar validação TLS no app de produção.
+
+A V1 inicial usa o usuário proprietário do banco criado pela imagem PostgreSQL, que tem privilégios administrativos. Separar credenciais de migrations e uma role de runtime sem superuser é parte do hardening pendente; não tratar a Fase 1 como produto final.
 
 llama.cpp e VM Manager permanecerão privados. Para conexão ao VM Manager preferir rede dedicada/ACL e token próprio, sem reaproveitar JWT de usuário. Tailscale requer autorização do proprietário da tailnet e ainda não foi configurado.
 

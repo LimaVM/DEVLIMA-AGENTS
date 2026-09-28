@@ -1,0 +1,21 @@
+{
+    admin off
+}
+
+https://localhost {
+    tls internal
+    request_body {
+        max_size 1MB
+    }
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        -Server
+    }
+    reverse_proxy backend:8000 {
+        transport http {
+            dial_timeout 5s
+            response_header_timeout 60s
+        }
+    }
+}
