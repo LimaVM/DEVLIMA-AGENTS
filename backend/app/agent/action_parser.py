@@ -76,6 +76,11 @@ class WorkerRestore(WorkerArguments):
     snapshot_id: UUID
 
 
+class WorkerJob(WorkerArguments):
+    script: str = Field(min_length=1, max_length=8000)
+    timeout: int = Field(default=120, ge=1, le=300)
+
+
 ARGUMENT_SCHEMAS = {
     "create_task": TaskCreate,
     "update_task": TaskUpdate,
@@ -95,6 +100,9 @@ ARGUMENT_SCHEMAS = {
     "restore_worker": WorkerRestore,
     "get_worker_status": WorkerArguments,
     "list_workers": EmptyArguments,
+    "start_worker": WorkerArguments,
+    "stop_worker": WorkerArguments,
+    "run_worker_job": WorkerJob,
 }
 
 

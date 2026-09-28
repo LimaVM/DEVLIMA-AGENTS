@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase4
+  image: devlima-agent-backend:phase5
   build:
     context: ../backend
     target: production
@@ -26,6 +26,7 @@ x-backend: &backend
     GROQ_TIMEOUT: ${GROQ_TIMEOUT:-30}
     LLM_HEALTH_TIMEOUT: ${LLM_HEALTH_TIMEOUT:-5}
     ALLOW_CLOUD_FALLBACK: ${ALLOW_CLOUD_FALLBACK:-true}
+    VM_MANAGER_SOCKET: /run/vm-manager/api.sock
     SCHEDULER_POLL_SECONDS: ${SCHEDULER_POLL_SECONDS:-5}
     CONTEXT_RECENT_MESSAGES: ${CONTEXT_RECENT_MESSAGES:-8}
     CONTEXT_MAX_CHARS: ${CONTEXT_MAX_CHARS:-12000}
@@ -96,6 +97,26 @@ services:
     mem_limit: 256m
     cpus: 0.5
 
+  worker-runner:
+    <<: *backend
+    environment:
+      <<: *backend-env
+      VM_MANAGER_TOKEN: ${VM_MANAGER_TOKEN:-}
+    restart: unless-stopped
+    command: [python, -m, app.workers.runner, run]
+    volumes: [/run/devlima-vm-manager:/run/vm-manager:ro]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -m, app.workers.runner, health]
+      interval: 30s
+      timeout: 6s
+      retries: 3
+      start_period: 30s
+    mem_limit: 256m
+    cpus: 0.5
+    stop_grace_period: 6m
+
   caddy:
     image: caddy:2-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
     restart: unless-stopped
@@ -153,7 +174,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase4
+    image: devlima-agent-tests:phase5
     build:
       context: ../backend
       target: test
@@ -165,6 +186,20 @@ services:
       LOCAL_LLM_MODEL: test-local
       GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
+    depends_on:
+      migrate-test: {condition: service_completed_successfully}
+
+  worker-smoke:
+    <<: *backend
+    profiles: [smoke]
+    environment:
+      <<: *backend-env
+      VM_MANAGER_TOKEN: ${VM_MANAGER_TOKEN:-}
+      POSTGRES_HOST: postgres-test
+      POSTGRES_DB: devlima_agent_test
+    networks: [test]
+    volumes: [/run/devlima-vm-manager:/run/vm-manager:ro]
+    command: [python, -m, app.workers.cli]
     depends_on:
       migrate-test: {condition: service_completed_successfully}
 

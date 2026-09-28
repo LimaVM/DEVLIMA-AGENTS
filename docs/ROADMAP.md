@@ -1,6 +1,6 @@
 # Roteiro de desenvolvimento
 
-Estado em 2026-09-28: fases 0–3 concluídas. As funcionalidades abaixo são planejadas; os relatórios PHASE_1.md, PHASE_2.md e PHASE_3.md registram o que já foi implementado e validado. A lista de execução está em [TODO.md](../TODO.md).
+Estado em 2026-09-28: fases 0–5 concluídas. As funcionalidades abaixo são planejadas; os relatórios PHASE_1.md, PHASE_2.md e PHASE_3.md, PHASE_4.md e PHASE_5.md registram o que já foi implementado e validado. A lista de execução está em [TODO.md](../TODO.md).
 
 ## Fase 4 — tarefas, lembretes e tempo
 

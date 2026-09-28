@@ -2,7 +2,7 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fases 1–4 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. VM Manager e Android chegam nas próximas fases.
+**Fases 1–5 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. Workers Linux estão disponíveis pelo Core na Fase 5; a conexão Android será entregue nas Fases 6–8.
 
 ## Documentação
 
@@ -16,6 +16,8 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Contexto e memória](CONTEXT.md)
 - [Validação da Fase 3](docs/PHASE_3.md)
 - [Tarefas e scheduler](docs/PHASE_4.md)
+- [Workers Linux e recuperação](docs/PHASE_5.md)
+- [Operação do VM Manager](vm-manager/README.md)
 
 ## Repositório e instalação
 
@@ -34,14 +36,16 @@ Requer Docker Engine/Compose e Python 3 para gerar configuração. Na VM o proje
 
 ```sh
 python3 scripts/init_env.py
-docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait
+docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait postgres migrate backend scheduler caddy
 ```
+
+Para habilitar workers no host KVM inspecionado, instale o [VM Manager](vm-manager/README.md) e depois execute `docker compose --env-file .env -f infra/docker-compose.yml up -d --wait worker-runner`.
 
 Isso gera secrets sem imprimi-los e sobe acesso privado `https://localhost:8443`. O script recusa sobrescrever `.env`. Para uma implantação nova com domínio/DNS já configurado:
 
 ```sh
 python3 scripts/init_env.py --domain agent.vegasolucoes.com.br
-docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait
+docker compose --env-file .env -f infra/docker-compose.yml up -d --build --wait postgres migrate backend scheduler caddy
 ```
 
 O modo domínio publica 80/443 para ACME/HTTPS. Verificar ingresso OCI e DNS; nenhuma credencial OCI é necessária para executar o Compose. `.env`, chaves e dados nunca entram no Git.

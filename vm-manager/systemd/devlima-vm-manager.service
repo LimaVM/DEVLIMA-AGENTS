@@ -1,0 +1,37 @@
+[Unit]
+Description=DEVLIMA private VM Manager
+After=libvirtd.service network-online.target
+Wants=network-online.target
+Requires=libvirtd.service
+
+[Service]
+Type=simple
+User=root
+Group=10001
+EnvironmentFile=/etc/devlima-vm-manager.env
+WorkingDirectory=/opt/devlima-vm-manager
+ExecStart=/opt/devlima-vm-manager/venv/bin/uvicorn vm_manager.app:app_factory --factory --uds /run/devlima-vm-manager/api.sock --workers 1 --no-access-log
+Restart=on-failure
+RestartSec=5
+RuntimeDirectory=devlima-vm-manager
+RuntimeDirectoryMode=0750
+StateDirectory=devlima-vm-manager
+StateDirectoryMode=0700
+UMask=0007
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/lib/libvirt/images/devlima-workers /var/lib/devlima-vm-manager /run/devlima-vm-manager
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LimitNOFILE=4096
+MemoryHigh=512M
+MemoryMax=1536M
+TasksMax=100
+TimeoutStopSec=6min
+
+[Install]
+WantedBy=multi-user.target

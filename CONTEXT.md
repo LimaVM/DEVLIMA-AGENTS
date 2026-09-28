@@ -7,7 +7,7 @@ O PostgreSQL guarda conversas e mensagens completas. O modelo recebe um contexto
 1. JWT identifica o usuário. `client_message_id` UUID é obrigatório e deve ser reutilizado em reenvios da mesma mensagem.
 2. Uma transação curta grava a mensagem `PENDING` e reserva a conversa com uma lease durável. O lock transacional termina antes da inferência.
 3. Quando necessário, o Summarizer gera um resumo estruturado das mensagens antigas. Uma falha de resumo é auditada e o turno continua com a janela recente.
-4. Context Builder combina system prompt, usuário/timezone, relógio UTC/local, resumo, memórias relevantes, capacidades e últimas mensagens. Desde a Fase 4, tarefas, lembretes e chamadas agendadas são incluídos no contexto; workers permanecem indisponíveis até a Fase 5.
+4. Context Builder combina system prompt, usuário/timezone, relógio UTC/local, resumo, memórias relevantes, capacidades e últimas mensagens. Desde a Fase 4, tarefas, lembretes e chamadas agendadas são incluídos no contexto; a Fase 5 inclui workers e snapshots próprios, com status real reconciliado.
 5. Router chama a LLM local; a política técnica da Fase 2 controla eventual fallback. JSON inválido não dispara fallback.
 6. Pydantic valida resposta, candidatos e ações. Em uma nova transação, o Core verifica que ainda possui a lease e grava resposta, candidatos, ações e auditoria juntos.
 
@@ -38,7 +38,7 @@ A busca inicial compara palavras das últimas cem memórias ativas do usuário, 
 
 ## Ações e inferência
 
-Há schemas enumerados para tarefas, lembretes, chamadas e workers, com UUIDs e argumentos limitados. Tipos desconhecidos, shell, caminhos no lugar de IDs e campos extras são rejeitados. Desde a Fase 4, ações de planejamento são executadas por handlers autorizados e registradas SUCCEEDED/FAILED; handlers de workers ficam UNSUPPORTED até a Fase 5. A resposta reflete o resultado do Core.
+Há schemas enumerados para tarefas, lembretes, chamadas e workers, com UUIDs e argumentos limitados. Tipos desconhecidos, shell, caminhos no lugar de IDs e campos extras são rejeitados. Desde a Fase 4, ações de planejamento são executadas por handlers autorizados e registradas SUCCEEDED/FAILED; a Fase 5 registra comandos de workers numa fila PostgreSQL e informa PENDING até o manager executá-los. Scripts só são aceitos pela ação enumerada run_worker_job dentro do worker. A resposta reflete o resultado do Core.
 
 Os requests JSON do llama.cpp desativam thinking por `reasoning_effort=none`/`enable_thinking=false`, mantendo o orçamento para o JSON final. Essa opção é específica do provider local; não é enviada ao Groq. Referência: [API do llama.cpp](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md).
 

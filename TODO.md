@@ -34,11 +34,11 @@
 - [x] Recuperação transacional após crash/restart e testes de concorrência.
 
 ## Fase 5 — workers
-- [ ] VM Manager privado via systemd, autenticação e WorkerProvider.
-- [ ] Overlays/cloud-init/readiness SSH e guest-agent.
-- [ ] Criar/status/destruir/reset/snapshot/restore com quotas.
-- [ ] Reconciliação, proteção de paths/template e testes libvirt.
-- [ ] WindowsProvider reservado, sem template Windows nesta versão.
+- [x] VM Manager privado via systemd, autenticação e WorkerProvider.
+- [x] Overlays/cloud-init/readiness SSH e guest-agent.
+- [x] Criar/status/destruir/reset/snapshot/restore com quotas.
+- [x] Reconciliação, proteção de paths/template e testes libvirt.
+- [x] WindowsProvider reservado, sem template Windows nesta versão.
 
 ## Fase 6 — conexão Android
 - [ ] WebSocket autenticado, envelopes, ACK, heartbeat e backoff.

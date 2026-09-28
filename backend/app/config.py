@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     llm_health_timeout: float = 5
     allow_cloud_fallback: bool = True
     scheduler_poll_seconds: int = 5
+    vm_manager_socket: str = "/run/vm-manager/api.sock"
+    vm_manager_token: SecretStr = SecretStr("")
     context_recent_messages: int = 8
     context_max_chars: int = 12000
     summary_trigger_messages: int = 16

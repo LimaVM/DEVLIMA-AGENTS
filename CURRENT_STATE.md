@@ -84,3 +84,11 @@ No Core, requests JSON locais desativam thinking por opções do protocolo llama
 Migration `0004_planning`, tarefas, lembretes, chamadas agendadas, recorrência e scheduler separados foram implementados. 120 testes e Alembic check aprovados; integração real com Groq criou tarefa/lembrete em banco isolado e gerou aviso idempotente. Backup local anterior à migration em `backups/phase3-before-0004.dump`. Relatório: [docs/PHASE_4.md](docs/PHASE_4.md).
 
 O proprietário autorizou continuar até a Fase 9 sem pausas, com llm-server local desligado e desenvolvimento Android na VPS. JDK 17 foi instalado como pacote novo, sem upgrades/remoções de pacotes existentes. SDK/builds Android serão separados do Core e terão limites de recursos.
+
+## Resultado da Fase 5
+
+Migration `0005_workers`, fila durável, runner e VM Manager systemd privado implantados. Backend 126 testes; manager 11 testes. Ciclo real confirmou jobs, isolamento de rede, snapshot/restore, stop/start, reset limpo e destroy; integração real Core → manager também passou no banco isolado. Template conserva o SHA-256 original, sem domínios externos alterados; todos os workers dos smokes foram removidos. Backup pré-migration em `backups/phase4-before-0005.dump` (0600).
+
+O primeiro snapshot revelou OOM no limite inicial do manager. Conversão foi limitada a uma coroutine/cache direto; unidade usa MemoryHigh 512 MiB e MemoryMax 1536 MiB. Segundo ciclo passou sem reinício, com pico de cerca de 514 MiB. Token do manager fica somente no runner e arquivos protegidos, separado do backend HTTP/scheduler. Relatório em [docs/PHASE_5.md](docs/PHASE_5.md).
+
+Na VPS, JDK 17/Gradle 8.13/SDK 36/build-tools 36.0.0/emulador e imagem Google APIs estão instalados em `/srv/devlima-build-tools` e `/srv/devlima-android-sdk`, fora do Git. Desenvolvimento Android continuará nesse host por preferência do proprietário.

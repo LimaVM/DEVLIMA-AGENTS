@@ -7,6 +7,7 @@ from app.agent.action_parser import ActionProposal
 from app.agent.errors import AgentError
 from app.models import AgentAction, AuditLog, Message
 from app.planning.service import PlanningService, schedule_data, task_data
+from app.workers.service import WorkerService, command_data, worker_data
 
 
 class ActionEngine:
@@ -17,6 +18,31 @@ class ActionEngine:
         service = PlanningService(self.session, source.user_id)
         args = dict(action.arguments)
         name = action.type
+        workers = WorkerService(self.session, source.user_id)
+        if name == "list_workers":
+            rows = workers.workers()
+            return {"items": [worker_data(row) for row in rows]}, "\n".join(
+                f"• {row.name}: {row.status}" for row in rows
+            ) or "Nenhum worker encontrado."
+        if name == "get_worker_status":
+            row = workers.worker(args["worker_id"])
+            return worker_data(row), f"Worker {row.name}: {row.status}."
+        worker_operations = {
+            "create_linux_worker": "CREATE",
+            "destroy_worker": "DESTROY",
+            "reset_worker": "RESET",
+            "snapshot_worker": "SNAPSHOT",
+            "restore_worker": "RESTORE",
+            "start_worker": "START",
+            "stop_worker": "STOP",
+            "run_worker_job": "EXECUTE",
+        }
+        if name in worker_operations:
+            identifier = args.pop("worker_id", None)
+            command = workers.queue(worker_operations[name], args, worker_id=identifier)
+            return command_data(
+                command
+            ), f"Operação {command.kind} solicitada para o worker; status {command.status}."
         if name == "create_task":
             row = service.create_task(args)
             return task_data(row), f"Tarefa criada: {row.title}."

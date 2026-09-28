@@ -17,6 +17,9 @@ __all__ = [
     "ScheduledEvent",
     "OutboxEvent",
     "SchedulerHeartbeat",
+    "Worker",
+    "WorkerCommand",
+    "WorkerSnapshot",
 ]
 from app.models.context import (
     AgentAction,
@@ -27,3 +30,4 @@ from app.models.context import (
     Message,
 )
 from app.models.planning import OutboxEvent, Schedule, ScheduledEvent, SchedulerHeartbeat, Task
+from app.models.workers import Worker, WorkerCommand, WorkerSnapshot

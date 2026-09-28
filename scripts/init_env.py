@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Generate secrets without stdout disclosure or overwriting an existing .env."""
+
 import argparse
 import os
 import re
