@@ -12,6 +12,8 @@ Criptografia AES-256-GCM autentica o envelope; SHA-256 auxilia conferência de t
 
 Unidades em `infra/systemd/` instaladas em `/etc/systemd/system`: timer diário 03:30 UTC, aleatoriedade até 300 s, execução perdida recuperada quando o host volta. Arquivos em `/srv/devlima-agent/backups`, modo 0600, retenção de 14 arquivos automáticos. Dumps antigos pré-migration não são removidos por essa retenção.
 
+A unidade foi realmente iniciada via systemctl e terminou com Result=success/ExecMainStatus=0 após a correção 1.0.1. A consulta ao commit usa safe.directory apenas para o projeto atual, sem confiar globalmente em outros repositórios. O LaunchAgent foi iniciado via launchctl e terminou com exit code 0, copiando o backup cifrado para o Mac.
+
 ```sh
 cd /srv/devlima-agent
 sudo python3 scripts/backup.py

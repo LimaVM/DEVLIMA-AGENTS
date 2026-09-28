@@ -2,7 +2,7 @@
 
 Aplicativo Kotlin/Compose/Material 3: login HTTPS, sessão Android Keystore, chat/histórico/fila offline, rotina e memórias propostas, conexão WSS com ACK/heartbeat/backoff, chamadas internas e SpeechRecognizer/TextToSpeech com alternativa por texto. Sem Firebase/WebRTC nesta V1.
 
-Package release `br.com.vegasolucoes.agent`, debug `.debug`; versão 1.0.0/code 100, Android 8.0/API 26 ou superior, target/compile 36. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
+Package release `br.com.vegasolucoes.agent`, debug `.debug`; versão 1.0.1/code 101, Android 8.0/API 26 ou superior, target/compile 36. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
 
 ## Build na VPS
 
@@ -17,7 +17,7 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 sha256sum app/build/outputs/apk/release/app-release.apk
 ```
 
-Keystore `/srv/devlima-build-tools/agent-release.jks` e `signing.properties`, modo 0600, fora do Git. Ausência desses arquivos produz release sem assinatura de produção; não distribua esse arquivo. Preserve o certificado para futuras atualizações. [Release privada v1.0.0](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.0) contém APK e checksum.
+Keystore `/srv/devlima-build-tools/agent-release.jks` e `signing.properties`, modo 0600, fora do Git. Ausência desses arquivos produz release sem assinatura de produção; não distribua esse arquivo. Preserve o certificado para futuras atualizações. [Release privada v1.0.1](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.1) contém APK e checksum.
 
 ## Testes
 

@@ -1,6 +1,6 @@
 # Arquitetura do DEVLIMA AGENT
 
-Estado da V1 1.0.0, fases 0–9 implementadas. Evidências e limites de homologação em [PHASE_9.md](PHASE_9.md).
+Estado da V1 1.0.1, fases 0–9 implementadas. Evidências e limites de homologação em [PHASE_9.md](PHASE_9.md).
 
 ## Responsabilidades
 

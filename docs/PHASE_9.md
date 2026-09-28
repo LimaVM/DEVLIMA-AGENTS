@@ -1,6 +1,8 @@
 # Fase 9 — hardening, recuperação e entrega V1
 
-Validação em 2026-09-28. Backend e Android **1.0.0**, schema **0007_calls**. Desenvolvimento, build e emulador Android executados na VPS `147.15.33.140`; publicação em `main` no repositório privado.
+Validação em 2026-09-28. Backend e Android **1.0.1**, schema **0007_calls**. Desenvolvimento, build e emulador Android executados na VPS `147.15.33.140`; publicação em `main` no repositório privado.
+
+Patch 1.0.1 corrige a execução do backup pelo systemd como root sem SUDO_UID: a leitura do commit usa confiança restrita ao path deste projeto, sem alterar configuração Git global. Unidade real passou com Result=success/ExecMainStatus=0, seguida de restore isolado aprovado; LaunchAgent Mac também passou com exit code 0. O E2E temporizado precedeu o ajuste final de versão; o código de voz/UI permanece igual. APK 1.0.1 foi atualizado sobre 1.0.0 no emulador, preservando UID/assinatura e abrindo o login; nenhum novo E2E temporizado foi presumido para esse patch de metadados.
 
 ## Alterações
 
@@ -12,7 +14,7 @@ Backups usam dump PostgreSQL, cópia consistente do SQLite do manager, configura
 
 Timer da VPS faz backup diário às 03:30 UTC, com atraso aleatório de até cinco minutos e retenção de 14 arquivos. Um LaunchAgent no Mac copia os arquivos cifrados por SSH à 01:00 local. A cópia externa já foi executada; sua continuidade depende de o Mac estar ligado e alcançar a VPS. Não há serviço de storage cloud contratado/configurado.
 
-APK release assinado com RSA 4096, assinatura v2 válida para min SDK 26, package `br.com.vegasolucoes.agent`, versionCode 100. A chave e as senhas permanecem fora do repositório e são incluídas apenas no backup cifrado. APK distribuído como asset da release privada `v1.0.0`.
+APK release assinado com RSA 4096, assinatura v2 válida para min SDK 26, package `br.com.vegasolucoes.agent`, versionCode 101. A chave e as senhas permanecem fora do repositório e são incluídas apenas no backup cifrado. APK distribuído como asset da release privada `v1.0.1`.
 
 ## Evidências
 
@@ -51,7 +53,7 @@ Capturas reais do emulador: [login da release](images/android-release-login.png)
 
 ## Artefato
 
-- APK SHA-256: `8061b34766151dfe903e354758b7072b78c875534ab46bce3a05fabf08db5beb`.
+- APK SHA-256: `ba517db30aeec0b9b9ec752a19cd06d77b8d6a605ea7286ce78863f4322f5875`.
 - Certificado SHA-256: `b68c5786bdc1088ae635b5611c57beaf9add894269408d5298cf58765bf4348e`.
 - Tamanho: 8.545.724 bytes. Android 8.0/API 26 ou superior; target API 36.
 

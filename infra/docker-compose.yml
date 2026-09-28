@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:v1.0.0
+  image: devlima-agent-backend:v1.0.1
   build:
     context: ../backend
     target: production
@@ -199,7 +199,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:v1.0.0
+    image: devlima-agent-tests:v1.0.1
     build:
       context: ../backend
       target: test

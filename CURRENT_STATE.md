@@ -1,6 +1,6 @@
 # Estado real do host — Fase 0
 
-**Estado atual:** V1 1.0.0 implementada até a fase 9, backend/schema saudáveis e APK assinado. O histórico abaixo preserva as inspeções de cada fase; [docs/PHASE_9.md](docs/PHASE_9.md) registra a validação final e o que ainda depende de celular físico.
+**Estado atual:** V1 1.0.1 implementada até a fase 9, backend/schema saudáveis e APK assinado. O histórico abaixo preserva as inspeções de cada fase; [docs/PHASE_9.md](docs/PHASE_9.md) registra a validação final e o que ainda depende de celular físico.
 
 Inspeção por SSH em **2026-09-28, 05:42 UTC** (02:42 America/Sao_Paulo), antes de instalar serviços do projeto.
 

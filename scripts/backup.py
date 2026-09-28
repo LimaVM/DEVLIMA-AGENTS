@@ -79,7 +79,9 @@ def main():
         manifest = {
             "created_at": datetime.now(UTC).isoformat(),
             "git_commit": subprocess.check_output(
-                ["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True
+                # systemd root has no SUDO_UID; trust only this already executing project.
+                ["git", "-c", f"safe.directory={ROOT}", "-C", str(ROOT), "rev-parse", "HEAD"],
+                text=True,
             ).strip(),
             "postgres_dump_sha256": sha256(dump),
             "format": 1,

@@ -2,9 +2,9 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**V1 1.0.0 — fases 0–9 implementadas:** FastAPI/PostgreSQL, JWT/Argon2id, contexto/memória, tarefas/lembretes/chamadas agendadas, scheduler/outbox, workers Linux e Android com chat, rotina, WSS, chamadas internas e SpeechRecognizer/TTS. Roles de banco separadas, backup cifrado externo e restore verificado. Backend: 143 testes. E2E de café/chamada aprovado no emulador; áudio, rede móvel e bateria em celular físico aguardam homologação.
+**V1 1.0.1 — fases 0–9 implementadas:** FastAPI/PostgreSQL, JWT/Argon2id, contexto/memória, tarefas/lembretes/chamadas agendadas, scheduler/outbox, workers Linux e Android com chat, rotina, WSS, chamadas internas e SpeechRecognizer/TTS. Roles de banco separadas, backup cifrado externo e restore verificado. Backend: 143 testes. E2E de café/chamada aprovado no emulador; áudio, rede móvel e bateria em celular físico aguardam homologação.
 
-Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/ready). [APK assinado e checksum](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.0), acesso restrito ao repositório privado. Android 8.0 ou superior. Credenciais são entregues separadamente, sem senha padrão.
+Servidor: [agent.vegasolucoes.com.br](https://agent.vegasolucoes.com.br/health/ready). [APK assinado e checksum](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.1), acesso restrito ao repositório privado. Android 8.0 ou superior. Credenciais são entregues separadamente, sem senha padrão.
 
 ## Documentação
 
