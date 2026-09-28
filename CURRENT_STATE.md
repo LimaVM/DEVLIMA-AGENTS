@@ -78,3 +78,9 @@ Fase 3 implantada com migration `0003_context`, Agent Core, conversas e históri
 Backup local anterior à migration em `/srv/devlima-agent/backups/phase2-before-0003.dump`, 0600. As cinco linhas de auditoria e quatro tentativas LLM anteriores permaneceram no banco; não há usuário padrão de produção. Dados do smoke são sintéticos e separados. Não houve alteração no llm-server, libvirt, template ou chaves dos workers.
 
 No Core, requests JSON locais desativam thinking por opções do protocolo llama.cpp, reduzindo a latência observada do chat para cerca de 2,3–4,2 segundos. Configuração de modelos, Tailscale e fallback permanece a da Fase 2. Detalhes em [docs/PHASE_3.md](docs/PHASE_3.md) e [CONTEXT.md](CONTEXT.md). Próxima etapa: Fase 4, tarefas e scheduler.
+
+## Resultado da Fase 4
+
+Migration `0004_planning`, tarefas, lembretes, chamadas agendadas, recorrência e scheduler separados foram implementados. 120 testes e Alembic check aprovados; integração real com Groq criou tarefa/lembrete em banco isolado e gerou aviso idempotente. Backup local anterior à migration em `backups/phase3-before-0004.dump`. Relatório: [docs/PHASE_4.md](docs/PHASE_4.md).
+
+O proprietário autorizou continuar até a Fase 9 sem pausas, com llm-server local desligado e desenvolvimento Android na VPS. JDK 17 foi instalado como pacote novo, sem upgrades/remoções de pacotes existentes. SDK/builds Android serão separados do Core e terão limites de recursos.

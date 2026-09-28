@@ -2,7 +2,7 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fases 1–3 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas/scheduler, VM Manager e Android chegam nas próximas fases.
+**Fases 1–4 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. VM Manager e Android chegam nas próximas fases.
 
 ## Documentação
 
@@ -15,6 +15,7 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Router LLM e validação real](docs/PHASE_2.md)
 - [Contexto e memória](CONTEXT.md)
 - [Validação da Fase 3](docs/PHASE_3.md)
+- [Tarefas e scheduler](docs/PHASE_4.md)
 
 ## Repositório e instalação
 
@@ -115,7 +116,13 @@ Omitir `conversation_id` inicia uma conversa. Nas mensagens seguintes, envie o U
 
 `GET /memories` lista memórias ativas; `POST /memories` recebe `content` e `category` (`fact` ou `preference`) para salvar explicitamente; `DELETE /memories/{id}` desativa. `GET /memories/candidates` lista propostas pendentes. `POST /memories/candidates/{id}/accept` confirma; `/reject` recusa.
 
-Somente pedidos explícitos com proposta literal e confiança suficiente são aceitos automaticamente. Outras propostas esperam confirmação. O sistema ainda não executa tarefas, lembretes, chamadas ou VMs; ações propostas ficam registradas como indisponíveis. Limites, recuperação e política completa em [CONTEXT.md](CONTEXT.md).
+Somente pedidos explícitos com proposta literal e confiança suficiente são aceitos automaticamente. Outras propostas esperam confirmação. O sistema executa tarefas e agendamentos validados; entrega ao Android e operações de VMs chegam nas próximas fases. Limites, recuperação e política completa em [CONTEXT.md](CONTEXT.md).
+
+## Tarefas e agendamento
+
+Com JWT: `POST/GET /tasks`, `PATCH /tasks/{id}`, `POST /tasks/{id}/complete`; `POST/GET /reminders`, `PATCH/DELETE /reminders/{id}`; `POST/GET /scheduled-calls` e `DELETE /scheduled-calls/{id}`. Filtros `date`, `status`, `limit` e `offset` nas listagens. Consulte [Fase 4](docs/PHASE_4.md) para política de recorrência e recuperação.
+
+O serviço Compose `scheduler` consulta eventos duráveis e gera avisos na outbox. A entrega por dispositivo é habilitada na Fase 6. Pedidos em linguagem natural podem criar/alterar/concluir tarefas e criar/cancelar agendamentos, respeitando propriedade e schemas.
 
 ## Testar
 

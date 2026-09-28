@@ -29,9 +29,9 @@
 - [x] Deploy, 97 testes, fluxo local real e persistência em novo processo.
 
 ## Fase 4 — tarefas e tempo
-- [ ] Tasks, reminders, calls e recorrência RRULE.
-- [ ] Scheduler separado, claims transacionais, outbox e idempotência.
-- [ ] Reconstrução após crash/reboot e testes de concorrência.
+- [x] Tasks, reminders, calls e recorrência RRULE.
+- [x] Scheduler separado, claims transacionais, outbox e idempotência.
+- [x] Recuperação transacional após crash/restart e testes de concorrência.
 
 ## Fase 5 — workers
 - [ ] VM Manager privado via systemd, autenticação e WorkerProvider.
