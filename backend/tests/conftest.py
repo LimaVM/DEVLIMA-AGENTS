@@ -6,7 +6,18 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.db.session import get_engine
 from app.main import create_app
-from app.models import AuditLog, LLMRequest, LoginThrottle, User
+from app.models import (
+    AgentAction,
+    AuditLog,
+    Conversation,
+    ConversationSummary,
+    LLMRequest,
+    LoginThrottle,
+    Memory,
+    MemoryCandidate,
+    Message,
+    User,
+)
 from app.security import hash_password
 
 
@@ -16,7 +27,18 @@ def clean_test_database():
     if settings.postgres_db != "devlima_agent_test" or settings.postgres_host != "postgres-test":
         pytest.fail("Testes exigem o PostgreSQL efêmero postgres-test/devlima_agent_test")
     with Session(get_engine()) as session:
-        for model in (LLMRequest, AuditLog, LoginThrottle, User):
+        for model in (
+            AgentAction,
+            MemoryCandidate,
+            Memory,
+            ConversationSummary,
+            Message,
+            Conversation,
+            LLMRequest,
+            AuditLog,
+            LoginThrottle,
+            User,
+        ):
             session.execute(delete(model))
         session.commit()
     yield

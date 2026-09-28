@@ -82,6 +82,7 @@ class OpenAICompatibleProvider(LLMProvider):
         }
         if json_mode:
             body["response_format"] = {"type": "json_object"}
+            body.update(self.structured_options())
         response = self._request("POST", "chat/completions", json=body)
         try:
             data = response.json()
@@ -102,6 +103,9 @@ class OpenAICompatibleProvider(LLMProvider):
             )
         except (ValueError, KeyError, IndexError, TypeError, AttributeError, ValidationError):
             raise LLMError("invalid_response") from None
+
+    def structured_options(self) -> dict:
+        return {}
 
     def health_check(self) -> ProviderHealth:
         started = perf_counter()

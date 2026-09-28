@@ -235,6 +235,38 @@ def test_json_mode_is_structured_request_option():
     router.close()
 
 
+def test_thinking_disabled_only_for_local_structured_requests():
+    captured = []
+
+    def handle(request):
+        captured.append(json.loads(request.content))
+        return httpx.Response(200, json={"choices": [{"message": {"content": '{"reply":"ok"}'}}]})
+
+    local = LlamaCppProvider(
+        "http://127.0.0.1:9/v1",
+        "test",
+        timeout=1,
+        health_timeout=1,
+        client=httpx.Client(transport=httpx.MockTransport(handle)),
+    )
+    local.chat(MESSAGES, json_mode=True)
+    local.chat(MESSAGES)
+    cloud = GroqProvider(
+        "test",
+        api_key="test-key",
+        timeout=1,
+        health_timeout=1,
+        client=httpx.Client(transport=httpx.MockTransport(handle)),
+    )
+    cloud.chat(MESSAGES, json_mode=True)
+    assert captured[0]["reasoning_effort"] == "none"
+    assert captured[0]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert "reasoning_effort" not in captured[1] and "reasoning_effort" not in captured[2]
+    assert "chat_template_kwargs" not in captured[2]
+    local.close()
+    cloud.close()
+
+
 @pytest.mark.parametrize(
     "url",
     [

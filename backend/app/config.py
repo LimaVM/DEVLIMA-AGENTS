@@ -3,7 +3,7 @@ from ipaddress import ip_address, ip_network
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import SecretStr, field_validator
+from pydantic import SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -34,6 +34,19 @@ class Settings(BaseSettings):
     groq_timeout: float = 30
     llm_health_timeout: float = 5
     allow_cloud_fallback: bool = True
+    context_recent_messages: int = 8
+    context_max_chars: int = 12000
+    summary_trigger_messages: int = 16
+
+    @model_validator(mode="after")
+    def validate_context_limits(self):
+        if not 2 <= self.context_recent_messages <= 16:
+            raise ValueError("Janela de contexto deve ter entre 2 e 16 mensagens")
+        if not 10000 <= self.context_max_chars <= 16000:
+            raise ValueError("Contexto deve ter entre 10000 e 16000 caracteres")
+        if not self.context_recent_messages < self.summary_trigger_messages <= 100:
+            raise ValueError("Trigger de resumo deve exceder a janela recente e ser até 100")
+        return self
 
     @field_validator("local_llm_base_url")
     @classmethod

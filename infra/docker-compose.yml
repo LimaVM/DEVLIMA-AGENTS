@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase2
+  image: devlima-agent-backend:phase3
   build:
     context: ../backend
     target: production
@@ -26,6 +26,9 @@ x-backend: &backend
     GROQ_TIMEOUT: ${GROQ_TIMEOUT:-30}
     LLM_HEALTH_TIMEOUT: ${LLM_HEALTH_TIMEOUT:-5}
     ALLOW_CLOUD_FALLBACK: ${ALLOW_CLOUD_FALLBACK:-true}
+    CONTEXT_RECENT_MESSAGES: ${CONTEXT_RECENT_MESSAGES:-8}
+    CONTEXT_MAX_CHARS: ${CONTEXT_MAX_CHARS:-12000}
+    SUMMARY_TRIGGER_MESSAGES: ${SUMMARY_TRIGGER_MESSAGES:-16}
   networks: [database]
   read_only: true
   tmpfs: [/tmp]
@@ -134,7 +137,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase2
+    image: devlima-agent-tests:phase3
     build:
       context: ../backend
       target: test
@@ -146,6 +149,22 @@ services:
       LOCAL_LLM_MODEL: test-local
       GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
+    depends_on:
+      migrate-test: {condition: service_completed_successfully}
+
+  context-smoke:
+    <<: *backend
+    profiles: [smoke]
+    environment:
+      <<: *backend-env
+      POSTGRES_HOST: postgres-test
+      POSTGRES_DB: devlima_agent_test
+      ALLOW_CLOUD_FALLBACK: "false"
+      GROQ_API_KEY: ""
+      CONTEXT_RECENT_MESSAGES: 2
+      SUMMARY_TRIGGER_MESSAGES: 4
+    networks: [test, edge]
+    command: [python, -m, app.agent.cli, smoke]
     depends_on:
       migrate-test: {condition: service_completed_successfully}
 
