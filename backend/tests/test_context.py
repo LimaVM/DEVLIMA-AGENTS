@@ -254,18 +254,14 @@ def test_failed_old_turn_cannot_be_inserted_out_of_order(session, user):
         send(core, user, identifier=identifier)
 
 
-def test_action_is_validated_recorded_but_unavailable(session, user):
-    stub = StubRouter(
-        {
-            "reply": "Tarefa criada",
-            "actions": [{"type": "create_task", "arguments": {"title": "Teste"}}],
-        }
-    )
+def test_action_is_validated_and_executed_once(session, user):
+    proposal = {"type": "create_task", "arguments": {"title": "Teste"}}
+    stub = StubRouter({"reply": "Tarefa criada", "actions": [proposal, proposal]})
     reply = send(AgentCore(session, get_settings(), stub.factory), user, content="Crie uma tarefa")
-    assert "não consigo executar" in reply.reply
-    assert reply.actions[0]["status"] == "UNSUPPORTED"
+    assert "Tarefa criada: Teste" in reply.reply
+    assert len(reply.actions) == 1 and reply.actions[0]["status"] == "SUCCEEDED"
     assert session.scalar(select(AgentAction)).arguments == {"title": "Teste"}
-    assert session.scalar(select(AuditLog).where(AuditLog.event == "agent.action_unavailable"))
+    assert session.scalar(select(AuditLog).where(AuditLog.event == "agent.action_result"))
 
 
 def test_duplicate_proposals_and_pending_feedback(session, user):

@@ -178,10 +178,7 @@ class AgentCore:
                 candidates.append({"id": str(candidate.id), "status": candidate.status})
             reply = envelope.reply
             if actions:
-                reply = (
-                    "Nesta fase ainda não consigo executar tarefas, lembretes, chamadas "
-                    "ou operações de VMs. Seu pedido ficou salvo no histórico."
-                )
+                reply = "\n".join(action["message"] for action in actions)
             if any(item["status"] == "PENDING" for item in candidates):
                 reply += " Há uma proposta de memória aguardando sua confirmação."
             if any(item["status"] == "ACCEPTED" for item in candidates):

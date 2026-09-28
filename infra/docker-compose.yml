@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase3
+  image: devlima-agent-backend:phase4
   build:
     context: ../backend
     target: production
@@ -26,6 +26,7 @@ x-backend: &backend
     GROQ_TIMEOUT: ${GROQ_TIMEOUT:-30}
     LLM_HEALTH_TIMEOUT: ${LLM_HEALTH_TIMEOUT:-5}
     ALLOW_CLOUD_FALLBACK: ${ALLOW_CLOUD_FALLBACK:-true}
+    SCHEDULER_POLL_SECONDS: ${SCHEDULER_POLL_SECONDS:-5}
     CONTEXT_RECENT_MESSAGES: ${CONTEXT_RECENT_MESSAGES:-8}
     CONTEXT_MAX_CHARS: ${CONTEXT_MAX_CHARS:-12000}
     SUMMARY_TRIGGER_MESSAGES: ${SUMMARY_TRIGGER_MESSAGES:-16}
@@ -79,6 +80,21 @@ services:
       timeout: 6s
       retries: 5
       start_period: 15s
+
+  scheduler:
+    <<: *backend
+    restart: unless-stopped
+    command: [python, -m, app.planning.scheduler, run]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, python, -m, app.planning.scheduler, health]
+      interval: 10s
+      timeout: 6s
+      retries: 5
+      start_period: 15s
+    mem_limit: 256m
+    cpus: 0.5
 
   caddy:
     image: caddy:2-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
@@ -137,7 +153,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase3
+    image: devlima-agent-tests:phase4
     build:
       context: ../backend
       target: test
@@ -149,6 +165,19 @@ services:
       LOCAL_LLM_MODEL: test-local
       GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
+    depends_on:
+      migrate-test: {condition: service_completed_successfully}
+
+  planning-smoke:
+    <<: *backend
+    profiles: [smoke]
+    environment:
+      <<: *backend-env
+      POSTGRES_HOST: postgres-test
+      POSTGRES_DB: devlima_agent_test
+      LOCAL_LLM_BASE_URL: http://127.0.0.1:9/v1
+    networks: [test, edge]
+    command: [python, -m, app.planning.cli]
     depends_on:
       migrate-test: {condition: service_completed_successfully}
 

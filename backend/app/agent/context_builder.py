@@ -11,6 +11,7 @@ from app.agent.prompts import SYSTEM_PROMPT
 from app.config import Settings
 from app.llm.base import LLMMessage
 from app.models import Conversation, ConversationSummary, Message, User
+from app.planning.service import PlanningService, schedule_data, task_data
 
 
 @dataclass(frozen=True)
@@ -42,6 +43,20 @@ class ContextBuilder:
             .limit(1)
         )
         memories = MemoryManager(self.session, user.id).relevant(current.content)
+        planning = PlanningService(self.session, user.id)
+        tasks = [task_data(row) for row in planning.list_tasks(status="OPEN", limit=5)]
+        for item in tasks:
+            item.pop("description", None)
+        reminders = [
+            schedule_data(row)
+            for row in planning.list_schedules("REMINDER", status="SCHEDULED", limit=5)
+        ]
+        calls = [
+            schedule_data(row)
+            for row in planning.list_schedules("CALL", status="SCHEDULED", limit=5)
+        ]
+        for item in reminders + calls:
+            item["text"] = item["text"][:200]
         metadata = {
             "user": {"username": user.username, "timezone": user.timezone},
             "now_utc": now.isoformat(),
@@ -62,12 +77,17 @@ class ContextBuilder:
             "capabilities": {
                 "persistent_chat": True,
                 "memories": True,
-                "tasks": False,
-                "reminders": False,
-                "calls": False,
+                "tasks": True,
+                "reminders": True,
+                "calls": True,
                 "workers": False,
             },
-            "related_state": {"tasks": [], "reminders": [], "worker_jobs": []},
+            "related_state": {
+                "tasks": tasks,
+                "reminders": reminders,
+                "scheduled_calls": calls,
+                "worker_jobs": [],
+            },
         }
 
         def system_text():
@@ -81,6 +101,11 @@ class ContextBuilder:
         while len(system_text()) > system_limit:
             if metadata["memories"]:
                 metadata["memories"].pop()
+            elif any(metadata["related_state"].values()):
+                for values in metadata["related_state"].values():
+                    if values:
+                        values.pop()
+                        break
             elif metadata["summary"] and metadata["summary"]["open_topics"]:
                 metadata["summary"]["open_topics"].pop()
             elif metadata["summary"] and metadata["summary"]["facts"]:

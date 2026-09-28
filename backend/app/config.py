@@ -34,12 +34,15 @@ class Settings(BaseSettings):
     groq_timeout: float = 30
     llm_health_timeout: float = 5
     allow_cloud_fallback: bool = True
+    scheduler_poll_seconds: int = 5
     context_recent_messages: int = 8
     context_max_chars: int = 12000
     summary_trigger_messages: int = 16
 
     @model_validator(mode="after")
     def validate_context_limits(self):
+        if not 1 <= self.scheduler_poll_seconds <= 60:
+            raise ValueError("Scheduler poll deve ser entre 1 e 60 segundos")
         if not 2 <= self.context_recent_messages <= 16:
             raise ValueError("Janela de contexto deve ter entre 2 e 16 mensagens")
         if not 10000 <= self.context_max_chars <= 16000:

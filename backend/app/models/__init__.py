@@ -12,6 +12,11 @@ __all__ = [
     "MemoryCandidate",
     "Message",
     "User",
+    "Task",
+    "Schedule",
+    "ScheduledEvent",
+    "OutboxEvent",
+    "SchedulerHeartbeat",
 ]
 from app.models.context import (
     AgentAction,
@@ -21,3 +26,4 @@ from app.models.context import (
     MemoryCandidate,
     Message,
 )
+from app.models.planning import OutboxEvent, Schedule, ScheduledEvent, SchedulerHeartbeat, Task

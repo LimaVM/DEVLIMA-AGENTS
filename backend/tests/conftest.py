@@ -16,6 +16,11 @@ from app.models import (
     Memory,
     MemoryCandidate,
     Message,
+    OutboxEvent,
+    Schedule,
+    ScheduledEvent,
+    SchedulerHeartbeat,
+    Task,
     User,
 )
 from app.security import hash_password
@@ -28,6 +33,11 @@ def clean_test_database():
         pytest.fail("Testes exigem o PostgreSQL efêmero postgres-test/devlima_agent_test")
     with Session(get_engine()) as session:
         for model in (
+            OutboxEvent,
+            ScheduledEvent,
+            Schedule,
+            SchedulerHeartbeat,
+            Task,
             AgentAction,
             MemoryCandidate,
             Memory,
