@@ -24,6 +24,7 @@ import org.json.JSONObject
 fun CallOverlay(activity: MainActivity, session: SessionData) {
     val received by AgentRuntime.received.collectAsStateWithLifecycle()
     val call by AgentRuntime.call.collectAsStateWithLifecycle()
+    val voice by AgentRuntime.voice.collectAsStateWithLifecycle()
     val status by AgentRuntime.voiceStatus.collectAsStateWithLifecycle()
     val mute by AgentRuntime.mute.collectAsStateWithLifecycle()
     val speaker by AgentRuntime.speaker.collectAsStateWithLifecycle()
@@ -140,16 +141,16 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
                     Text(call!!.getString("reason"))
                     Text(status)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = { AgentRuntime.voice?.toggleMute() }) {
+                        OutlinedButton(onClick = { voice?.toggleMute() }) {
                             Text(if (mute) "Ativar mic" else "Silenciar")
                         }
-                        OutlinedButton(onClick = { AgentRuntime.voice?.toggleSpeaker() }) {
+                        OutlinedButton(onClick = { voice?.toggleSpeaker() }) {
                             Text(if (speaker) "Alto-falante" else "Auricular")
                         }
                     }
                     Button(
                         onClick = {
-                            if (AgentRuntime.voice == null) {
+                            if (voice == null) {
                                 selected = null
                                 if (
                                     ContextCompat.checkSelfPermission(
@@ -159,10 +160,10 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
                                 )
                                     microphone.launch(Manifest.permission.RECORD_AUDIO)
                                 else startVoice()
-                            } else AgentRuntime.voice?.listen()
+                            } else voice?.listen()
                         }
                     ) {
-                        Text(if (AgentRuntime.voice == null) "Ativar áudio" else "Falar")
+                        Text(if (voice == null) "Ativar áudio" else "Falar")
                     }
                     Text(
                         "O reconhecimento de fala pode usar o serviço instalado no Android. Confira suas configurações de voz.",
@@ -177,7 +178,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
                     )
                     TextButton(
                         onClick = {
-                            if (AgentRuntime.voice != null) AgentRuntime.voice?.sendText(text)
+                            if (voice != null) voice?.sendText(text)
                             else {
                                 AgentRuntime.events.enqueueVoice(call!!, text)
                                 AgentRuntime.refreshEvents()
@@ -193,7 +194,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
                     Spacer(Modifier.weight(1f))
                     Button(
                         onClick = {
-                            if (AgentRuntime.voice != null) AgentRuntime.voice?.end()
+                            if (voice != null) voice?.end()
                             else
                                 scope.launch {
                                     try {

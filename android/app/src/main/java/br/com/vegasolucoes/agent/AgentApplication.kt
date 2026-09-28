@@ -22,7 +22,7 @@ object AgentRuntime {
     val voiceStatus = MutableStateFlow("Pronto para conversar")
     val mute = MutableStateFlow(false)
     val speaker = MutableStateFlow(true)
-    @Volatile var voice: VoiceController? = null
+    val voice = MutableStateFlow<VoiceController?>(null)
     val revision = MutableStateFlow(0L)
     val responses = MutableStateFlow<JSONObject?>(null)
     @Volatile var sender: ((JSONObject) -> Boolean)? = null

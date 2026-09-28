@@ -17,6 +17,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.util.Log
 import androidx.core.content.ContextCompat
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +58,7 @@ class VoiceController(
         AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
             .setAudioAttributes(attributes)
             .setOnAudioFocusChangeListener { value ->
-                if (value < 0) {
+                if (value < 0 && speaking) {
                     pause()
                     AgentRuntime.voiceStatus.value =
                         "Áudio interrompido. Toque em Falar para continuar."
@@ -123,15 +124,21 @@ class VoiceController(
                     }
 
                     override fun onError(error: Int) {
+                        Log.w("DevLimaVoice", "speech_recognition_error=$error")
                         listening = false
-                        if (!finished && awaiting == null && !AgentRuntime.mute.value)
+                        if (!finished && awaiting == null && !speaking && !AgentRuntime.mute.value)
                             AgentRuntime.voiceStatus.value =
-                                if (
-                                    error == SpeechRecognizer.ERROR_NO_MATCH ||
-                                        error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT
-                                )
-                                    "Não ouvi uma frase. Toque em Falar."
-                                else "Reconhecimento indisponível. Use texto ou tente novamente."
+                                when (error) {
+                                    SpeechRecognizer.ERROR_NO_MATCH,
+                                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Não ouvi uma frase. Toque em Falar."
+                                    SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Permita o microfone nas configurações do aplicativo."
+                                    SpeechRecognizer.ERROR_NETWORK,
+                                    SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "O serviço de voz não conseguiu conectar. Confira sua internet e tente novamente."
+                                    SpeechRecognizer.ERROR_LANGUAGE_NOT_SUPPORTED -> "O serviço de voz escolhido não reconhece português. Confira os idiomas nas configurações de voz do Android."
+                                    SpeechRecognizer.ERROR_LANGUAGE_UNAVAILABLE -> "Baixe português nas configurações de reconhecimento de voz do Android e tente novamente."
+                                    SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "O serviço de voz está ocupado. Aguarde e toque em Falar."
+                                    else -> "Reconhecimento indisponível. Use texto ou tente novamente."
+                                }
                     }
 
                     override fun onResults(results: Bundle?) {
@@ -164,10 +171,9 @@ class VoiceController(
                 AgentRuntime.voiceStatus.value = "Microfone/reconhecimento indisponível. Use texto."
                 return@post
             }
-            if (audio.requestAudioFocus(focus) != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                AgentRuntime.voiceStatus.value = "Áudio ocupado. Tente novamente."
-                return@post
-            }
+            // The recognition service manages its own focus. Keeping ours here makes its
+            // focus request look like an interruption and cancels the microphone session.
+            audio.abandonAudioFocusRequest(focus)
             listening = true
             try {
                 recognizer?.startListening(
@@ -254,7 +260,7 @@ class VoiceController(
     }
 
     private fun pause() {
-        recognizer?.cancel()
+        if (listening) recognizer?.cancel()
         tts?.stop()
         listening = false
         speaking = false

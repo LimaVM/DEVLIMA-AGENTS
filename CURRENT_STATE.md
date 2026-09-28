@@ -1,6 +1,6 @@
 # Estado real do host — Fase 0
 
-**Estado atual:** V1 1.0.1 implementada até a fase 9, backend/schema saudáveis e APK assinado. O histórico abaixo preserva as inspeções de cada fase; [docs/PHASE_9.md](docs/PHASE_9.md) registra a validação final e o que ainda depende de celular físico.
+**Estado atual:** backend 1.0.1/schema saudável e Android 1.0.2 assinado, com desenvolvimento até a fase 9. Testes USB em Xiaomi Android 16 identificaram e corrigiram cancelamento da escuta por foco de áudio e atualização do botão de voz. O histórico abaixo preserva as inspeções de cada fase; [docs/PHASE_9.md](docs/PHASE_9.md) e [validação física](docs/ANDROID_PHYSICAL.md) registram evidências e limites atuais.
 
 Inspeção por SSH em **2026-09-28, 05:42 UTC** (02:42 America/Sao_Paulo), antes de instalar serviços do projeto.
 

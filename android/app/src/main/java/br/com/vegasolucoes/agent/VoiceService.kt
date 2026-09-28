@@ -50,14 +50,14 @@ class VoiceService : Service() {
         else startForeground(3, notification)
         if (controller == null) {
             controller = VoiceController(this, call) { stopSelf() }
-            AgentRuntime.voice = controller
+            AgentRuntime.voice.value = controller
         }
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         controller?.destroy()
-        if (AgentRuntime.voice === controller) AgentRuntime.voice = null
+        if (AgentRuntime.voice.value === controller) AgentRuntime.voice.value = null
         super.onDestroy()
     }
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## Android 1.0.2 — 2026-09-28
+
+Corrige a captura física de voz: o foco solicitado pelo serviço de reconhecimento cancelava a própria escuta do aplicativo. O app libera seu foco antes de escutar e trata interrupções durante o TTS. O controlador de voz é observado pela interface, atualizando corretamente Ativar áudio/Falar; erros de reconhecimento possuem orientação específica e diagnóstico sem transcrições nos logs.
+
+Build Android e testes unitários/lint executados na VPS, validação USB em Xiaomi Android 16, chamadas/lembretes reais e reconexão móvel. Backend permanece 1.0.1. Evidências e limites em [validação física](docs/ANDROID_PHYSICAL.md).
+
 ## 1.0.1 — 2026-09-28
 
 Corrige o backup automático via systemd: a consulta ao commit confia explicitamente apenas no diretório do projeto, pois root sem SUDO_UID recusava o repositório pertencente a ubuntu. Unidade real executada com sucesso; backup resultante restaurado em banco isolado. LaunchAgent externo no Mac também executado com exit code 0.

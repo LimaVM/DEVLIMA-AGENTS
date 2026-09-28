@@ -195,7 +195,7 @@ class ConnectionService : Service() {
                         "chat.processed",
                         "error" -> {
                             AgentRuntime.events.response(event)
-                            AgentRuntime.voice?.response(event)
+                            AgentRuntime.voice.value?.response(event)
                             AgentRuntime.refreshEvents()
                             AgentRuntime.responses.value = event
                         }
@@ -207,12 +207,12 @@ class ConnectionService : Service() {
                                     AgentRuntime.call.value = call
                                     if (call.getString("status") != "ACTIVE") {
                                         AgentRuntime.events.cancelVoice(call.getString("id"))
-                                        AgentRuntime.voice?.finishLocal()
+                                        AgentRuntime.voice.value?.finishLocal()
                                     }
                                 }
                             }
                             if (event.getString("type") == "agent.message")
-                                AgentRuntime.voice?.reply(event.getJSONObject("payload"))
+                                AgentRuntime.voice.value?.reply(event.getJSONObject("payload"))
                             if (AgentRuntime.events.shouldNotify(id)) {
                                 notifications.event(event)
                                 AgentRuntime.events.notified(id)

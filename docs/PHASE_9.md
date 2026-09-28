@@ -1,5 +1,7 @@
 # Fase 9 — hardening, recuperação e entrega V1
 
+Atualização posterior: Android 1.0.2 corrige dois problemas encontrados em Xiaomi Android 16 conectado por USB. Backend continua 1.0.1. [Relatório físico](ANDROID_PHYSICAL.md) registra testes de voz, rede móvel, tela bloqueada e limites atuais; as evidências abaixo preservam a entrega inicial 1.0.1.
+
 Validação em 2026-09-28. Backend e Android **1.0.1**, schema **0007_calls**. Desenvolvimento, build e emulador Android executados na VPS `147.15.33.140`; publicação em `main` no repositório privado.
 
 Patch 1.0.1 corrige a execução do backup pelo systemd como root sem SUDO_UID: a leitura do commit usa confiança restrita ao path deste projeto, sem alterar configuração Git global. Unidade real passou com Result=success/ExecMainStatus=0, seguida de restore isolado aprovado; LaunchAgent Mac também passou com exit code 0. O E2E temporizado precedeu o ajuste final de versão; o código de voz/UI permanece igual. APK 1.0.1 foi atualizado sobre 1.0.0 no emulador, preservando UID/assinatura e abrindo o login; nenhum novo E2E temporizado foi presumido para esse patch de metadados.

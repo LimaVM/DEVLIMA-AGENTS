@@ -2,7 +2,7 @@
 
 Aplicativo Kotlin/Compose/Material 3: login HTTPS, sessão Android Keystore, chat/histórico/fila offline, rotina e memórias propostas, conexão WSS com ACK/heartbeat/backoff, chamadas internas e SpeechRecognizer/TextToSpeech com alternativa por texto. Sem Firebase/WebRTC nesta V1.
 
-Package release `br.com.vegasolucoes.agent`, debug `.debug`; versão 1.0.1/code 101, Android 8.0/API 26 ou superior, target/compile 36. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
+Package release `br.com.vegasolucoes.agent`, debug `.debug`; versão 1.0.2/code 102, Android 8.0/API 26 ou superior, target/compile 36. Backend permanece 1.0.1. Servidor padrão `https://agent.vegasolucoes.com.br`; Groq/API keys ficam somente no backend. A senha de login não é persistida.
 
 ## Build na VPS
 
@@ -17,11 +17,13 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 sha256sum app/build/outputs/apk/release/app-release.apk
 ```
 
-Keystore `/srv/devlima-build-tools/agent-release.jks` e `signing.properties`, modo 0600, fora do Git. Ausência desses arquivos produz release sem assinatura de produção; não distribua esse arquivo. Preserve o certificado para futuras atualizações. [Release privada v1.0.1](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.1) contém APK e checksum.
+Keystore `/srv/devlima-build-tools/agent-release.jks` e `signing.properties`, modo 0600, fora do Git. Ausência desses arquivos produz release sem assinatura de produção; não distribua esse arquivo. Preserve o certificado para futuras atualizações. [Release privada v1.0.2](https://github.com/LimaVM/DEVLIMA-AGENTS/releases/tag/v1.0.2) contém APK e checksum.
 
 ## Testes
 
 Três testes unitários e lint sem erros passaram na build final. Três instrumentados básicos, um relatório de capacidades de voz e um E2E temporizado passaram no emulador API 36 da VPS. E2E confirmou café 5 min, chamada 2 min, WSS/contexto/ACK, rotina e transcrição enviada por texto; não capturou voz de microfone físico. Evidências em [PHASE_9.md](../docs/PHASE_9.md).
+
+A validação USB em Xiaomi Android 16 revelou um cancelamento da escuta por disputa de foco com o serviço de reconhecimento e um botão sem atualização reativa. Android 1.0.2 corrige ambos. Testes no aparelho, rede móvel, tela bloqueada e limites de confirmação acústica estão em [ANDROID_PHYSICAL.md](../docs/ANDROID_PHYSICAL.md).
 
 Com emulador iniciado pelo usuário do build e ADB/console restritos ao loopback, execute `connectedDebugAndroidTest` com `-Pandroid.testInstrumentationRunnerArguments.class=<classe>` para filtrar as classes básicas em `app/src/androidTest`. Sem configuração privada, o E2E é ignorado.
 
@@ -33,7 +35,9 @@ Instale a release, permita instalação dessa origem conforme o Android, entre c
 
 Mute interrompe escuta/TTS; saída alterna speaker/auricular conforme recursos do aparelho. Encerrar confirma no Core e fecha áudio/serviço. Com conexão interrompida, mensagens mantêm UUID para replay; confira seu estado antes de tentar envio novo.
 
-## Homologação física pendente
+## Checklist de homologação física
+
+Itens já exercitados e pendências estão detalhados no relatório físico; a lista abaixo é o roteiro completo, não uma declaração de aprovação de todos os itens.
 
 - Registrar modelo, versão Android e engine de reconhecimento/TTS pt-BR.
 - Login, histórico e lembrete café 5 min com app visível e em background/tela bloqueada.

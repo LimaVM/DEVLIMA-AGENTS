@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 
     fun disconnect() {
-        AgentRuntime.voice?.end()
+        AgentRuntime.voice.value?.end()
         stopService(Intent(this, ConnectionService::class.java))
         getSharedPreferences("connection", MODE_PRIVATE).edit().putBoolean("wanted", false).apply()
     }

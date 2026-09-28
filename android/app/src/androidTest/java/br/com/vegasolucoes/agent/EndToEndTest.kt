@@ -137,10 +137,10 @@ class EndToEndTest {
         instrumentation.runOnMainSync {
             ContextCompat.startForegroundService(context, Intent(context, VoiceService::class.java))
         }
-        await("voice foreground service") { AgentRuntime.voice != null }
+        await("voice foreground service") { AgentRuntime.voice.value != null }
         // Emulator validates transcript/Core/TTS coordination, without claiming physical microphone
         // quality.
-        AgentRuntime.voice!!.sendText(
+        AgentRuntime.voice.value!!.sendText(
             "Olá, quero conversar sobre o café. Responda em uma frase curta."
         )
         await("voice reply", 180000) {
@@ -157,11 +157,11 @@ class EndToEndTest {
         )
         milestone("voice_turn_complete")
         instrumentation.runOnMainSync {
-            AgentRuntime.voice?.toggleMute()
-            AgentRuntime.voice?.toggleSpeaker()
+            AgentRuntime.voice.value?.toggleMute()
+            AgentRuntime.voice.value?.toggleSpeaker()
         }
         await("mute state") { AgentRuntime.mute.value }
-        AgentRuntime.voice!!.end()
+        AgentRuntime.voice.value!!.end()
         await("ended call") { AgentRuntime.call.value?.optString("status") == "ENDED" }
         await("coffee notification event", 300000) {
             AgentRuntime.events.recent().any {
