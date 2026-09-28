@@ -92,3 +92,7 @@ Migration `0005_workers`, fila durável, runner e VM Manager systemd privado imp
 O primeiro snapshot revelou OOM no limite inicial do manager. Conversão foi limitada a uma coroutine/cache direto; unidade usa MemoryHigh 512 MiB e MemoryMax 1536 MiB. Segundo ciclo passou sem reinício, com pico de cerca de 514 MiB. Token do manager fica somente no runner e arquivos protegidos, separado do backend HTTP/scheduler. Relatório em [docs/PHASE_5.md](docs/PHASE_5.md).
 
 Na VPS, JDK 17/Gradle 8.13/SDK 36/build-tools 36.0.0/emulador e imagem Google APIs estão instalados em `/srv/devlima-build-tools` e `/srv/devlima-android-sdk`, fora do Git. Desenvolvimento Android continuará nesse host por preferência do proprietário.
+
+## Resultado da Fase 6
+
+Schema `0006_devices`, backend 0.6.0, refresh rotativo/revogação, WSS autenticado e ACK durável implantados. 136 testes Python passaram; smoke real de socket e WSS público aprovado. Android desenvolvido/compilado na VPS: assembleDebug/lint, 2 testes unitários e 1 instrumentado em emulador API 36 passaram. Sessão e eventos locais criptografados; tela de login e controles de conexão disponíveis. Hardware físico permanece pendente. Relatório em [docs/PHASE_6.md](docs/PHASE_6.md).

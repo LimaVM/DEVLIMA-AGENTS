@@ -15,6 +15,7 @@ from app.config import Settings
 from app.llm.base import LLMError
 from app.llm.service import build_router
 from app.models import AuditLog, Conversation, Message, User
+from app.models.planning import OutboxEvent
 from app.schemas.chat import ChatReply, ChatSend
 
 
@@ -223,8 +224,21 @@ class AgentCore:
                     },
                 )
             )
+            response = self._replay(assistant).model_copy(update={"replayed": False})
+            self.session.add(
+                OutboxEvent(
+                    id=assistant.id,
+                    user_id=user_id,
+                    type="agent.message",
+                    payload={
+                        **response.model_dump(mode="json"),
+                        "client_message_id": str(source.client_message_id),
+                    },
+                    dedupe_key=f"agent-message:{assistant.id}",
+                )
+            )
             self.session.commit()
-            return self._replay(assistant).model_copy(update={"replayed": False})
+            return response
         except (AgentError, LLMError) as error:
             self._fail(conversation_id, source_id, lease, error.code)
             raise

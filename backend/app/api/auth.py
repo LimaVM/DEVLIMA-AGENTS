@@ -2,16 +2,22 @@ import hashlib
 from datetime import UTC, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
 from sqlalchemy import case, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
+from app.agent.errors import AgentError
 from app.config import Settings, get_settings
 from app.db.session import get_session
+from app.devices.service import issue_session, logout, rotate_session
 from app.models import AuditLog, LoginThrottle, User
 from app.schemas.auth import LoginRequest, TokenResponse, UserResponse
 from app.security import (
+    bearer,
     create_token,
+    decode_token,
     dummy_hash,
     get_current_user,
     password_hasher,
@@ -79,6 +85,14 @@ def login(
             details={"ip_hash": bucket},
         )
     )
+    if data.device_id is not None:
+        try:
+            result = issue_session(session, user, data.device_id, settings)
+        except AgentError as error:
+            session.rollback()
+            raise HTTPException(error.status_code, error.code) from None
+        session.commit()
+        return TokenResponse(**result)
     session.commit()
     return TokenResponse(
         access_token=create_token(user, settings), expires_in=settings.jwt_ttl_minutes * 60
@@ -88,3 +102,41 @@ def login(
 @router.get("/me", response_model=UserResponse)
 def me(user: User = Depends(get_current_user)) -> User:
     return user
+
+
+class RefreshRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+    refresh_token: SecretStr = Field(min_length=32, max_length=128)
+
+
+@router.post("/refresh", response_model=TokenResponse)
+def refresh(
+    data: RefreshRequest,
+    request: Request,
+    session: Session = Depends(get_session),
+    settings: Settings = Depends(get_settings),
+):
+    bucket = hashlib.sha256(
+        (request.client.host if request.client else "unknown").encode()
+    ).hexdigest()
+    consume_login_attempt(session, bucket, settings)
+    try:
+        result = rotate_session(session, data.refresh_token.get_secret_value(), settings)
+        session.commit()
+        return TokenResponse(**result)
+    except AgentError as error:
+        session.rollback()
+        raise HTTPException(error.status_code, error.code) from None
+
+
+@router.post("/logout", status_code=204)
+def sign_out(
+    credentials: HTTPAuthorizationCredentials = Depends(bearer),
+    user: User = Depends(get_current_user),
+    session: Session = Depends(get_session),
+    settings: Settings = Depends(get_settings),
+):
+    claims = decode_token(credentials.credentials, settings)
+    if "sid" not in claims:
+        user.token_version += 1
+    logout(session, claims)

@@ -1,7 +1,15 @@
-# Android — Fases 6–8
+# Android — desenvolvimento na VPS
 
-Kotlin, Jetpack Compose, Material 3, WebSocket WSS, Foreground Service, SpeechRecognizer e TextToSpeech. Sem Firebase e sem WebRTC na V1.
+Projeto Kotlin/Compose/Material 3 em `/srv/devlima-agent/android` na VPS Ubuntu. SDK em `/srv/devlima-android-sdk`, JDK 17 e Gradle 8.13; wrapper tem checksum oficial. Fontes são espelhadas no Git, compilação e emulador ficam na VPS por preferência do proprietário.
 
-App dependerá do protocolo autenticado de eventos da Fase 6. Notificação persistente e reconexão com backoff/heartbeat; chamadas internas com atender/recusar e sessão persistida no backend.
+```sh
+cd /srv/devlima-agent/android
+ANDROID_HOME=/srv/devlima-android-sdk ./gradlew --no-daemon assembleDebug testDebugUnitTest lintDebug
+ANDROID_HOME=/srv/devlima-android-sdk ./gradlew --no-daemon connectedDebugAndroidTest
+```
 
-Force stop e restrições de bateria podem impedir a entrega; documentar o comportamento real sem contornar políticas. Nenhum APK funcional foi entregue na Fase 1.
+Build limitado a dois workers e heap 3 GiB. Emulador API 36 usa KVM, dois cores e 3 GiB; não executar builds pesados junto de todos os workers de produção. SDK, caches e APKs não são versionados.
+
+Login HTTPS, tokens/eventos AES-GCM/Android Keystore, WSS/ACK após persistência, heartbeat, refresh rotativo e reconexão com backoff. Senha não é persistida; nenhuma chave do backend/provider é embutida. Foreground Service specialUse inicia pela ação do usuário e oferece desconectar. Permissão de notificações é necessária para avisos. Force stop e restrições de bateria seguem as políticas do Android; reconexão não promete contorná-las.
+
+Chat/rotina chegam na Fase 7, chamadas internas/SpeechRecognizer/TextToSpeech na Fase 8. Sem Firebase/WebRTC. Assinatura release usa arquivo privado externo `/srv/devlima-build-tools/signing.properties`; manter keystore e senhas fora do Git.

@@ -30,3 +30,11 @@ dist/
 data/
 backups/
 host-inspection/
+
+.kotlin/
+*.jks
+*.keystore
+*.apk
+*.aab
+*.hprof
+signing.properties

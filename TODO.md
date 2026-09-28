@@ -41,9 +41,9 @@
 - [x] WindowsProvider reservado, sem template Windows nesta versão.
 
 ## Fase 6 — conexão Android
-- [ ] WebSocket autenticado, envelopes, ACK, heartbeat e backoff.
-- [ ] Kotlin/Compose/Material 3 e Foreground Service.
-- [ ] Documentar limites de bateria/force stop sem contornar Android.
+- [x] WebSocket autenticado, envelopes, ACK, heartbeat e backoff.
+- [x] Kotlin/Compose/Material 3 e Foreground Service.
+- [x] Documentar limites de bateria/force stop sem contornar Android.
 
 ## Fases 7–8 — interface e voz
 - [ ] Chat, tarefas e lembretes Android.

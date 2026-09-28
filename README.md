@@ -2,7 +2,7 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fases 1–5 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. Workers Linux estão disponíveis pelo Core na Fase 5; a conexão Android será entregue nas Fases 6–8.
+**Fases 1–6 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, Caddy, router llama.cpp/Groq, conversas persistentes, contexto limitado, resumos e memória com candidatos validados. Tarefas, lembretes, chamadas agendadas e scheduler persistente disponíveis. Workers Linux estão disponíveis pelo Core na Fase 5; Android possui login, sessão criptografada, WSS/ACK e serviço de conexão; interface completa e voz avançam nas Fases 7–8.
 
 ## Documentação
 
@@ -17,6 +17,9 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Validação da Fase 3](docs/PHASE_3.md)
 - [Tarefas e scheduler](docs/PHASE_4.md)
 - [Workers Linux e recuperação](docs/PHASE_5.md)
+- [Conexão Android e sessões](docs/PHASE_6.md)
+- [Protocolo WebSocket](docs/WEBSOCKET.md)
+- [Build Android na VPS](android/README.md)
 - [Operação do VM Manager](vm-manager/README.md)
 
 ## Repositório e instalação

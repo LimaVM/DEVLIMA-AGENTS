@@ -1,7 +1,7 @@
 name: ${COMPOSE_PROJECT_NAME:-devlima-agent}
 
 x-backend: &backend
-  image: devlima-agent-backend:phase5
+  image: devlima-agent-backend:phase6
   build:
     context: ../backend
     target: production
@@ -174,7 +174,7 @@ services:
   tests:
     <<: *backend
     profiles: [test]
-    image: devlima-agent-tests:phase5
+    image: devlima-agent-tests:phase6
     build:
       context: ../backend
       target: test
@@ -186,6 +186,19 @@ services:
       LOCAL_LLM_MODEL: test-local
       GROQ_API_KEY: test-key-not-a-real-credential
     networks: [test]
+    depends_on:
+      migrate-test: {condition: service_completed_successfully}
+
+  websocket-smoke:
+    <<: *backend
+    profiles: [smoke]
+    environment:
+      <<: *backend-env
+      POSTGRES_HOST: postgres-test
+      POSTGRES_DB: devlima_agent_test
+      JWT_SECRET: test-websocket-secret-at-least-32-characters
+    networks: [test, edge]
+    command: [python, -m, app.devices.cli]
     depends_on:
       migrate-test: {condition: service_completed_successfully}
 

@@ -30,7 +30,7 @@ def verify_password(password_hash: str, password: str) -> bool:
         return False
 
 
-def create_token(user: User, settings: Settings) -> str:
+def create_token(user: User, settings: Settings, session_id=None) -> str:
     now = datetime.now(UTC)
     return jwt.encode(
         {
@@ -41,6 +41,7 @@ def create_token(user: User, settings: Settings) -> str:
             "iss": settings.jwt_issuer,
             "aud": settings.jwt_audience,
             "jti": str(uuid4()),
+            **({"sid": str(session_id)} if session_id is not None else {}),
         },
         settings.jwt_secret.get_secret_value(),
         algorithm="HS256",
@@ -76,9 +77,9 @@ def get_current_user(
         raise error
     try:
         claims = decode_token(credentials.credentials, settings)
+        from app.devices.service import authorize_claims
+
+        user = authorize_claims(session, claims)
     except (jwt.InvalidTokenError, ValueError, TypeError, KeyError):
         raise error from None
-    user = session.get(User, UUID(claims["sub"]))
-    if user is None or not user.is_active or user.token_version != claims["ver"]:
-        raise error
     return user
