@@ -10,10 +10,22 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Arquitetura](docs/ARCHITECTURE.md)
 - [Segurança](docs/SECURITY.md)
 - [Fases](TODO.md)
+- [Roteiro detalhado das próximas fases](docs/ROADMAP.md)
 - [Validação da entrega](docs/PHASE_1.md)
 - [Router LLM e validação real](docs/PHASE_2.md)
 - [Contexto e memória](CONTEXT.md)
 - [Validação da Fase 3](docs/PHASE_3.md)
+
+## Repositório e instalação
+
+Repositório privado: [LimaVM/DEVLIMA-AGENTS](https://github.com/LimaVM/DEVLIMA-AGENTS), branch principal `main`. O histórico inclui as entregas por fase. É necessário acesso à conta/repositório para clonar:
+
+```sh
+git clone https://github.com/LimaVM/DEVLIMA-AGENTS.git
+cd DEVLIMA-AGENTS
+```
+
+O clone contém código, migrations, configuração de exemplo, testes e documentação. `.env`, chaves SSH, credenciais, dados PostgreSQL, backups e imagens QCOW2 não são distribuídos; a chave SSH citada nos comandos de operação é provisionada separadamente.
 
 ## Executar
 
