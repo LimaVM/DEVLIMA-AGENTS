@@ -93,8 +93,7 @@ fun CallOverlay(activity: MainActivity, session: SessionData) {
         if (requested != null && lifecycleState == Lifecycle.State.RESUMED) {
             AgentRuntime.requestedAnswer.value = null
             if (
-                incoming?.optString("event_id") == requested &&
-                    call?.optString("status") != "ACTIVE"
+                incomingCall(received, requested) != null && call?.optString("status") != "ACTIVE"
             ) {
                 selected = requested
                 if (

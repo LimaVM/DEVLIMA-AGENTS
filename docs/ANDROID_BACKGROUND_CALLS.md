@@ -50,7 +50,7 @@ Próxima sessão: liberar instalação por USB; executar teste de chamada com te
 
 ## Artefato
 
-Android 1.0.3/code 103, backend 1.0.1/schema 0007_calls. Release assinada, 8.546.040 bytes. SHA-256 `e986d3c933e67047ae6e73fea3282ddee017bbaa59645e39178fff6c99f6b9ee`. Certificado SHA-256 `b68c5786bdc1088ae635b5611c57beaf9add894269408d5298cf58765bf4348e`.
+Android 1.0.3/code 103, backend 1.0.1/schema 0007_calls. Release assinada. 8.546.040 bytes. SHA-256 `587a7854b8aea0c125c09e0bc11b3b7a9e16385bc888309bcadda6ad05bdfb54`. Certificado SHA-256 `b68c5786bdc1088ae635b5611c57beaf9add894269408d5298cf58765bf4348e`.
 
 ## Referências oficiais
 
