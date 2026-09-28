@@ -62,3 +62,11 @@ O proprietário informou `agent.vegasolucoes.com.br` durante a implementação; 
 Docker 29.8.1/Compose 5.5.1 instalados como novos pacotes, sem upgrades ou remoções de pacotes existentes. Serviço em `/srv/devlima-agent`, PostgreSQL 17.11 e Caddy 2.11.4; backend Python 3.12 em container não root. Resultados detalhados em [docs/PHASE_1.md](docs/PHASE_1.md).
 
 Template mantém o SHA-256 original. Configuração da rede default, identidade/path/permissões do pool e regras Oracle/libvirt preservados. Os números de espaço disponível/alocado do pool mudaram somente pelo consumo normal de disco da instalação; isso não é alteração do pool. As chaves e arquivos cloud-init existentes permanecem intactos. Nenhuma VM foi criada, apagada ou recriada.
+
+## Nova inspeção da Fase 2
+
+Na sequência, o proprietário informou a credencial Groq e o IP Tailscale do llm-server. Tailscale já estava instalado/ativo/autorizado, com Core `100.108.84.64` e LLM `100.102.91.22`; nada foi reinstalado na VPN.
+
+`http://100.102.91.22:8080/health` respondeu ok; `/v1/models` confirmou Gemma 4 12B Instruct, GGUF UD-Q4_K_XL, contexto servido de 8192 tokens. A credencial foi armazenada somente no `.env` da VM (0600), sem ser reproduzida no relatório. Configuração Groq utiliza `openai/gpt-oss-120b`, presente na lista disponível e validado por inferência.
+
+Fase 2 implantada com migration `0002_llm_requests`, 61 testes passando, inferência local e fallback real validados. Relatório em [docs/PHASE_2.md](docs/PHASE_2.md).

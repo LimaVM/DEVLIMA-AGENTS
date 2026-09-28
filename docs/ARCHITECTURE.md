@@ -6,7 +6,13 @@ Android → HTTPS/WSS → Caddy → Agent Core → PostgreSQL.
 
 O Agent Core valida ações, aplica autorização por usuário, persiste estado e audita operações. A LLM fornece linguagem e ações estruturadas; não é fonte da verdade e não executa shell. PostgreSQL guarda histórico bruto, resumos, memórias, tarefas, agendamentos, eventos e estado dos workers.
 
-O router usará llama.cpp por rede privada, preferencialmente Tailscale. Groq só receberá contexto se `ALLOW_CLOUD_FALLBACK=true` e houver falha técnica permitida. Resposta semanticamente insatisfatória não provoca fallback.
+O router usa llama.cpp por rede privada, preferencialmente Tailscale. Groq só recebe contexto se `ALLOW_CLOUD_FALLBACK=true` e houver falha técnica permitida. Resposta semanticamente insatisfatória não provoca fallback.
+
+Esse router está implementado na Fase 2: `LLMProvider` → `LlamaCppProvider`/`GroqProvider`, com transporte HTTP compatível e uma única tentativa por provider. Fallback somente por timeout, conexão, 5xx ou erro explícito de modelo indisponível. Erros de autorização/rate limit, JSON inválido e redirects não provocam envio à nuvem. Sem proxy herdado do ambiente e sem seguir redirects.
+
+`llm_requests` registra uma linha por tentativa, correlacionada ao request ID e usuário, com provider/modelo, latência, sucesso/fallback, erro/status e uso de tokens. Não guarda prompts/respostas/chaves; `audit_log` recebe metadados da operação. O recorder faz commit por tentativa; chamadas LLM devem anteceder transações de execução de ações. A persistência de mensagens/contexto será adicionada na Fase 3.
+
+Os endpoints autenticados `/llm/health` e `/llm/chat` permitem validar providers nesta fase. Chat é stateless e não executa ações. O CLI administrativo permite diagnóstico sem criar usuário padrão ou expor JWT.
 
 ## Processos e isolamento
 

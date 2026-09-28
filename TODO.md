@@ -16,10 +16,10 @@
 - [x] Deploy real, 21 testes, persistência e preservação do template.
 
 ## Fase 2 — router LLM
-- [ ] LLMProvider, llama.cpp e Groq com timeouts.
-- [ ] Fallback exclusivamente técnico e flag de privacidade.
-- [ ] Configurar URL privada/modelo local e Groq via environment.
-- [ ] Auditoria sem secrets, healthchecks e testes de falhas.
+- [x] LLMProvider, llama.cpp e Groq com timeouts.
+- [x] Fallback exclusivamente técnico e flag de privacidade.
+- [x] URL privada/modelo Gemma local e Groq configurados via environment.
+- [x] Auditoria sem secrets, healthchecks, 61 testes e inferências reais local/fallback.
 
 ## Fase 3 — contexto e memória
 - [ ] Conversas, mensagens, summaries, memórias e candidatos.

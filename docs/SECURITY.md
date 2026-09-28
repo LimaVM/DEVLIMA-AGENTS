@@ -18,7 +18,13 @@ PostgreSQL fica sem porta publicada. Caddy usa certificados persistentes. Defaul
 
 A V1 inicial usa o usuário proprietário do banco criado pela imagem PostgreSQL, que tem privilégios administrativos. Separar credenciais de migrations e uma role de runtime sem superuser é parte do hardening pendente; não tratar a Fase 1 como produto final.
 
-llama.cpp e VM Manager permanecerão privados. Para conexão ao VM Manager preferir rede dedicada/ACL e token próprio, sem reaproveitar JWT de usuário. Tailscale requer autorização do proprietário da tailnet e ainda não foi configurado.
+llama.cpp e VM Manager permanecerão privados. Para conexão ao VM Manager preferir rede dedicada/ACL e token próprio, sem reaproveitar JWT de usuário. Tailscale requer autorização do proprietário da tailnet.
+
+Atualização Fase 2: Tailscale foi encontrado ativo e autorizado pelo proprietário, IP do Core `100.108.84.64`, LLM `100.102.91.22`. A configuração existente da VPN foi preservada. O backend confirmou comunicação pela rede privada; não foi publicada porta da LLM.
+
+URL da LLM primária é configuração administrativa validada: IP privado/loopback, CGNAT Tailscale ou hostname `.ts.net`, sem credenciais/query/fragment. A URL do Groq é fixa em HTTPS. O client ignora proxies do ambiente e recusa redirects. `ALLOW_CLOUD_FALLBACK=false` impede qualquer requisição cloud; com flag true, apenas falhas técnicas enumeradas permitem enviar contexto.
+
+Testes usam credential fictícia e rede de banco isolada, sem herdar a chave real Groq. Telemetria grava apenas metadados de inferência; mensagens/respostas do usuário não são copiadas para logs. Erros retornam códigos estáveis e nunca o corpo bruto do upstream. Endpoints LLM exigem autenticação e limitam quantidade/tamanho de mensagens e tokens.
 
 ## Host e template
 

@@ -2,7 +2,7 @@
 
 Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, inferência llama.cpp privada e fallback Groq configurável. Desenvolvimento por fases conforme TODO.md.
 
-**Fase 1:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, limitação de login, auditoria, CLI e Caddy. Chat/LLM, tarefas, scheduler, VM Manager e Android ainda não estão implementados.
+**Fases 1 e 2 concluídas:** FastAPI, PostgreSQL, migrations, JWT/Argon2id, auditoria, CLI, Caddy, providers llama.cpp/Groq e router com fallback técnico. Há chat de diagnóstico sem persistência de conversas; contexto, memória, tarefas, scheduler, VM Manager e Android chegam nas próximas fases.
 
 ## Documentação
 
@@ -11,6 +11,7 @@ Agente pessoal com Core operacional próprio, PostgreSQL como fonte da verdade, 
 - [Segurança](docs/SECURITY.md)
 - [Fases](TODO.md)
 - [Validação da entrega](docs/PHASE_1.md)
+- [Router LLM e validação real](docs/PHASE_2.md)
 
 ## Executar
 
@@ -62,6 +63,26 @@ sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend pyt
 `POST /auth/login` recebe JSON `username` e `password`, retorna JWT com duração de 30 minutos. `GET /auth/me` exige `Authorization: Bearer <token>`. Reset de senha invalida tokens antigos. Cinco tentativas por IP/janela de 15 minutos, inclusive logins bem-sucedidos, limitam tentativas e custo de hashing. Não colocar senhas/tokens em argumentos do shell ou arquivos versionados.
 
 Endpoints públicos: `GET /health/live` e `/health/ready`. Documentação interativa desativada por padrão; para desenvolvimento privado use `ENABLE_API_DOCS=true`. Timestamps UTC e timezone por usuário.
+
+## LLM privada e fallback
+
+O deployment usa `http://100.102.91.22:8080/v1` pelo Tailscale; modelo Gemma 4 12B detectado no servidor. Groq usa `openai/gpt-oss-120b`, selecionado da lista disponível. Credencial somente no `.env` 0600 da VM, nunca no código ou em logs.
+
+`GET /llm/health` e `POST /llm/chat` exigem JWT. O chat recebe `messages` (role/content) e `max_tokens`, e retorna `reply`, provider, modelo, latência, `fallback_used` e request ID. É um endpoint de diagnóstico de providers, sem histórico/contexto persistente; não executa ações da LLM.
+
+Na VM, os diagnósticos administrativos dispensam expor tokens:
+
+```sh
+cd /srv/devlima-agent
+sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.llm.cli health
+sudo docker compose --env-file .env -f infra/docker-compose.yml exec backend python -m app.llm.cli smoke
+```
+
+O comando smoke envia apenas uma frase de teste. Cada tentativa de inferência é auditada no PostgreSQL sem armazenar prompt/resposta nesses registros. Mensagens brutas terão tabelas próprias na Fase 3.
+
+Fallback acontece só com timeout, erro de conexão, HTTP 5xx ou código explícito de modelo indisponível. Não ocorre com 401/403/429, 404 genérico, payload inválido ou preferência sobre uma resposta local. Com `ALLOW_CLOUD_FALLBACK=false`, nenhuma chamada ao Groq é feita, inclusive em health checks.
+
+Para desativar fallback, edite a flag no `.env` da VM e recrie o backend com `docker compose --env-file .env -f infra/docker-compose.yml up -d backend`. Não imprimir `.env`, executar Compose `config` sem `--quiet` ou inspecionar todos os env vars do container em logs compartilhados.
 
 ## Testar
 
